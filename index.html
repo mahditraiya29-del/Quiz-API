@@ -677,12 +677,41 @@
       .hero{grid-template-columns:1fr}
     }
 
-    @media (max-width: 768px){
-  .menu-mobile{
-    display: grid;
-    place-items: center;
-    transform: translateY(6px);
+   @media (max-width: 768px){
+  .topbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px;
   }
+
+  .menu-mobile{
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    margin-top: 0;
+  }
+
+  .search{
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .search input{
+    width: 100%;
+    min-width: 0;
+  }
+
+  .topbar .icon-btn:last-child{
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
 {
       .sidebar{
         width:280px;

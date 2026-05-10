@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KEF MuscleStore | Gym Expert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0072ff;
+            --dark: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(0, 210, 255, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s ease; }
+
+        body {
+            background-color: var(--dark);
+            background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+            color: #ffffff;
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        .top-bar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 0;
+        }
+
+        .lang-toggle-btn {
+            width: 45px;
+            height: 45px;
+            background: #1a1a1a;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        .lang-toggle-btn svg { width: 22px; height: 22px; fill: white; }
+
+        .container { width: 100%; max-width: 480px; }
+
+        .brand-header { text-align: center; margin-bottom: 20px; }
+        .brand-header h1 { font-size: clamp(1.8rem, 8vw, 2.3rem); font-weight: 900; }
+        .kef { color: var(--primary); }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .input-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .field-box { flex: 1 1 calc(50% - 12px); min-width: 140px; }
+        .field-box.full-span { flex: 1 1 100%; }
+
+        .field-box label { font-size: 0.8rem; color: var(--primary); margin-bottom: 6px; display: block; font-weight: bold; }
+
+        input, select {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .btn-glow {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white;
+            font-weight: 900;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .dashboard { margin-top: 20px; display: none; width: 100%; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .stat-card.highlight { grid-column: span 2; }
+        .stat-card h4 { font-size: 0.65rem; color: #888; text-transform: uppercase; }
+        .stat-card p { font-size: 1.1rem; font-weight: bold; margin-top: 4px; }
+
+        /* ميزة الإطار المزدوج للنصيحة */
+        .tips-box {
+            background: rgba(0, 210, 255, 0.05);
+            border-left: 4px solid var(--primary);
+            border-right: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar" id="topBar">
+        <div class="lang-toggle-btn" onclick="toggleLang()">
+            <svg viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M11,19.93C7.05,19.44,4,16.08,4,12 c0-0.35,0.02-0.69,0.07-1.03l5.03,5.03v0.9c0,1.1,0.9,2,2,2V19.93z M18.17,17.21l-3.23-3.23c-0.21-0.21-0.49-0.33-0.78-0.33h-1.16 c-0.64,0-1.16-0.52-1.16-1.16v-2.32c0-0.64,0.52-1.16,1.16-1.16h2.32c0.64,0,1.16,0.52,1.16,1.16V11h1.16c1.1,0,2,0.9,2,2v1.54 C20.18,15.21,19.34,16.41,18.17,17.21z"></path></svg>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="brand-header">
+            <h1><span class="kef">KEF</span> MuscleStore</h1>
+            <p id="tagline" style="color: #666; font-size: 0.75rem;">COACH GYM EXPERT</p>
+        </header>
+
+        <div class="glass-card">
+            <div class="input-grid">
+                <div class="field-box">
+                    <label id="lbl-w">Poids (kg)</label>
+                    <input type="number" id="w" placeholder="70">
+                </div>
+                <div class="field-box">
+                    <label id="lbl-h">Taille (cm)</label>
+                    <input type="number" id="h" placeholder="175">
+                </div>
+                <div class="field-box">
+                    <label id="lbl-a">Âge</label>
+                    <input type="number" id="a" placeholder="22">
+                </div>
+                <div class="field-box">
+                    <label id="lbl-freq">Entraînement</label>
+                    <select id="freq">
+                        <option value="1.45" id="opt-f3">3 jours</option>
+                        <option value="1.55" selected id="opt-f4">4 jours</option>
+                        <option value="1.65" id="opt-f5">5 jours</option>
+                        <option value="1.75" id="opt-f6">6 jours</option>
+                    </select>
+                </div>
+                <div class="field-box full-span">
+                    <label id="lbl-goal">Objectif</label>
+                    <select id="goal">
+                        <option value="lose" id="opt-g1">Sèche (Perte de gras)</option>
+                        <option value="gain" selected id="opt-g3">Prise de Masse (Bulking)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-glow" id="btn-main" onclick="analyze()">CALCULER</button>
+
+            <div id="dashboard" class="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card highlight">
+                        <h4 id="res-type-title">Morphotype</h4>
+                        <p id="b-type" style="color: var(--primary);">--</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4 id="res-k-title">Calories</h4>
+                        <p id="k-res">--</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4 id="res-crea-title">Créatine</h4>
+                        <p id="crea-res" style="color: var(--primary);">--</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4 id="res-p-title">Protéines</h4>
+                        <p id="p-res">--</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4 id="res-c-title">Glucides</h4>
+                        <p id="cb-res">--</p>
+                    </div>
+                </div>
+                <div id="advice" class="tips-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const langs = ['fr', 'ar', 'en'];
+        let curIdx = 0;
+
+        const trans = {
+            ar: { 
+                tag: "مدرب الجيم الخبير", lblW: "الوزن", lblH: "الطول", lblA: "العمر", lblFreq: "التمرين", lblGoal: "الهدف", 
+                f3: "3 أيام", f4: "4 أيام", f5: "5 أيام", f6: "6 أيام", 
+                g1: "تنشيف (خسارة دهون)", g3: "تضخيم (بناء عضلي)", 
+                btn: "احسب النتائج", type: "نمط الجسم", cal: "سعرات", crea: "كرياتين", pro: "بروتين", carb: "كارب", 
+                dir: "rtl",
+                adviceGain: "النصيحة: فائض سعرات + نوم كافي + تمرين شديد.",
+                adviceLose: "النصيحة: عجز سعرات + كارديو + بروتين عالٍ.",
+                ecto: "إكتومورف", meso: "ميزومورف", endo: "إندومورف"
+            },
+            fr: { 
+                tag: "COACH GYM EXPERT", lblW: "Poids", lblH: "Taille", lblA: "Âge", lblFreq: "Entraînement", lblGoal: "Objectif", 
+                f3: "3 jours", f4: "4 jours", f5: "5 jours", f6: "6 jours", 
+                g1: "Sèche (Cutting)", g3: "Prise de Masse (Bulking)", 
+                btn: "CALCULER", type: "Morphotype", cal: "Calories", crea: "Créatine", pro: "Protéines", carb: "Glucides", 
+                dir: "ltr",
+                adviceGain: "CONSEIL: Surplus calorique + Repos + Intensité.",
+                adviceLose: "CONSEIL: Déficit + Cardio + Protéines.",
+                ecto: "Ectomorphe", meso: "Mésomorphe", endo: "Endomorphe"
+            },
+            en: { 
+                tag: "GYM COACH EXPERT", lblW: "Weight", lblH: "Height", lblA: "Age", lblFreq: "Workout", lblGoal: "Goal", 
+                f3: "3 days", f4: "4 days", f5: "5 days", f6: "6 days", 
+                g1: "Cutting (Fat Loss)", g3: "Bulking (Muscle Gain)", 
+                btn: "CALCULATE", type: "Body Type", cal: "Calories", crea: "Creatine", pro: "Protein", carb: "Carbs", 
+                dir: "ltr",
+                adviceGain: "ADVICE: Caloric surplus + Good sleep + Heavy lifting.",
+                adviceLose: "ADVICE: Caloric deficit + Cardio + High protein.",
+                ecto: "Ectomorph", meso: "Mesomorph", endo: "Endomorph"
+            }
+        };
+
+        function toggleLang() {
+            curIdx = (curIdx + 1) % 3;
+            const l = langs[curIdx], t = trans[l];
+            document.documentElement.dir = t.dir;
+            document.getElementById('tagline').innerText = t.tag;
+            document.getElementById('lbl-w').innerText = t.lblW;
+            document.getElementById('lbl-h').innerText = t.lblH;
+            document.getElementById('lbl-a').innerText = t.lblA;
+            document.getElementById('lbl-freq').innerText = t.lblFreq;
+            document.getElementById('lbl-goal').innerText = t.lblGoal;
+            document.getElementById('opt-f3').innerText = t.f3;
+            document.getElementById('opt-f4').innerText = t.f4;
+            document.getElementById('opt-f5').innerText = t.f5;
+            document.getElementById('opt-f6').innerText = t.f6;
+            document.getElementById('opt-g1').innerText = t.g1;
+            document.getElementById('opt-g3').innerText = t.g3;
+            document.getElementById('btn-main').innerText = t.btn;
+            document.getElementById('res-type-title').innerText = t.type;
+            document.getElementById('res-k-title').innerText = t.cal;
+            document.getElementById('res-crea-title').innerText = t.crea;
+            document.getElementById('res-p-title').innerText = t.pro;
+            document.getElementById('res-c-title').innerText = t.carb;
+            document.getElementById('topBar').style.justifyContent = t.dir === 'rtl' ? 'flex-start' : 'flex-end';
+            
+            // تحديث النتائج فوراً إذا كان الداشبورد مفتوحاً
+            if(document.getElementById('dashboard').style.display === 'block') analyze();
+        }
+
+        function analyze() {
+            const w = parseFloat(document.getElementById('w').value), 
+                  h = parseFloat(document.getElementById('h').value), 
+                  a = parseFloat(document.getElementById('a').value), 
+                  f = parseFloat(document.getElementById('freq').value), 
+                  g = document.getElementById('goal').value;
+
+            if(!w || !h || !a) return;
+            const l = langs[curIdx], t = trans[l];
+
+            let bmr = (10 * w) + (6.25 * h) - (5 * a) + 5;
+            let tdee = Math.round(bmr * f);
+            if(g === 'lose') tdee -= 500; else tdee += 500;
+
+            const bmi = w / ((h/100)**2);
+            let bodyType = bmi < 19 ? t.ecto : bmi < 26 ? t.meso : t.endo;
+            
+            document.getElementById('b-type').innerText = bodyType;
+            document.getElementById('k-res').innerText = tdee + " kcal";
+            document.getElementById('crea-res').innerText = (w * 0.05).toFixed(1) + " g";
+            document.getElementById('p-res').innerText = Math.round(w * 2.1) + " g";
+            document.getElementById('cb-res').innerText = Math.round((tdee * 0.4) / 4) + " g";
+            
+            document.getElementById('advice').innerText = g === 'gain' ? t.adviceGain : t.adviceLose;
+            document.getElementById('dashboard').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

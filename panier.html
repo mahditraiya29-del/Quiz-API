@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panier - KEF Muscle Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #05070c;
+      --panel: rgba(255, 255, 255, .05);
+      --text: #f5f7ff;
+      --blue: #00a3ff;
+      --glow: 0 0 24px rgba(0, 163, 255, .22);
+      --radius: 28px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, #05070c 0%, #070b14 100%);
+      color: var(--text);
+      margin: 0;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .cart-empty { padding: 60px; text-align: center; color: #7ad8ff; }
+    .cart-item { display: flex; gap: 20px; padding: 20px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 20px; margin-bottom: 16px; background: var(--panel); align-items: center; }
+    .cart-img { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; }
+    .cart-details { flex: 1; }
+    .cart-name { font-size: 18px; font-weight: 600; margin: 0 0 8px; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; }
+    .cart-price { font-size: 16px; color: #5fcfff; font-weight: 700; margin-bottom: 10px; }
+    .quantity-controls { display: flex; gap: 10px; align-items: center; }
+    .qty-btn { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 163, 255, .2); border: 1px solid rgba(0, 163, 255, .3); color: #fff; cursor: pointer; transition: 0.3s; }
+    .qty-btn:hover { background: var(--blue); }
+    .remove-btn { background: rgba(220, 53, 69, .1); border-color: rgba(220, 53, 69, .2); color: #ff6b7a; margin-left: auto; }
+    
+    /* Promo & Summary Styling */
+    .cart-summary { margin-top: 30px; padding: 30px; border-radius: var(--radius); background: var(--panel); border: 1px solid rgba(255,255,255,.05); }
+    .promo-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .promo-input { flex: 1; background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 12px; outline: none; }
+    .promo-input:focus { border-color: var(--blue); }
+    #pMsg { font-size: 0.85rem; margin-bottom: 15px; font-weight: 500; height: 20px; }
+
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #888; }
+    .total-row { border-top: 1px solid #222; padding-top: 20px; color: var(--blue); font-family: 'Orbitron'; font-size: 1.8rem; }
+    
+    .checkout-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, #00a3ff, #0f66ff); color: #fff; border-radius: 20px; font-weight: 700; border: none; cursor: pointer; box-shadow: var(--glow); margin-top: 20px; font-family: 'Orbitron'; font-size: 0.9rem; }
+    
+    /* Info Section */
+    .info-inputs { display: none; flex-direction: column; gap: 12px; margin-top: 20px; border-top: 1px solid #222; padding-top: 20px; }
+    .info-inputs.active { display: flex; }
+  </style>
+</head>
+<body>
+
+  <h1 style="text-align:center;font-size:2em;margin-bottom:40px; font-family: 'Orbitron'; color: var(--blue);">
+    <i class="fa-solid fa-cart-shopping"></i> Mon Panier
+  </h1>
+  
+  <div id="cartContainer"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, child, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    // إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
+        apiKey: "AIzaSyAbx2TedCymp6XS23JVbLP...",
+        databaseURL: "https://musclestore-3d441-default-rtdb.firebaseio.com/",
+        projectId: "musclestore-3d441"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db);
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let activeDiscount = 0;
+    let promoData = null;
+    let infoStep = false;
+
+    window.updateCartDisplay = function() {
+      const container = document.getElementById('cartContainer');
+      
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="cart-empty">
+            <i class="fa-solid fa-cart-shopping" style="font-size:4em;color:rgba(255,255,255,.1);margin-bottom:20px;"></i>
+            <h2>Votre panier est vide</h2>
+            <a href="index.html" style="color:var(--blue); text-decoration:none;">Retour à l'accueil</a>
+          </div>`;
+        return;
+      }
+      
+      // عرض المنتجات
+      let itemsHtml = cart.map((item, index) => `
+        <div class="cart-item">
+          <img src="${item.imgSrc}" class="cart-img">
+          <div class="cart-details">
+            <h3 class="cart-name">${item.name}</h3>
+            <div class="cart-price">${item.price}</div>
+            <div class="quantity-controls">
+              <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
+              <span style="font-size:18px;font-weight:600;">${item.quantity}</span>
+              <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
+              <button class="qty-btn remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // حساب الأسعار
+      const subtotal = cart.reduce((sum, item) => {
+        const priceNum = parseFloat(item.price.replace('DT', '').replace(',', '.').trim());
+        return sum + (priceNum * item.quantity);
+      }, 0);
+      
+      const total = (subtotal + 7) * (1 - (activeDiscount / 100));
+
+      container.innerHTML = itemsHtml + `
+        <div class="cart-summary">
+          <div class="promo-group">
+            <input type="text" id="pInput" class="promo-input" placeholder="CODE PROMO">
+            <button class="qty-btn" style="width:auto; padding:0 20px; font-size:0.7rem;" onclick="applyPromo()">APPLY</button>
+          </div>
+          <p id="pMsg"></p>
+
+          <div class="price-row"><span>Sous-total</span><span>${subtotal.toFixed(2)} DT</span></div>
+          <div class="price-row"><span>Livraison</span><span>7.00 DT</span></div>
+          <div class="price-row total-row">
+            <span>TOTAL</span>
+            <span>${total.toFixed(2)} DT</span>
+          </div>
+
+          <div id="infoSection" class="info-inputs">
+            <input type="text" id="custNom" class="promo-input" placeholder="Nom et Prénom *">
+            <input type="text" id="custTel1" class="promo-input" placeholder="Téléphone 1 *">
+            <input type="text" id="custTel2" class="promo-input" placeholder="Téléphone 2 (Optionnel)">
+            <input type="text" id="custVille" class="promo-input" placeholder="Ville *">
+          </div>
+
+          <button class="checkout-btn" id="confirmBtn" onclick="handleOrder()">PASSER À LA CAISSE</button>
+        </div>
+      `;
+    }
+
+    // وظيفة الكود برومو بالألوان
+    window.applyPromo = async function() {
+        const code = document.getElementById('pInput').value.toUpperCase();
+        const msg = document.getElementById('pMsg');
+        if(!code) return;
+
+        msg.innerText = "Vérification...";
+        msg.style.color = "gray";
+
+        try {
+            const snapshot = await get(child(dbRef, `promos/${code}`));
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const now = new Date().toISOString().split('T')[0];
+                const used = data.used || 0;
+                const limit = data.limit || 0;
+
+                if(now <= data.expiry && used < limit) {
+                    activeDiscount = data.discount;
+                    promoData = data;
+                    msg.innerText = `Remise de ${activeDiscount}% appliquée ✅`;
+                    msg.style.color = "#00ff00"; // أخضر عند النجاح
+                    updateCartDisplay();
+                } else {
+                    activeDiscount = 0;
+                    msg.innerText = used >= limit ? "Limite atteinte ❌" : "Code expiré ❌";
+                    msg.style.color = "#ff3131"; // أحمر عند الخطأ
+                    updateCartDisplay();
+                }
+            } else {
+                activeDiscount = 0;
+                msg.innerText = "Code invalide ❌";
+                msg.style.color = "#ff3131";
+                updateCartDisplay();
+            }
+        } catch (e) { msg.innerText = "Erreur Cloud ⚠️"; }
+    }
+
+    // وظيفة إنهاء الطلب والتحويل لإنستغرام
+    window.handleOrder = async function() {
+        if(!infoStep) {
+            document.getElementById('infoSection').classList.add('active');
+            document.getElementById('confirmBtn').innerText = "ENVOYER SUR INSTAGRAM";
+            infoStep = true;
+            return;
+        }
+
+        const nom = document.getElementById('custNom').value;
+        const tel1 = document.getElementById('custTel1').value;
+        const tel2 = document.getElementById('custTel2').value || "N/A";
+        const ville = document.getElementById('custVille').value;
+
+        if(!nom || !tel1 || !ville) return alert("Remplissez les champs obligatoires!");
+
+        let itemsText = "";
+        cart.forEach(i => itemsText += `- ${i.name} (x${i.quantity})\n`);
+        const finalTotal = document.querySelector('.total-row span:last-child').innerText;
+
+        const finalMsg = `🚀 COMMANDE - KEF MUSCLE STORE 🚀\n\n👤 Client: ${nom}\n📞 Tél: ${tel1}\n📞 Tél 2: ${tel2}\n📍 Ville: ${ville}\n\n🛒 Produits:\n${itemsText}\n💰 TOTAL: ${finalTotal}\n\n(Copiez ce message et collez-le sur Instagram)`;
+
+        // تحديث Firebase الـ Used +1
+        if(promoData) {
+            const code = document.getElementById('pInput').value.toUpperCase();
+            await update(ref(db, `promos/${code}`), { used: (promoData.used || 0) + 1 });
+        }
+
+        navigator.clipboard.writeText(finalMsg).then(() => {
+            alert("✅ Détails copiés ! Collez-les dans le chat Instagram.");
+            window.location.href = "https://www.instagram.com/kefmusclestore/";
+            localStorage.removeItem('cart');
+        });
+    }
+
+    window.changeQuantity = function(index, delta) {
+      if (cart[index].quantity + delta > 0) {
+        cart[index].quantity += delta;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+      }
+    }
+
+    window.removeItem = function(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    updateCartDisplay();
+  </script>
+</body>
+</html>

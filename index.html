@@ -9,36 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    .logo-img{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  object-fit:cover;
-  border:1px solid rgba(0,163,255,.28);
-  box-shadow:0 0 22px rgba(0,163,255,.5);
-}
-    @media (max-width: 768px){
-  .menu-mobile{
-    width:48px;
-    height:48px;
-    display:grid;
-    place-items:center;
-  }
-}
     :root{
       --bg:#05070c;
       --panel:rgba(255,255,255,.05);
-      --panel-2:rgba(255,255,255,.03);
       --line:rgba(84,198,255,.15);
       --text:#f5f7ff;
       --muted:rgba(245,247,255,.64);
       --blue:#00a3ff;
       --blue-2:#0f66ff;
-      --glow:0 0 24px rgba(0,163,255,.22);
-      --glow-strong:0 0 32px rgba(0,163,255,.36);
-      --radius:28px;
-      --radius-sm:20px;
-      --shadow:0 18px 60px rgba(0,0,0,.45);
+      --shadow:0 12px 40px rgba(0,0,0,.45);
     }
 
     *{box-sizing:border-box}
@@ -46,27 +25,13 @@
     body{
       margin:0;
       font-family:Inter,system-ui,sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(0,163,255,.18), transparent 25%),
-        radial-gradient(circle at left, rgba(0,163,255,.10), transparent 22%),
-        linear-gradient(180deg,#05070c 0%, #070b14 100%);
+      background: linear-gradient(180deg,#05070c 0%, #070b14 100%);
       color:var(--text);
       overflow-x:hidden;
     }
 
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background-image:url("https://www.transparenttextures.com/patterns/cubes.png");
-      opacity:.18;
-      mix-blend-mode:overlay;
-      pointer-events:none;
-    }
-
     .app{
       position:relative;
-      z-index:1;
       min-height:100vh;
       display:flex;
     }
@@ -77,13 +42,12 @@
       top:0;
       bottom:0;
       width:290px;
-      background:rgba(255,255,255,.04);
+      background:rgba(10,15,26,.95);
       border-right:1px solid var(--line);
-      backdrop-filter:blur(22px);
       box-shadow:var(--shadow);
       padding:22px 18px;
       transform:translateX(0);
-      transition:transform .35s ease;
+      transition:transform .3s ease;
       z-index:40;
       overflow-y:auto;
       -webkit-overflow-scrolling:touch;
@@ -107,25 +71,12 @@
       gap:12px;
     }
 
-    .logo{
+    .logo-img{
       width:48px;
       height:48px;
       border-radius:50%;
-      background:rgba(0,163,255,.12);
+      object-fit:cover;
       border:1px solid rgba(0,163,255,.28);
-      box-shadow:0 0 22px rgba(0,163,255,.5);
-      display:grid;
-      place-items:center;
-      position:relative;
-    }
-
-    .logo::after{
-      content:"";
-      width:26px;
-      height:26px;
-      border-radius:50%;
-      background:linear-gradient(135deg,#49d8ff,#0f66ff);
-      box-shadow:0 0 18px rgba(0,163,255,.9);
     }
 
     .brand h1{
@@ -147,7 +98,6 @@
       color:var(--text);
       font-size:18px;
       cursor:pointer;
-      touch-action:manipulation;
     }
 
     .nav{
@@ -167,10 +117,9 @@
       gap:12px;
       font-size:14px;
       cursor:pointer;
-      transition:.25s ease;
+      transition:.2s ease;
       text-align:left;
       width:100%;
-      touch-action:manipulation;
       -webkit-tap-highlight-color:transparent;
     }
 
@@ -178,19 +127,10 @@
       width:18px;
       text-align:center;
       color:#7ad8ff;
-      text-shadow:0 0 12px rgba(0,163,255,.5);
     }
 
-    .nav-item:hover{
-      background:rgba(255,255,255,.05);
-      transform:translateX(4px);
-      color:#fff;
-    }
-
-    .nav-item.active{
-      background:rgba(0,163,255,.13);
-      border-color:rgba(0,163,255,.18);
-      box-shadow:var(--glow);
+    .nav-item:hover, .nav-item.active{
+      background:rgba(0,163,255,.15);
       color:#fff;
     }
 
@@ -200,7 +140,6 @@
       border-radius:22px;
       background:rgba(255,255,255,.04);
       border:1px solid rgba(0,163,255,.10);
-      box-shadow:0 0 20px rgba(0,163,255,.07);
     }
 
     .premium-box .row{
@@ -235,8 +174,8 @@
       align-items:center;
       gap:12px;
       padding:16px 22px;
-      background:rgba(5,7,12,.42);
-      backdrop-filter:blur(16px);
+      background:rgba(5,7,12,.85);
+      backdrop-filter:blur(10px);
       border-bottom:1px solid rgba(255,255,255,.06);
     }
 
@@ -248,15 +187,14 @@
       background:rgba(255,255,255,.05);
       color:#fff;
       cursor:pointer;
-      transition:.25s ease;
-      box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;
-      touch-action:manipulation;
+      transition:.2s ease;
+      display:inline-grid;
+      place-items:center;
       -webkit-tap-highlight-color:transparent;
     }
 
     .icon-btn:hover{
-      background:rgba(0,163,255,.10);
-      box-shadow:var(--glow);
+      background:rgba(0,163,255,.15);
     }
 
     .search{
@@ -273,16 +211,14 @@
       outline:none;
       background:rgba(255,255,255,.04);
       color:#fff;
-      padding:0 48px 0 44px;
+      padding:0 16px 0 44px;
       font-size:14px;
-      backdrop-filter:blur(14px);
-      transition:.25s ease;
+      transition:.2s ease;
     }
 
     .search input::placeholder{color:rgba(245,247,255,.35)}
     .search input:focus{
-      border-color:rgba(0,163,255,.34);
-      box-shadow:var(--glow);
+      border-color:rgba(0,163,255,.5);
     }
 
     .search i{
@@ -291,30 +227,6 @@
       top:50%;
       transform:translateY(-50%);
       color:#7ad8ff;
-      text-shadow:0 0 10px rgba(0,163,255,.45);
-    }
-
-    .cart-pill{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      height:48px;
-      padding:0 16px;
-      border-radius:18px;
-      border:1px solid rgba(0,163,255,.16);
-      background:rgba(0,163,255,.09);
-      color:#fff;
-      cursor:pointer;
-      white-space:nowrap;
-      transition:.25s ease;
-      touch-action:manipulation;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    .cart-pill:hover{
-      transform:translateY(-1px);
-      box-shadow:var(--glow);
-      background:rgba(0,163,255,.14);
     }
 
     .badge{
@@ -325,9 +237,9 @@
       padding:0 6px;
       border-radius:999px;
       background:#0f66ff;
-      box-shadow:0 0 16px rgba(0,163,255,.55);
       font-size:12px;
       font-weight:700;
+      margin-left:auto;
     }
 
     .hero{
@@ -347,7 +259,6 @@
 
     .hero .accent{
       color:#5fcfff;
-      text-shadow:0 0 18px rgba(0,163,255,.55);
     }
 
     .hero p{
@@ -362,58 +273,33 @@
       display:inline-flex;
       align-items:center;
       gap:10px;
-      border:none;
       color:#fff;
-      background:rgba(0,163,255,.10);
+      background:rgba(0,163,255,.15);
       border:1px solid rgba(0,163,255,.28);
-      box-shadow:var(--glow);
       border-radius:18px;
       padding:14px 18px;
       cursor:pointer;
       font-weight:600;
-      transition:.25s ease;
-      touch-action:manipulation;
+      transition:.2s ease;
       -webkit-tap-highlight-color:transparent;
     }
 
     .cta:hover{
-      transform:translateY(-2px);
-      box-shadow:var(--glow-strong);
+      background:rgba(0,163,255,.25);
     }
 
     .hero-visual{
       position:relative;
-      min-height:420px;
+      min-height:380px;
       display:grid;
       place-items:center;
     }
 
-    .hero-visual::before{
-      content:"";
-      position:absolute;
-      inset:10% 10% 12% 10%;
-      background:radial-gradient(circle, rgba(0,163,255,.26), transparent 64%);
-      filter:blur(18px);
-    }
-
-    .hero-visual::after{
-      content:"";
-      position:absolute;
-      bottom:62px;
-      width:72%;
-      height:90px;
-      background:rgba(0,163,255,.16);
-      filter:blur(34px);
-      border-radius:50%;
-    }
-
     .hero-visual img{
-      width:min(100%,460px);
-      max-height:420px;
+      width:min(100%,420px);
+      max-height:380px;
       object-fit:contain;
       z-index:2;
-      filter:drop-shadow(0 0 36px rgba(0,163,255,.35));
-      animation:float 5s ease-in-out infinite;
     }
 
     .section{
@@ -452,17 +338,13 @@
       background:rgba(255,255,255,.045);
       border:1px solid rgba(255,255,255,.08);
       border-radius:24px;
-      backdrop-filter:blur(18px);
       padding:14px;
-      box-shadow:0 0 24px rgba(0,163,255,.05);
-      transition:.25s ease;
+      transition:.2s ease;
       overflow:hidden;
     }
 
     .card:hover{
-      transform:translateY(-6px);
-      border-color:rgba(0,163,255,.22);
-      box-shadow:0 0 34px rgba(0,163,255,.10);
+      border-color:rgba(0,163,255,.3);
     }
 
     .product-img{
@@ -484,19 +366,12 @@
       padding:6px 9px;
       border-radius:999px;
       background:#0f66ff;
-      box-shadow:0 0 16px rgba(0,163,255,.4);
     }
 
     .product-img img{
       width:86%;
       height:86%;
       object-fit:contain;
-      transition:.45s ease;
-      filter:drop-shadow(0 0 24px rgba(0,163,255,.18));
-    }
-
-    .card:hover .product-img img{
-      transform:scale(1.05);
     }
 
     .rating{
@@ -536,15 +411,8 @@
       border:1px solid rgba(0,163,255,.20);
       color:#7ad8ff;
       cursor:pointer;
-      transition:.25s ease;
-      touch-action:manipulation;
+      transition:.2s ease;
       -webkit-tap-highlight-color:transparent;
-    }
-
-    .mini-btn:hover{
-      background:rgba(0,163,255,.16);
-      box-shadow:var(--glow);
-      transform:translateY(-1px);
     }
 
     .categories{
@@ -562,14 +430,7 @@
       border-radius:22px;
       background:rgba(255,255,255,.045);
       border:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(18px);
-      transition:.25s ease;
-    }
-
-    .cat:hover{
-      transform:translateY(-4px);
-      border-color:rgba(0,163,255,.22);
-      box-shadow:var(--glow);
+      transition:.2s ease;
     }
 
     .cat-left{
@@ -607,7 +468,6 @@
       display:flex;
       align-items:center;
       gap:14px;
-      backdrop-filter:blur(18px);
     }
 
     .foot-icon{
@@ -652,13 +512,6 @@
       color:#fff;
       text-decoration:none;
       opacity:.75;
-      transition:.2s ease;
-    }
-
-    .socials a:hover{
-      opacity:1;
-      color:#7ad8ff;
-      text-shadow:0 0 12px rgba(0,163,255,.5);
     }
 
     .menu-mobile{
@@ -668,8 +521,7 @@
     .overlay{
       position:fixed;
       inset:0;
-      background:rgba(0,0,0,.42);
-      backdrop-filter:blur(4px);
+      background:rgba(0,0,0,.5);
       opacity:0;
       pointer-events:none;
       transition:.25s ease;
@@ -681,11 +533,6 @@
       pointer-events:auto;
     }
 
-    @keyframes float{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-10px)}
-    }
-
     @media (max-width: 1200px){
       .products{grid-template-columns:repeat(3, minmax(0,1fr))}
       .categories{grid-template-columns:repeat(3, minmax(0,1fr))}
@@ -693,104 +540,27 @@
       .hero{grid-template-columns:1fr}
     }
 
-  @media (max-width: 768px){
-  .sidebar{
-    width:280px;
-  }
-
-  .content{
-    margin-left:0;
-  }
-
-  .menu-mobile{
-    display:inline-grid;
-    transform: translateY(2px);
-  }
-
-  .close-btn{
-    display:block;
-  }
-
-  .hero{
-    padding-top:18px;
-  }
-
-  .products{
-    grid-template-columns:repeat(2, minmax(0,1fr));
-  }
-
-  .categories{
-    grid-template-columns:repeat(2, minmax(0,1fr));
-  }
-
-  .footer-grid{
-    grid-template-columns:1fr;
-  }
-
-  .copyright{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .search{
-    max-width:none;
-  }
-}
-
-    @media (max-width: 520px){
-      .topbar{
-        padding:14px 14px;
-      }
-
-      .hero,
-      .section,
-      .footer{
-        padding-left:14px;
-        padding-right:14px;
-      }
-
-      .products,
-      .categories{
-        grid-template-columns:1fr;
-      }
-
-      .search input{
-        font-size:13px;
-      }
-
-      .hero h2{
-        font-size:34px;
-      }
-
-      .hero-visual{
-        min-height:300px;
-      }
-
-      .cart-pill span.text{
-        display:none;
-      }
+    @media (max-width: 768px){
+      .sidebar{ width:280px; }
+      .content{ margin-left:0; }
+      .menu-mobile{ display:inline-grid; }
+      .close-btn{ display:block; }
+      .hero{ padding-top:18px; }
+      .products, .categories{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .footer-grid{ grid-template-columns:1fr; }
+      .copyright{ flex-direction:column; align-items:flex-start; }
     }
 
-    @media (hover:none){
-      .nav-item:hover,
-      .icon-btn:hover,
-      .cart-pill:hover,
-      .cta:hover,
-      .mini-btn:hover,
-      .card:hover,
-      .cat:hover,
-      .socials a:hover{
-        transform:none;
-        box-shadow:none;
-        opacity:1;
-      }
+    @media (max-width: 520px){
+      .topbar{ padding:14px; }
+      .hero, .section, .footer{ padding-left:14px; padding-right:14px; }
+      .products, .categories{ grid-template-columns:1fr; }
+      .hero h2{ font-size:34px; }
+      .hero-visual{ min-height:260px; }
     }
   </style>
 </head>
 <body>
-  <section id="assistantSection" style="display:none; padding:20px;">
-  
-</section>
   <div class="app">
     <div class="overlay" id="overlay"></div>
 
@@ -810,15 +580,12 @@
 
       <div class="nav" id="navMenu">
         <button class="nav-item active" type="button" data-target="home"><i class="fa-solid fa-house"></i>Accueil</button>
-      <button class="nav-item" type="button" onclick="window.location.href='assistant.html'">
-  <i class="fa-solid fa-robot"></i>Assistant
-</button>
+        <button class="nav-item" type="button" onclick="window.location.href='assistant.html'"><i class="fa-solid fa-robot"></i>Assistant</button>
         <button class="nav-item" type="button" data-target="products"><i class="fa-solid fa-box"></i>Produits</button>
         <button class="nav-item" type="button" onclick="window.location.href='panier.html'">
-  <i class="fa-solid fa-cart-shopping"></i>
-  Panier
-  <span class="badge" id="cartCount">0</span>
-</button>
+          <i class="fa-solid fa-cart-shopping"></i>Panier
+          <span class="badge" id="cartCount">0</span>
+        </button>
         <button class="nav-item" type="button" data-target="contact"><i class="fa-solid fa-phone"></i>Contact</button>
         <button class="nav-item" type="button" data-target="about"><i class="fa-solid fa-circle-info"></i>À propos</button>
       </div>
@@ -828,7 +595,7 @@
           <i class="fa-solid fa-shield-halved"></i>
           <strong>Qualité Premium</strong>
         </div>
-        <p>Produits 100% authentiques et garantis avec une expérience ultra moderne.</p>
+        <p>Produits 100% authentiques et garantis.</p>
       </div>
     </aside>
 
@@ -837,7 +604,6 @@
         <button class="icon-btn menu-mobile" id="openSidebar" type="button" aria-label="Ouvrir le menu">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <button class="icon-btn" style="display:none" aria-hidden="true" type="button"></button>
 
         <div class="search">
           <i class="fa-solid fa-magnifying-glass"></i>
@@ -850,15 +616,12 @@
       <section class="hero" id="home">
         <div class="hero-copy">
           <h2>La puissance <span class="accent">commence ici</span></h2>
-          <p>Suppléments premium pour la prise de masse, la force, l’énergie et la performance. Une expérience futuriste, claire et luxueuse, pensée pour le fitness moderne.</p>
+          <p>Suppléments premium pour la prise de masse, la force, l’énergie et la performance.</p>
           <button class="cta" id="discoverBtn" type="button">Découvrir maintenant <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
         <div class="hero-visual">
-          <img
-            src="qq.png"
-            alt="Whey Protein"
-          />
+          <img src="qq.png" alt="Whey Protein" />
         </div>
       </section>
 
@@ -869,6 +632,7 @@
         </div>
 
         <div class="products" id="productsGrid">
+          <!-- المنتجات -->
           <article class="card" data-name="Gold Standard Whey Optimum Nutrition">
             <div class="product-img">
               <span class="price">69.99€</span>
@@ -1051,7 +815,6 @@
   </div>
 
  <script>
-  // ===================== السلة =====================
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   
   function updateCartCount() {
@@ -1075,7 +838,6 @@
 
     updateCartCount();
     
-    // تأثير نجاح
     const btn = productCard.querySelector('.add-to-cart');
     const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-check"></i>';
@@ -1087,7 +849,6 @@
     }, 1000);
   }
 
-  // ===================== Sidebar =====================
   const sidebar = document.getElementById('sidebar');
   const openSidebar = document.getElementById('openSidebar');
   const closeSidebar = document.getElementById('closeSidebar');
@@ -1097,7 +858,6 @@
   const discoverBtn = document.getElementById('discoverBtn');
   const viewAllBtn = document.getElementById('viewAllBtn');
   const searchInput = document.getElementById('searchInput');
-  const productsGrid = document.getElementById('productsGrid');
   const cards = [...document.querySelectorAll('.card')];
 
   function isMobile() {
@@ -1126,24 +886,17 @@
       card.style.display = !term || name.includes(term) ? '' : 'none';
     });
   }
-
-  // ===================== ربط الأحداث =====================
   
-  // Sidebar Controls
   openSidebar?.addEventListener('click', openMenu);
   closeSidebar?.addEventListener('click', closeMenu);
   overlay?.addEventListener('click', closeMenu);
 
-  // ✅ Nav Items - مع معاملة خاصة للصفحات الخارجية
   navItems.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      
-      // تفعيل الزر
       navItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      // ✅ معاملة خاصة للصفحات الخارجية
       if (btn.textContent.includes('Panier')) {
         window.location.href = 'panier.html';
         return;
@@ -1153,24 +906,20 @@
         return;
       }
 
-      // باقي الأزرار الداخلية
       const target = btn.dataset.target;
       if (target) scrollToSection(target);
-      
       closeMenu();
     });
   });
 
-  // ✅ إضافة للسلة - الجديد والصحيح
   addToCartButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      e.stopPropagation(); // منع فقاعة الحدث
+      e.stopPropagation();
       const card = btn.closest('.card');
       addToCart(card);
     });
   });
 
-  // باقي الأحداث
   discoverBtn?.addEventListener('click', () => scrollToSection('products'));
   viewAllBtn?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -1178,7 +927,6 @@
   });
   searchInput?.addEventListener('input', (e) => filterProducts(e.target.value));
 
-  // تهيئة
   updateCartCount();
   if (isMobile()) sidebar.classList.add('hidden');
   

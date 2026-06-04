@@ -55,24 +55,24 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* ========== القائمة الجانبية ========== */
+        /* ========== القائمة الجانبية (LEFT SIDEBAR) ========== */
         .sidebar {
             position: fixed;
-            right: 0;
+            left: 0;          /* تغيير من right إلى left */
             top: 0;
             width: 280px;
             height: 100vh;
             background: var(--sidebar-bg);
             z-index: 1000;
-            transform: translateX(100%);
+            transform: translateX(-100%);  /* إخفاء إلى اليسار */
             transition: transform 0.3s ease, background 0.3s ease;
             padding: 25px 20px;
             overflow-y: auto;
-            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5); /* ظل على اليمين */
         }
 
         .sidebar.open {
-            transform: translateX(0);
+            transform: translateX(0);  /* تظهر من اليسار */
         }
 
         .sidebar-header {
@@ -161,8 +161,8 @@
 
         /* ========== المحتوى الرئيسي ========== */
         .main-content {
-            margin-right: 0;
-            transition: margin-right 0.3s ease;
+            margin-left: 0;   /* تعديل للتوافق مع القائمة اليسرى */
+            transition: margin-left 0.3s ease;
         }
 
         /* ========== الشريط العلوي ========== */
@@ -1249,10 +1249,10 @@
 
     const sidebar = document.getElementById('sidebar');
     const menuToggle = document.getElementById('menuToggle');
-    const closeSidebar = document.getElementById('closeSidebar');
+    const closeSidebarBtn = document.getElementById('closeSidebar');
     function closeSidebarFunc() { sidebar.classList.remove('open'); }
     menuToggle?.addEventListener('click', () => sidebar.classList.add('open'));
-    closeSidebar?.addEventListener('click', closeSidebarFunc);
+    closeSidebarBtn?.addEventListener('click', closeSidebarFunc);
     document.addEventListener('click', (e) => {
         if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('open')) closeSidebarFunc();
     });

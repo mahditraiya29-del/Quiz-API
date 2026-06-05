@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Panier - KEF Muscle Store</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -33,29 +33,119 @@
     .back-link { color: var(--blue); text-decoration: none; font-family: 'Orbitron'; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
     .back-link:hover { opacity: 0.7; }
 
-    .cart-item { display: flex; gap: 20px; padding: 20px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 20px; margin-bottom: 16px; background: var(--panel); align-items: center; }
-    .cart-img { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; }
-    .cart-details { flex: 1; }
+    .cart-item { 
+      display: flex; 
+      gap: 20px; 
+      padding: 20px; 
+      border: 1px solid rgba(255, 255, 255, .1); 
+      border-radius: 20px; 
+      margin-bottom: 16px; 
+      background: var(--panel); 
+      align-items: center; 
+      flex-wrap: wrap;
+    }
+    .cart-img { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; background: #1a1a2e; }
+    .cart-details { flex: 1; min-width: 150px; }
     .cart-name { font-family: 'Orbitron'; font-size: 0.9rem; margin: 0 0 8px; }
     .cart-price { color: #5fcfff; font-weight: 700; margin-bottom: 10px; }
     
     .quantity-controls { display: flex; gap: 10px; align-items: center; }
-    .qty-btn { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 163, 255, .2); border: 1px solid rgba(0, 163, 255, .3); color: #fff; cursor: pointer; }
-    .remove-btn { background: rgba(220, 53, 69, .1); color: #ff6b7a; border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-left: auto; }
+    .qty-btn { 
+      width: 35px; 
+      height: 35px; 
+      border-radius: 10px; 
+      background: rgba(0, 163, 255, .2); 
+      border: 1px solid rgba(0, 163, 255, .3); 
+      color: #fff; 
+      cursor: pointer; 
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .qty-btn:hover { background: rgba(0, 163, 255, .4); }
+    .remove-btn { 
+      background: rgba(220, 53, 69, .1); 
+      color: #ff6b7a; 
+      border: none; 
+      padding: 10px; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      margin-left: auto;
+      transition: all 0.2s;
+    }
+    .remove-btn:hover { background: rgba(220, 53, 69, .3); }
     
-    .cart-summary { margin-top: 30px; padding: 30px; border-radius: var(--radius); background: var(--panel); border: 1px solid rgba(255,255,255,.05); }
-    .promo-group { display: flex; gap: 10px; margin-bottom: 10px; }
-    .promo-input { flex: 1; background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 12px; outline: none; }
+    .cart-summary { 
+      margin-top: 30px; 
+      padding: 30px; 
+      border-radius: var(--radius); 
+      background: var(--panel); 
+      border: 1px solid rgba(255,255,255,.05); 
+    }
+    .promo-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    .promo-input { 
+      flex: 1; 
+      background: #0a0a14; 
+      border: 1px solid #222; 
+      color: #fff; 
+      padding: 12px; 
+      border-radius: 12px; 
+      outline: none; 
+      font-family: 'Inter';
+    }
     .promo-input:focus { border-color: var(--blue); }
     
-    #pMsg { font-size: 0.85rem; margin-bottom: 15px; font-weight: 700; min-height: 20px; text-transform: uppercase; }
+    #pMsg { font-size: 0.85rem; margin-bottom: 15px; font-weight: 700; min-height: 20px; }
 
     .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #888; }
-    .total-row { border-top: 1px solid #222; padding-top: 20px; color: var(--blue); font-family: 'Orbitron'; font-size: 1.8rem; }
-    .checkout-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, #00a3ff, #0f66ff); color: #fff; border-radius: 20px; font-weight: 700; border: none; cursor: pointer; margin-top: 20px; font-family: 'Orbitron'; box-shadow: var(--glow); }
+    .total-row { 
+      border-top: 1px solid #222; 
+      padding-top: 20px; 
+      margin-top: 10px;
+      color: var(--blue); 
+      font-family: 'Orbitron'; 
+      font-size: 1.5rem; 
+    }
+    .checkout-btn { 
+      width: 100%; 
+      padding: 18px; 
+      background: linear-gradient(135deg, #00a3ff, #0f66ff); 
+      color: #fff; 
+      border-radius: 20px; 
+      font-weight: 700; 
+      border: none; 
+      cursor: pointer; 
+      margin-top: 20px; 
+      font-family: 'Orbitron'; 
+      font-size: 1rem;
+      box-shadow: var(--glow); 
+      transition: all 0.2s;
+    }
+    .checkout-btn:hover { transform: scale(1.02); opacity: 0.95; }
     
-    .info-inputs { display: none; flex-direction: column; gap: 12px; margin-top: 20px; border-top: 1px solid #222; padding-top: 20px; }
+    .info-inputs { 
+      display: none; 
+      flex-direction: column; 
+      gap: 12px; 
+      margin-top: 20px; 
+      border-top: 1px solid #222; 
+      padding-top: 20px; 
+    }
     .info-inputs.active { display: flex; }
+
+    .empty-cart {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .empty-cart h2 { margin-bottom: 20px; font-family: 'Orbitron'; }
+    .empty-cart a { color: var(--blue); text-decoration: none; font-family: 'Orbitron'; }
+
+    @media (max-width: 600px) {
+      body { padding: 15px; }
+      .cart-item { flex-direction: column; text-align: center; }
+      .cart-details { text-align: center; }
+      .remove-btn { margin-left: 0; }
+      .quantity-controls { justify-content: center; }
+    }
   </style>
 </head>
 <body>
@@ -74,49 +164,81 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, get, child, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+    // ✅ إعدادات Firebase الصحيحة (نفس المستخدمة في index.html)
     const firebaseConfig = {
-        apiKey: "AIzaSyAbx2TedCymp6XS23JVbLP...",
-        databaseURL: "https://musclestore-3d441-default-rtdb.firebaseio.com/",
-        projectId: "musclestore-3d441"
+        apiKey: "AIzaSyC56JLEqoOhQo194L8cv33nI7o5m04Ya9g",
+        authDomain: "kef-muscle-store-b3ba0.firebaseapp.com",
+        projectId: "kef-muscle-store-b3ba0",
+        storageBucket: "kef-muscle-store-b3ba0.firebasestorage.app",
+        messagingSenderId: "57477768198",
+        appId: "1:57477768198:web:40ba3c97a67fd2ea3a0f87",
+        measurementId: "G-CYZ5PW5G99"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dbRef = ref(db);
 
+    // ✅ جلب المنتجات من localStorage (نفس هيكل التخزين في index.html)
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let activeDiscount = 0;
     let promoData = null;
     let infoStep = false;
 
+    function updateCartCount() {
+      const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const cartCountEl = document.getElementById('cartCount');
+      if (cartCountEl) cartCountEl.innerText = count;
+    }
+
+    function getProductPrice(item) {
+      // التعامل مع السعر سواء كان رقم أو نص مع DT
+      if (typeof item.price === 'number') return item.price;
+      if (typeof item.price === 'string') {
+        const priceNum = parseFloat(item.price.replace('DT', '').replace(',', '.').trim());
+        return isNaN(priceNum) ? 0 : priceNum;
+      }
+      return 0;
+    }
+
     window.updateCartDisplay = function() {
       const container = document.getElementById('cartContainer');
       if (cart.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:50px;"><h2>Votre panier est vide</h2><a href="index.html" style="color:var(--blue); text-decoration:none; font-family:'Orbitron'">RETOUR À L'ACCUEIL</a></div>`;
+        container.innerHTML = `
+          <div class="empty-cart">
+            <h2>🛒 Votre panier est vide</h2>
+            <a href="index.html">RETOUR À L'ACCUEIL</a>
+          </div>`;
         return;
       }
       
-      let itemsHtml = cart.map((item, index) => `
-        <div class="cart-item">
-          <img src="${item.imgSrc}" class="cart-img">
-          <div class="cart-details">
-            <h3 class="cart-name">${item.name}</h3>
-            <div class="cart-price">${item.price}</div>
-            <div class="quantity-controls">
-              <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
-              <span>${item.quantity}</span>
-              <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
-              <button class="remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i></button>
+      let itemsHtml = cart.map((item, index) => {
+        const priceNum = getProductPrice(item);
+        const priceDisplay = priceNum.toFixed(2) + ' DT';
+        const imgSrc = item.img || item.imageUrl || 'https://via.placeholder.com/80';
+        
+        return `
+          <div class="cart-item" data-index="${index}">
+            <img src="${imgSrc}" class="cart-img" onerror="this.src='https://via.placeholder.com/80'">
+            <div class="cart-details">
+              <h3 class="cart-name">${escapeHtml(item.name)}</h3>
+              <div class="cart-price">${priceDisplay}</div>
+              <div class="quantity-controls">
+                <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
+                <span>${item.quantity || 1}</span>
+                <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
+                <button class="remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> Supprimer</button>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       container.innerHTML = itemsHtml + `
         <div class="cart-summary">
           <div class="promo-group">
             <input type="text" id="pInput" class="promo-input" placeholder="CODE PROMO">
-            <button class="qty-btn" style="width:auto; padding:0 20px;" onclick="applyPromo()">APPLY</button>
+            <button class="qty-btn" style="width:auto; padding:0 25px;" onclick="applyPromo()">APPLIQUER</button>
           </div>
           <p id="pMsg"></p>
 
@@ -124,67 +246,120 @@
 
           <div id="infoSection" class="info-inputs">
             <input type="text" id="custNom" class="promo-input" placeholder="Nom et Prénom *">
-            <input type="text" id="custTel1" class="promo-input" placeholder="Téléphone 1 *">
-            <input type="text" id="custTel2" class="promo-input" placeholder="Téléphone 2 (Optionnel)">
+            <input type="tel" id="custTel1" class="promo-input" placeholder="Téléphone 1 *">
+            <input type="tel" id="custTel2" class="promo-input" placeholder="Téléphone 2 (Optionnel)">
             <input type="text" id="custVille" class="promo-input" placeholder="Ville *">
           </div>
           <button class="checkout-btn" id="confirmBtn" onclick="handleOrder()">PASSER À LA CAISSE</button>
         </div>
       `;
       calculatePrices();
+      updateCartCount();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
     }
 
     window.calculatePrices = function() {
         const subtotal = cart.reduce((sum, item) => {
-            const priceNum = parseFloat(item.price.replace('DT', '').replace(',', '.').trim());
-            return sum + (priceNum * item.quantity);
+            const priceNum = getProductPrice(item);
+            return sum + (priceNum * (item.quantity || 1));
         }, 0);
-        const total = (subtotal + 7) * (1 - (activeDiscount / 100));
+        
+        const fraisLivraison = 7;
+        let total = (subtotal + fraisLivraison);
+        
+        if (activeDiscount > 0) {
+          total = total * (1 - (activeDiscount / 100));
+        }
+        
         const priceDetails = document.getElementById('priceDetails');
         if(priceDetails) {
+            let discountHtml = '';
+            if (activeDiscount > 0) {
+              const discountAmount = (subtotal + fraisLivraison) - total;
+              discountHtml = `<div class="price-row"><span>Réduction (${activeDiscount}%)</span><span style="color: var(--green);">- ${discountAmount.toFixed(2)} DT</span></div>`;
+            }
             priceDetails.innerHTML = `
                 <div class="price-row"><span>Sous-total</span><span>${subtotal.toFixed(2)} DT</span></div>
-                <div class="price-row"><span>Livraison</span><span>7.00 DT</span></div>
-                <div class="price-row total-row"><span>TOTAL</span><span>${total.toFixed(2)} DT</span></div>
+                <div class="price-row"><span>Livraison</span><span>${fraisLivraison.toFixed(2)} DT</span></div>
+                ${discountHtml}
+                <div class="price-row total-row"><span>TOTAL À PAYER</span><span style="font-size: 1.8rem;">${total.toFixed(2)} DT</span></div>
             `;
         }
+        return total;
     }
 
     window.applyPromo = async function() {
         const msg = document.getElementById('pMsg');
-        const code = document.getElementById('pInput').value.toUpperCase();
-        if(!code) return;
-        msg.innerText = "Vérification...";
+        const input = document.getElementById('pInput');
+        const code = input.value.toUpperCase().trim();
+        
+        if(!code) {
+          msg.innerText = "❌ Entrez un code promo";
+          msg.style.color = "var(--red)";
+          return;
+        }
+        
+        msg.innerText = "🔄 Vérification en cours...";
         msg.style.color = "gray";
 
         try {
             const snapshot = await get(child(dbRef, `promos/${code}`));
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                const now = new Date().toISOString().split('T')[0];
-                if (now <= data.expiry) {
-                    if ((data.used || 0) < (data.limit || 0)) {
+                const today = new Date().toISOString().split('T')[0];
+                const expiryDate = data.expiry;
+                
+                if (today <= expiryDate) {
+                    const usedCount = data.used || 0;
+                    const limitCount = data.limit || 999;
+                    
+                    if (usedCount < limitCount) {
                         activeDiscount = data.discount;
-                        promoData = data;
-                        msg.innerText = `CODE ACCEPTÉ: -${activeDiscount}% ✅`;
+                        promoData = { code: code, ...data };
+                        msg.innerText = `✅ CODE ACCEPTÉ ! Réduction de ${activeDiscount}%`;
                         msg.style.color = "var(--green)";
+                        input.style.borderColor = "var(--green)";
                     } else {
                         activeDiscount = 0;
-                        msg.innerText = "CE CODE A DÉJÀ ÉTÉ UTILISÉ 🟠";
+                        promoData = null;
+                        msg.innerText = `⚠️ Code "${code}" a atteint sa limite d'utilisation (${usedCount}/${limitCount})`;
                         msg.style.color = "var(--orange)";
+                        input.style.borderColor = "var(--orange)";
                     }
                 } else {
                     activeDiscount = 0;
-                    msg.innerText = "CODE PROMO EXPIRÉ ❌";
+                    promoData = null;
+                    msg.innerText = `❌ Code "${code}" expiré le ${expiryDate}`;
                     msg.style.color = "var(--red)";
+                    input.style.borderColor = "var(--red)";
                 }
             } else {
                 activeDiscount = 0;
-                msg.innerText = "CODE INVALIDE ❌";
+                promoData = null;
+                msg.innerText = `❌ Code "${code}" invalide`;
                 msg.style.color = "var(--red)";
+                input.style.borderColor = "var(--red)";
             }
             calculatePrices();
-        } catch (e) { msg.innerText = "ERREUR ⚠️"; msg.style.color = "var(--red)"; }
+            
+            setTimeout(() => {
+              input.style.borderColor = "";
+            }, 3000);
+            
+        } catch (e) {
+            console.error("Promo error:", e);
+            msg.innerText = "⚠️ Erreur de connexion";
+            msg.style.color = "var(--red)";
+        }
     }
 
     window.handleOrder = async function() {
@@ -193,54 +368,116 @@
 
         if(!infoStep) {
             infoSection.classList.add('active');
-            confirmBtn.innerText = "CONFIRMER L'ENVOI";
+            confirmBtn.innerHTML = "✅ CONFIRMER L'ENVOI";
+            confirmBtn.style.background = "linear-gradient(135deg, #00ff88, #00cc66)";
+            // تمرير سلس إلى قسم المعلومات
+            infoSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             infoStep = true;
             return;
         }
 
         const nom = document.getElementById('custNom').value.trim();
         const tel1 = document.getElementById('custTel1').value.trim();
-        const tel2 = document.getElementById('custTel2').value.trim() || "N/A";
+        const tel2 = document.getElementById('custTel2').value.trim();
         const ville = document.getElementById('custVille').value.trim();
 
-        // التحقق من الحقول الإجبارية فقط
         if(!nom || !tel1 || !ville) {
-            alert("Veuillez remplir les champs obligatoires (*)");
+            alert("❌ Veuillez remplir tous les champs obligatoires (*)");
             return;
         }
 
-        let itemsText = "";
-        cart.forEach(i => itemsText += `- ${i.name} (x${i.quantity})\n`);
-        const finalTotal = document.querySelector('.total-row span:last-child').innerText;
-
-        const finalMsg = `🚀 COMMANDE KEF MUSCLE STORE\n\n👤 Client: ${nom}\n📞 Tél 1: ${tel1}\n📞 Tél 2: ${tel2}\n📍 Ville: ${ville}\n\n🛒 Produits:\n${itemsText}\n💰 TOTAL: ${finalTotal}`;
-
-        if(promoData) {
-            const code = document.getElementById('pInput').value.toUpperCase();
-            await update(ref(db, `promos/${code}`), { used: (promoData.used || 0) + 1 });
+        // التحقق من صحة رقم الهاتف (على الأقل 8 أرقام)
+        if(tel1.length < 8) {
+            alert("❌ Le numéro de téléphone doit contenir au moins 8 chiffres");
+            return;
         }
 
-        navigator.clipboard.writeText(finalMsg).then(() => {
-            alert("✅ Commande copiée ! Collez-la sur Instagram.");
-            window.location.href = "https://www.instagram.com/kefmusclestore/";
-            localStorage.removeItem('cart');
+        // تجهيز نص الطلب
+        let itemsText = "";
+        cart.forEach(item => {
+            const priceNum = getProductPrice(item);
+            itemsText += `▸ ${item.name} (x${item.quantity || 1}) → ${(priceNum * (item.quantity || 1)).toFixed(2)} DT\n`;
         });
+        
+        const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
+        const fraisLivraison = 7;
+        let total = (subtotal + fraisLivraison);
+        if (activeDiscount > 0) total = total * (1 - (activeDiscount / 100));
+        
+        const discountText = activeDiscount > 0 ? `\n🏷️ Réduction: ${activeDiscount}%` : "";
+        const promoCodeText = promoData ? `\n🎫 Code promo: ${promoData.code}` : "";
+
+        const finalMsg = `🚀 *NOUVELLE COMMANDE KEF MUSCLE STORE* 🚀\n\n` +
+          `👤 *Client:* ${nom}\n` +
+          `📞 *Tél 1:* ${tel1}\n` +
+          `${tel2 ? `📞 *Tél 2:* ${tel2}\n` : ''}` +
+          `📍 *Ville:* ${ville}\n` +
+          `──────────────────\n` +
+          `🛒 *PRODUITS:*\n${itemsText}\n` +
+          `──────────────────\n` +
+          `💰 *Sous-total:* ${subtotal.toFixed(2)} DT\n` +
+          `🚚 *Livraison:* ${fraisLivraison.toFixed(2)} DT${discountText}${promoCodeText}\n` +
+          `✨ *TOTAL:* ${total.toFixed(2)} DT ✨\n\n` +
+          `📅 ${new Date().toLocaleString('fr-TN')}`;
+
+        // تحديث عدد مرات استخدام الكوبون إذا وجد
+        if(promoData && promoData.code) {
+            try {
+                const currentSnap = await get(child(dbRef, `promos/${promoData.code}`));
+                if (currentSnap.exists()) {
+                    const currentData = currentSnap.val();
+                    await update(ref(db, `promos/${promoData.code}`), { 
+                        used: (currentData.used || 0) + 1 
+                    });
+                }
+            } catch(e) {
+                console.error("Error updating promo usage:", e);
+            }
+        }
+
+        // نسخ النص وعرض النتيجة
+        try {
+            await navigator.clipboard.writeText(finalMsg);
+            alert("✅ Commande copiée avec succès !\n\nVous allez être redirigé vers Instagram pour l'envoyer.");
+            
+            // فتح إنستغرام في تبويب جديد
+            window.open("https://www.instagram.com/kefmusclestore/", "_blank");
+            
+            // مسح السلة بعد ثواني
+            setTimeout(() => {
+                localStorage.removeItem('cart');
+                window.location.href = "index.html";
+            }, 2000);
+            
+        } catch (err) {
+            alert("❌ Erreur de copie. Veuillez copier manuellement:\n\n" + finalMsg);
+            console.error(err);
+        }
     }
 
     window.changeQuantity = (index, delta) => {
-      if (cart[index].quantity + delta > 0) {
-        cart[index].quantity += delta;
+      if (!cart[index]) return;
+      const newQuantity = (cart[index].quantity || 1) + delta;
+      if (newQuantity > 0) {
+        cart[index].quantity = newQuantity;
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartDisplay();
       }
     }
 
     window.removeItem = (index) => {
-      cart.splice(index, 1);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartDisplay();
+      if (confirm("Supprimer ce produit du panier ?")) {
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        // إعادة تعيين خطوة المعلومات إذا أصبح السلة فارغة
+        if (cart.length === 0) {
+          infoStep = false;
+        }
+      }
     }
 
+    // تهيئة العرض عند تحميل الصفحة
     updateCartDisplay();
   </script>
 </body>

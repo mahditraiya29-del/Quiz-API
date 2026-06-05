@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم KefStore - الإدارة السحابية المتطورة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        darkBg: '#070a13',
+                        darkCard: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .diamond-grid {
+            background-color: #070a13;
+            background-image: 
+                linear-gradient(135deg, rgba(59, 130, 246, 0.04) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(59, 130, 246, 0.04) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(59, 130, 246, 0.04) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(59, 130, 246, 0.04) 25%, #070a13 25%);
+            background-position: 40px 0, 40px 0, 0 0, 0 0;
+            background-size: 80px 80px;
+            background-repeat: repeat;
+        }
+
+        html:not(.dark) .diamond-grid {
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(135deg, rgba(15, 23, 42, 0.02) 25%, transparent 25%), 
+                linear-gradient(225deg, rgba(15, 23, 42, 0.02) 25%, transparent 25%), 
+                linear-gradient(45deg, rgba(15, 23, 42, 0.02) 25%, transparent 25%), 
+                linear-gradient(315deg, rgba(15, 23, 42, 0.02) 25%, #f8fafc 25%);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
+            z-index: 1000;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (min-width: 640px) {
+            .toast { left: auto; right: 20px; }
+        }
+    </style>
+</head>
+<body class="diamond-grid text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden p-3 md:p-6 dark">
+
+    <!-- بوابة الدخول -->
+    <div id="login-gate" class="w-full max-w-xs sm:max-w-sm p-5 sm:p-6 bg-slate-900/95 dark:bg-white/95 rounded-2xl shadow-2xl border border-slate-800 dark:border-slate-200 text-center transition-all duration-300 mx-auto my-auto backdrop-blur-md">
+        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-xl sm:text-2xl">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold mb-1.5 text-white dark:text-slate-900">دخول الإدارة الآمنة</h2>
+        <p class="text-slate-400 dark:text-slate-500 text-[10px] sm:text-xs mb-4 sm:mb-5">يرجى كتابة كلمة مرور الأدمن</p>
+        
+        <div class="relative mb-4 sm:mb-5">
+            <input type="password" id="password-input" placeholder="أدخل كلمة السر هنا..." 
+                   class="w-full px-3 py-2.5 sm:py-3 bg-slate-950 dark:bg-slate-100 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest font-semibold text-xs sm:text-sm transition-all">
+        </div>
+        
+        <button onclick="validatePassword()" class="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 text-xs sm:text-sm">
+            <i class="fa-solid fa-lock-open"></i>
+            فتح لوحة التحكم
+        </button>
+        <p id="login-error" class="text-red-500 text-[11px] mt-2.5 hidden font-semibold">كلمة السر خاطئة! يرجى إدخال الرمز الصحيح.</p>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="admin-dashboard" class="hidden w-full max-w-5xl mx-auto flex-1 flex flex-col justify-between">
+        
+        <header class="flex items-center justify-between py-2 sm:py-3 px-3 sm:px-4 bg-slate-900/80 dark:bg-white/80 border border-slate-850 dark:border-slate-200 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 backdrop-blur-md shadow-md">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-sm sm:text-base font-bold">K</div>
+                <div>
+                    <h1 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900 leading-tight">لوحة تحكم KefStore السحابية</h1>
+                    <span class="text-[9px] sm:text-[10px] text-blue-500 font-semibold block">رفع الصور عبر ImgBB - مجاني بالكامل</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button onclick="toggleTheme()" class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-slate-800 dark:bg-slate-100 text-yellow-400 dark:text-slate-700 flex items-center justify-center text-xs sm:text-sm hover:scale-105 transition-all">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+                <button onclick="logout()" class="px-2.5 sm:px-3 py-1.5 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white rounded-lg transition duration-200 text-[10px] sm:text-xs font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span class="hidden sm:inline">خروج</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- شبكة الأزرار -->
+        <div id="dashboard-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-4 sm:mb-6">
+            <div onclick="switchTab('ads')" class="col-span-2 p-3 sm:p-4 bg-gradient-to-br from-blue-600/20 to-blue-900/10 dark:from-blue-50 dark:to-blue-100/30 border border-blue-500/30 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-rectangle-ad"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">قسم الإعلانات العائمة</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] md:text-xs mt-0.5">تعديل ونشر إعلانات منبثقة تفاعلية سحابياً</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('proteins')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-dumbbell"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">قسم البروتين</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">إضافة مكملات البروتين</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('creatine')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-bolt"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">قسم الكرياتين</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">إضافة مكملات الكرياتين</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('fatburn')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-fire"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">Brule Graisse</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">حوارق الدهون الفعالة</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('preworkout')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-flask-vial"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">Pré-Workout</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">منتجات الطاقة والتركيز</p>
+                </div>
+            </div>
+
+            <!-- الأقسام الجديدة -->
+            <div onclick="switchTab('massgainer')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-weight-hanging"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">Mass Gainer</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">مكسبات الوزن والكتلة العضلية</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('multivitamine')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-teal-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-tablets"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">Multivitamine</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">الفيتامينات والمعادن المتعددة</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('autre')" class="p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-box-open"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">Autre</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">منتجات وإكسسوارات متنوعة</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('discounts')" class="col-span-2 md:col-span-1 p-3 sm:p-4 bg-slate-900/90 dark:bg-white border border-slate-800 dark:border-slate-200 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-percent"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-white dark:text-slate-900">التخفيضات والعروض</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">إدارة العروض والخصومات</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('cloud-admin')" class="col-span-2 md:col-span-1 p-3 sm:p-4 bg-amber-950/20 dark:bg-yellow-50 border border-yellow-500/30 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500 text-black rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-cloud"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-yellow-500 dark:text-yellow-600">Cloud Admin</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">تفعيل كود الخصم على السحاب</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('delete-ads')" class="p-3 sm:p-4 bg-red-950/20 dark:bg-red-50 border border-red-500/30 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-trash-can"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-red-500 dark:text-red-600">حذف الإعلانات</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">إلغاء الإعلانات المنشورة</p>
+                </div>
+            </div>
+
+            <div onclick="switchTab('delete-products')" class="p-3 sm:p-4 bg-red-950/20 dark:bg-red-50 border border-red-500/30 rounded-xl sm:rounded-2xl text-right cursor-pointer hover:scale-[1.01] transition-all flex flex-col justify-between h-28 sm:h-36 md:h-44">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-rose-600 text-white rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-boxes-packing"></i></div>
+                <div>
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-red-500 dark:text-rose-600">حذف المنتجات السحابية</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] mt-0.5">إدارة وإزالة المنتجات والكوبونات</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="sub-panels-container" class="hidden flex-1">
+            
+            <button onclick="backToDashboard()" class="mb-4 px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-800 hover:bg-slate-700 dark:bg-slate-200 dark:hover:bg-slate-300 text-white dark:text-slate-950 font-bold rounded-xl transition duration-200 flex items-center gap-1.5 text-xs sm:text-sm shadow-md">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>رجوع للوحة الرئيسية</span>
+            </button>
+
+            <!-- قسم الإعلانات -->
+            <div id="tab-ads" class="tab-content hidden">
+                <form id="adForm" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة الإعلان من جهازك</label>
+                            <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-blue-500 rounded-xl p-3 sm:p-4 transition-all text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                <input type="file" id="ad-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div id="ad-preview-placeholder" class="space-y-1">
+                                    <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-blue-500"></i>
+                                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-400 dark:text-slate-500 font-medium">اسحب الصورة أو اضغط لتصفح جهازك</p>
+                                </div>
+                                <div id="ad-preview-container" class="hidden mt-1.5 relative z-20">
+                                    <img id="ad-preview-img" class="max-h-20 sm:max-h-28 mx-auto rounded-lg object-contain border border-slate-800 dark:border-slate-200">
+                                    <span class="text-[9px] sm:text-[10px] text-emerald-500 font-bold block mt-1">✓ تم اختيار الصورة</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">عنوان المنتج/الإعلان</label>
+                            <input type="text" id="ad-title" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="مثال: عرض صيفي رهيب!">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">الوصف القصير المعروض</label>
+                            <textarea id="ad-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="اكتب مواصفات مغرية للشراء..."></textarea>
+                        </div>
+                    </div>
+                    <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <div>
+                                <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">السعر القديم (د.ت)</label>
+                                <input type="number" id="ad-oldprice" class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="180">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">السعر الجديد (د.ت)</label>
+                                <input type="number" id="ad-newprice" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="120">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <div>
+                                <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">الكمية المتبقية</label>
+                                <input type="text" id="ad-qty" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" placeholder="مثال: قطعتين فقط!">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">مدة بقاء الإعلان</label>
+                                <select id="ad-duration" class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                                    <option value="5">5 دقائق (للتجربة السريعة)</option>
+                                    <option value="60">ساعة واحدة</option>
+                                    <option value="1440">يوم كامل (24 ساعة)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" id="adSubmitBtn" class="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition duration-200 mt-2 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 text-xs sm:text-sm">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            نشر وتعميم الإعلان المنبثق سحابياً
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- قسم البروتينات -->
+            <div id="tab-proteins" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="proteinForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة البروتين من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-emerald-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="protein-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="protein-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-emerald-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر ملف صورة المكمل الغذائي</p>
+                                        </div>
+                                        <div id="protein-preview-container" class="hidden mt-1.5">
+                                            <img id="protein-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="protein-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="Whey Protein Gold">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع (د.ت)</label>
+                                    <input type="number" id="protein-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="250">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">وصف ومميزات المكمل</label>
+                                    <textarea id="protein-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none" placeholder="اكتب طريقة الاستخدام الفعالة..."></textarea>
+                                </div>
+                                <button type="submit" id="proteinSubmitBtn" class="w-full py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم البروتينات سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم الكرياتين -->
+            <div id="tab-creatine" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="creatineForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة الكرياتين من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-purple-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="creatine-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="creatine-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-purple-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة الكرياتين</p>
+                                        </div>
+                                        <div id="creatine-preview-container" class="hidden mt-1.5">
+                                            <img id="creatine-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="creatine-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-purple-500 focus:outline-none" placeholder="Creatine Monohydrate 300g">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">السعر الأساسي (د.ت)</label>
+                                    <input type="number" id="creatine-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-purple-500 focus:outline-none" placeholder="95">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">مواصفات ونقاء المنتج</label>
+                                    <textarea id="creatine-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-purple-500 focus:outline-none" placeholder="نسبة نقاء ميكرونية فائقة لزيادة القوة المستهدفة..."></textarea>
+                                </div>
+                                <button type="submit" id="creatineSubmitBtn" class="w-full py-2.5 sm:py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم الكرياتين سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم حوارق الدهون -->
+            <div id="tab-fatburn" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="fatburnForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة حارق الدهون من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-amber-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="fatburn-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="fatburn-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-amber-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة حارق الدهون</p>
+                                        </div>
+                                        <div id="fatburn-preview-container" class="hidden mt-1.5">
+                                            <img id="fatburn-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="fatburn-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none" placeholder="Lipo 6 Black Ultra">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع (د.ت)</label>
+                                    <input type="number" id="fatburn-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none" placeholder="140">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">طريقة الاستخدام والتأثير</label>
+                                    <textarea id="fatburn-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none" placeholder="تأثير حراري فعال لإنقاص الوزن ونحت الجسم..."></textarea>
+                                </div>
+                                <button type="submit" id="fatburnSubmitBtn" class="w-full py-2.5 sm:py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم حوارق الدهون سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم Pré-Workout -->
+            <div id="tab-preworkout" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="preworkoutForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة منتج الطاقة من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-red-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="preworkout-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="preworkout-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-red-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة منتج pre-workout</p>
+                                        </div>
+                                        <div id="preworkout-preview-container" class="hidden mt-1.5">
+                                            <img id="preworkout-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="preworkout-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-red-500 focus:outline-none" placeholder="C4 Original Energy">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع (د.ت)</label>
+                                    <input type="number" id="preworkout-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-red-500 focus:outline-none" placeholder="130">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">تفاصيل الطاقة وضخ الدم</label>
+                                    <textarea id="preworkout-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-red-500 focus:outline-none" placeholder="طاقة متفجرة مع تعزيز النيتروجين والتحمل الذهني..."></textarea>
+                                </div>
+                                <button type="submit" id="preworkoutSubmitBtn" class="w-full py-2.5 sm:py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم Pré-Workout سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم Mass Gainer (جديد) -->
+            <div id="tab-massgainer" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="massgainerForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة المنتج من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-cyan-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="massgainer-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="massgainer-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-cyan-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة المنتج</p>
+                                        </div>
+                                        <div id="massgainer-preview-container" class="hidden mt-1.5">
+                                            <img id="massgainer-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="massgainer-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-cyan-500 focus:outline-none" placeholder="Mass Gainer 5kg">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع (د.ت)</label>
+                                    <input type="number" id="massgainer-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-cyan-500 focus:outline-none" placeholder="320">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">الوصف والمواصفات</label>
+                                    <textarea id="massgainer-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-cyan-500 focus:outline-none" placeholder="مزيج غني بالبروتينات والكربوهيدرات لزيادة الوزن..."></textarea>
+                                </div>
+                                <button type="submit" id="massgainerSubmitBtn" class="w-full py-2.5 sm:py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم Mass Gainer سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم Multivitamine (جديد) -->
+            <div id="tab-multivitamine" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="multivitamineForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة المنتج من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-teal-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="multivitamine-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="multivitamine-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-teal-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة المنتج</p>
+                                        </div>
+                                        <div id="multivitamine-preview-container" class="hidden mt-1.5">
+                                            <img id="multivitamine-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="multivitamine-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-teal-500 focus:outline-none" placeholder="Opti-Men Multivitamin">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع (د.ت)</label>
+                                    <input type="number" id="multivitamine-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-teal-500 focus:outline-none" placeholder="85">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">الوصف والفوائد</label>
+                                    <textarea id="multivitamine-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-teal-500 focus:outline-none" placeholder="دعم المناعة والطاقة اليومية بالفيتامينات والمعادن الأساسية..."></textarea>
+                                </div>
+                                <button type="submit" id="multivitamineSubmitBtn" class="w-full py-2.5 sm:py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم Multivitamine سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم Autre (جديد) -->
+            <div id="tab-autre" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="autreForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة المنتج من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-gray-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="autre-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="autre-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-gray-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة المنتج</p>
+                                        </div>
+                                        <div id="autre-preview-container" class="hidden mt-1.5">
+                                            <img id="autre-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم المنتج</label>
+                                    <input type="text" id="autre-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-gray-500 focus:outline-none" placeholder="Accessoires Sport">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع (د.ت)</label>
+                                    <input type="number" id="autre-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-gray-500 focus:outline-none" placeholder="45">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">الوصف والتفاصيل</label>
+                                    <textarea id="autre-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-gray-500 focus:outline-none" placeholder="منتجات وإكسسوارات متنوعة لدعم رحلة اللياقة..."></textarea>
+                                </div>
+                                <button type="submit" id="autreSubmitBtn" class="w-full py-2.5 sm:py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-plus"></i> إدخال وحفظ بقسم Autre سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم التخفيضات -->
+            <div id="tab-discounts" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <form id="discountForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="space-y-3 sm:space-y-4">
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1.5 text-slate-300 dark:text-slate-700">صورة العرض الترويجي من جهازك</label>
+                                    <div class="relative border-2 border-dashed border-slate-700 dark:border-slate-300 hover:border-orange-500 rounded-xl p-3 sm:p-4 text-center cursor-pointer bg-slate-950/50 dark:bg-slate-50">
+                                        <input type="file" id="discount-img-file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div id="discount-placeholder" class="space-y-1">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg sm:text-2xl text-orange-500"></i>
+                                            <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">اختر صورة عرض التخفيضات</p>
+                                        </div>
+                                        <div id="discount-preview-container" class="hidden mt-1.5">
+                                            <img id="discount-preview-img" class="max-h-20 sm:max-h-24 mx-auto rounded-lg object-contain">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">اسم العرض / المنتج</label>
+                                    <input type="text" id="discount-name" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-orange-500 focus:outline-none" placeholder="باقة الضخامة الرمضانية">
+                                </div>
+                            </div>
+                            <div class="space-y-3 sm:space-y-4 flex flex-col justify-between">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">السعر الأصلي السابق (د.ت)</label>
+                                        <input type="number" id="discount-oldprice" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-orange-500 focus:outline-none" placeholder="280">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">سعر البيع المخفض (د.ت)</label>
+                                        <input type="number" id="discount-price" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-orange-500 focus:outline-none" placeholder="199">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">وصف الباقة والعرض</label>
+                                    <textarea id="discount-desc" rows="2" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:ring-1 focus:ring-orange-500 focus:outline-none" placeholder="احصل على أفضل المنتجات مجمعة بسعر مخفض لفترة محدودة..."></textarea>
+                                </div>
+                                <button type="submit" id="discountSubmitBtn" class="w-full py-2.5 sm:py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-percent"></i> إضافة العرض لقسم التخفيضات سحابياً
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم الكوبونات -->
+            <div id="tab-cloud-admin" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl max-w-xl mx-auto">
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold mb-1.5 text-white dark:text-slate-900">أداة CLOUD ADMIN الذكية</h3>
+                    <p class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 mb-4">تفعيل وإنشاء أكواد خصم وقسائم فورية لحساب العميل متصلة مباشرة بالسحابة.</p>
+                    <form id="promoForm" class="space-y-4">
+                        <div>
+                            <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">رمز الكوبون (CODE)</label>
+                            <input type="text" id="pCode" placeholder="مثال: BLUE50" style="text-transform: uppercase;" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">نسبة الخصم المئوية (%)</label>
+                                <input type="number" id="pDisc" placeholder="نسبة مئوية (مثال: 15)" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">عدد المستخدمين الكلي</label>
+                                <input type="number" id="pLimit" placeholder="الحد الأقصى للاستعمال" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] sm:text-xs md:text-sm font-semibold mb-1 text-slate-300 dark:text-slate-700">تاريخ انتهاء الصلاحية</label>
+                            <input type="date" id="pExp" required class="w-full px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:outline-none">
+                        </div>
+                        <button type="submit" id="saveBtn" class="w-full py-2.5 sm:py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-lg shadow-yellow-500/10">
+                            <i class="fa-solid fa-cloud"></i> تفعيل على السحاب
+                        </button>
+                        <div id="promo-status" class="status-msg text-center font-bold"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم حذف الإعلانات -->
+            <div id="tab-delete-ads" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold mb-3 text-white dark:text-slate-900">إدارة وحذف الإعلانات السحابية</h3>
+                    <div id="active-ads-list" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- قسم حذف المنتجات (محدث) -->
+            <div id="tab-delete-products" class="tab-content hidden">
+                <div class="bg-slate-900/90 dark:bg-white p-4 sm:p-6 rounded-2xl border border-slate-800 dark:border-slate-200 shadow-xl">
+                    <h3 class="text-xs sm:text-sm md:text-base font-bold mb-3 text-white dark:text-slate-900">إدارة وحذف السلع والكوبونات السحابية</h3>
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold mb-1 text-slate-300 dark:text-slate-700">تصفية المعروضات بحسب الفئة السحابية:</label>
+                        <select id="delete-category-filter" onchange="renderLists()" class="px-3 py-2 bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-900 border border-slate-800 dark:border-slate-200 rounded-lg text-xs sm:text-sm focus:outline-none">
+                            <option value="all">عرض الكل</option>
+                            <option value="Protéine">قسم البروتين (Protéine)</option>
+                            <option value="Créatine">قسم الكرياتين (Créatine)</option>
+                            <option value="Brûleur de graisse">قسم حوارق الدهون (Brûleur de graisse)</option>
+                            <option value="Pré-workout">قسم Pré-Workout</option>
+                            <option value="Mass Gainer">قسم Mass Gainer</option>
+                            <option value="Multivitamine">قسم Multivitamine</option>
+                            <option value="Autre">قسم Autre</option>
+                            <option value="تخفيضات">قسم التخفيضات والعروض</option>
+                            <option value="promos">كوبونات الخصم النشطة (Promos)</option>
+                        </select>
+                    </div>
+                    <div id="all-products-list" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="py-4 text-center border-t border-slate-850 dark:border-slate-200 mt-6">
+            <p class="text-[10px] sm:text-xs text-slate-500 font-medium">لوحة تحكم KefStore السحابية &copy; 2026 - جميع الحقوق محفوظة للإدارة</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        const IMGBB_API_KEY = "fe8ef67aa6509aa9431e3275ec23d6b3";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyC56JLEqoOhQo194L8cv33nI7o5m04Ya9g",
+            authDomain: "kef-muscle-store-b3ba0.firebaseapp.com",
+            projectId: "kef-muscle-store-b3ba0",
+            storageBucket: "kef-muscle-store-b3ba0.firebasestorage.app",
+            messagingSenderId: "57477768198",
+            appId: "1:57477768198:web:40ba3c97a67fd2ea3a0f87",
+            measurementId: "G-CYZ5PW5G99"
+        };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, get, child, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error?.message || 'فشل رفع الصورة');
+            }
+            return data.data.url;
+        }
+
+        function setupImagePreview(fileInputId, previewContainerId, previewImgId, placeholderId) {
+            const input = document.getElementById(fileInputId);
+            if (input) {
+                input.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            document.getElementById(previewImgId).src = ev.target.result;
+                            document.getElementById(previewContainerId).classList.remove('hidden');
+                            document.getElementById(placeholderId).classList.add('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        setupImagePreview('ad-img-file', 'ad-preview-container', 'ad-preview-img', 'ad-preview-placeholder');
+        setupImagePreview('protein-img-file', 'protein-preview-container', 'protein-preview-img', 'protein-placeholder');
+        setupImagePreview('creatine-img-file', 'creatine-preview-container', 'creatine-preview-img', 'creatine-placeholder');
+        setupImagePreview('fatburn-img-file', 'fatburn-preview-container', 'fatburn-preview-img', 'fatburn-placeholder');
+        setupImagePreview('preworkout-img-file', 'preworkout-preview-container', 'preworkout-preview-img', 'preworkout-placeholder');
+        setupImagePreview('massgainer-img-file', 'massgainer-preview-container', 'massgainer-preview-img', 'massgainer-placeholder');
+        setupImagePreview('multivitamine-img-file', 'multivitamine-preview-container', 'multivitamine-preview-img', 'multivitamine-placeholder');
+        setupImagePreview('autre-img-file', 'autre-preview-container', 'autre-preview-img', 'autre-placeholder');
+        setupImagePreview('discount-img-file', 'discount-preview-container', 'discount-preview-img', 'discount-placeholder');
+
+        async function addProduct(category, nameId, priceId, descId, fileInputId, oldPriceId = null) {
+            const fileInput = document.getElementById(fileInputId);
+            const file = fileInput.files[0];
+            
+            if (!file) throw new Error('الرجاء اختيار صورة');
+            
+            const imageUrl = await uploadToImgBB(file);
+            const productId = push(ref(db, 'products/')).key;
+            
+            const productData = {
+                id: productId,
+                category: category,
+                imageUrl: imageUrl,
+                name: document.getElementById(nameId).value,
+                price: parseFloat(document.getElementById(priceId).value),
+                desc: document.getElementById(descId).value,
+                createdAt: Date.now()
+            };
+            
+            if (oldPriceId && document.getElementById(oldPriceId) && document.getElementById(oldPriceId).value) {
+                productData.oldPrice = parseFloat(document.getElementById(oldPriceId).value);
+            }
+            
+            await set(ref(db, `products/${productId}`), productData);
+            return productData;
+        }
+
+        async function addAd() {
+            const fileInput = document.getElementById('ad-img-file');
+            const file = fileInput.files[0];
+            
+            if (!file) throw new Error('الرجاء اختيار صورة');
+            
+            const imageUrl = await uploadToImgBB(file);
+            const durationVal = parseInt(document.getElementById('ad-duration').value);
+            const expireTime = Date.now() + (durationVal * 60 * 1000);
+            const adId = push(ref(db, 'ads/')).key;
+            
+            const adObj = {
+                id: adId,
+                imageUrl: imageUrl,
+                title: document.getElementById('ad-title').value,
+                desc: document.getElementById('ad-desc').value,
+                oldPrice: document.getElementById('ad-oldprice').value || null,
+                price: document.getElementById('ad-newprice').value,
+                qty: document.getElementById('ad-qty').value,
+                expireTime: expireTime,
+                createdAt: Date.now()
+            };
+            
+            await set(ref(db, `ads/${adId}`), adObj);
+            return adObj;
+        }
+
+        document.getElementById('adForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('adSubmitBtn');
+            try {
+                btn.innerHTML = '<div class="loading-spinner"></div> جاري النشر...';
+                btn.disabled = true;
+                await addAd();
+                showFeedback('✅ تم نشر الإعلان بنجاح!');
+                document.getElementById('adForm').reset();
+                document.getElementById('ad-preview-container').classList.add('hidden');
+                document.getElementById('ad-preview-placeholder').classList.remove('hidden');
+                backToDashboard();
+            } catch (error) {
+                showFeedback('❌ خطأ: ' + error.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> نشر وتعميم الإعلان المنبثق سحابياً';
+                btn.disabled = false;
+            }
+        });
+
+        // قائمة نماذج المنتجات (محدثة)
+        const productForms = [
+            { formId: 'proteinForm', category: 'Protéine', nameId: 'protein-name', priceId: 'protein-price', descId: 'protein-desc', fileId: 'protein-img-file', btnId: 'proteinSubmitBtn' },
+            { formId: 'creatineForm', category: 'Créatine', nameId: 'creatine-name', priceId: 'creatine-price', descId: 'creatine-desc', fileId: 'creatine-img-file', btnId: 'creatineSubmitBtn' },
+            { formId: 'fatburnForm', category: 'Brûleur de graisse', nameId: 'fatburn-name', priceId: 'fatburn-price', descId: 'fatburn-desc', fileId: 'fatburn-img-file', btnId: 'fatburnSubmitBtn' },
+            { formId: 'preworkoutForm', category: 'Pré-workout', nameId: 'preworkout-name', priceId: 'preworkout-price', descId: 'preworkout-desc', fileId: 'preworkout-img-file', btnId: 'preworkoutSubmitBtn' },
+            { formId: 'massgainerForm', category: 'Mass Gainer', nameId: 'massgainer-name', priceId: 'massgainer-price', descId: 'massgainer-desc', fileId: 'massgainer-img-file', btnId: 'massgainerSubmitBtn' },
+            { formId: 'multivitamineForm', category: 'Multivitamine', nameId: 'multivitamine-name', priceId: 'multivitamine-price', descId: 'multivitamine-desc', fileId: 'multivitamine-img-file', btnId: 'multivitamineSubmitBtn' },
+            { formId: 'autreForm', category: 'Autre', nameId: 'autre-name', priceId: 'autre-price', descId: 'autre-desc', fileId: 'autre-img-file', btnId: 'autreSubmitBtn' },
+            { formId: 'discountForm', category: 'تخفيضات', nameId: 'discount-name', priceId: 'discount-price', descId: 'discount-desc', fileId: 'discount-img-file', btnId: 'discountSubmitBtn', oldPriceId: 'discount-oldprice' }
+        ];
+
+        for (const pf of productForms) {
+            document.getElementById(pf.formId)?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById(pf.btnId);
+                try {
+                    btn.innerHTML = '<div class="loading-spinner"></div> جاري الحفظ...';
+                    btn.disabled = true;
+                    await addProduct(pf.category, pf.nameId, pf.priceId, pf.descId, pf.fileId, pf.oldPriceId);
+                    showFeedback(`✅ تم حفظ المنتج في قسم ${pf.category} بنجاح!`);
+                    document.getElementById(pf.formId).reset();
+                    const previewContainer = document.getElementById(`${pf.fileId.replace('-img-file', '-preview-container')}`);
+                    const placeholder = document.getElementById(`${pf.fileId.replace('-img-file', '-placeholder')}`);
+                    if (previewContainer) previewContainer.classList.add('hidden');
+                    if (placeholder) placeholder.classList.remove('hidden');
+                    backToDashboard();
+                } catch (error) {
+                    showFeedback('❌ خطأ: ' + error.message, 'error');
+                } finally {
+                    btn.innerHTML = '<i class="fa-solid fa-plus"></i> حفظ';
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        document.getElementById('promoForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('pCode').value.toUpperCase();
+            const statusDiv = document.getElementById('promo-status');
+            
+            if(!code) { showFeedback("أدخل كود صالح أولاً!", "error"); return; }
+            
+            const promoData = {
+                code: code,
+                discount: parseInt(document.getElementById('pDisc').value),
+                limit: parseInt(document.getElementById('pLimit').value),
+                expiry: document.getElementById('pExp').value,
+                used: 0
+            };
+            
+            statusDiv.innerText = "جاري الاتصال بالسحاب... ⏳";
+            statusDiv.style.color = "#3b82f6";
+            
+            try {
+                await set(ref(db, 'promos/' + code), promoData);
+                statusDiv.innerText = "";
+                showFeedback('✅ تم تفعيل ونشر الكوبون سحابياً!');
+                document.getElementById('promoForm').reset();
+                backToDashboard();
+            } catch (err) {
+                statusDiv.innerText = "";
+                showFeedback('❌ خطأ: ' + err.message, 'error');
+            }
+        });
+
+        async function renderLists() {
+            const activeAdsList = document.getElementById('active-ads-list');
+            const allProductsList = document.getElementById('all-products-list');
+            const filterValue = document.getElementById('delete-category-filter')?.value || 'all';
+            
+            const adsSnap = await get(child(ref(db), 'ads/'));
+            if (adsSnap.exists()) {
+                const ads = adsSnap.val();
+                activeAdsList.innerHTML = Object.keys(ads).map(key => `
+                    <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-950 dark:bg-slate-50 rounded-xl border border-slate-800 dark:border-slate-200">
+                        <div class="flex items-center gap-2.5">
+                            <img src="${ads[key].imageUrl}" class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg" onerror="this.src='https://placehold.co/40'">
+                            <div class="text-right">
+                                <h4 class="text-xs sm:text-sm font-bold text-white dark:text-slate-950">${ads[key].title}</h4>
+                                <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">${ads[key].price} د.ت - المتبقي: ${ads[key].qty}</p>
+                            </div>
+                        </div>
+                        <button onclick="deleteAd('${key}')" class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-[10px] sm:text-xs transition">
+                            <i class="fa-solid fa-trash"></i> حذف
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                activeAdsList.innerHTML = `<p class="text-[10px] sm:text-xs text-slate-500 text-center py-4">لا يوجد أي إعلان نشط سحابياً.</p>`;
+            }
+            
+            const allData = await get(child(ref(db), '/'));
+            if (allData.exists()) {
+                const allDataVal = allData.val();
+                let htmlContent = '';
+                
+                if (allDataVal.products && (filterValue === 'all' || filterValue !== 'promos')) {
+                    Object.keys(allDataVal.products).forEach(key => {
+                        const p = allDataVal.products[key];
+                        if (filterValue === 'all' || p.category === filterValue) {
+                            htmlContent += `
+                                <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-950 dark:bg-slate-50 rounded-xl border border-slate-800 dark:border-slate-200">
+                                    <div class="flex items-center gap-2.5">
+                                        <img src="${p.imageUrl}" class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg" onerror="this.src='https://placehold.co/40'">
+                                        <div class="text-right">
+                                            <h4 class="text-xs sm:text-sm font-bold text-white dark:text-slate-950">${p.name}</h4>
+                                            <span class="text-[9px] px-1.5 py-0.5 bg-blue-600/20 text-blue-500 rounded font-bold">${p.category}</span>
+                                            <span class="text-[10px] text-emerald-500 font-bold mr-1">${p.price} د.ت</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="deleteProduct('${key}')" class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-[10px] sm:text-xs transition">
+                                        <i class="fa-solid fa-trash"></i> حذف
+                                    </button>
+                                </div>`;
+                        }
+                    });
+                }
+                
+                if (allDataVal.promos && (filterValue === 'all' || filterValue === 'promos')) {
+                    Object.keys(allDataVal.promos).forEach(key => {
+                        const promo = allDataVal.promos[key];
+                        htmlContent += `
+                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-950 dark:bg-slate-100 rounded-xl border border-yellow-500/30">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-10 h-10 bg-yellow-500/10 text-yellow-500 rounded-lg flex items-center justify-center text-sm sm:text-lg"><i class="fa-solid fa-ticket"></i></div>
+                                    <div class="text-right">
+                                        <h4 class="text-xs sm:text-sm font-bold text-white dark:text-slate-950">الكوبون: ${promo.code}</h4>
+                                        <p class="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500">خصم %${promo.discount} | الاستخدام: ${promo.used}/${promo.limit}</p>
+                                    </div>
+                                </div>
+                                <button onclick="deletePromo('${key}')" class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-[10px] sm:text-xs transition">
+                                    <i class="fa-solid fa-trash"></i> حذف
+                                </button>
+                            </div>`;
+                    });
+                }
+                
+                allProductsList.innerHTML = htmlContent || `<p class="text-[10px] sm:text-xs text-slate-500 text-center py-4">لا توجد منتجات مضافة في هذا الفرز حالياً.</p>`;
+            } else {
+                allProductsList.innerHTML = `<p class="text-[10px] sm:text-xs text-slate-500 text-center py-4">قاعدة البيانات فارغة تماماً.</p>`;
+            }
+        }
+        
+        window.deleteAd = async (key) => {
+            if(confirm("هل أنت متأكد من مسح هذا الإعلان من السحابة؟")) {
+                await remove(ref(db, 'ads/' + key));
+                showFeedback('✅ تم حذف الإعلان بنجاح!');
+                renderLists();
+            }
+        };
+        
+        window.deleteProduct = async (key) => {
+            if(confirm("هل أنت متأكد من حذف السلعة نهائياً؟")) {
+                await remove(ref(db, 'products/' + key));
+                showFeedback('✅ تم مسح المنتج نهائياً!');
+                renderLists();
+            }
+        };
+        
+        window.deletePromo = async (key) => {
+            if(confirm("هل تريد إلغاء وتعطيل كود الخصم هذا؟")) {
+                await remove(ref(db, 'promos/' + key));
+                showFeedback('✅ تم تعطيل وحذف كود الخصم!');
+                renderLists();
+            }
+        };
+        
+        function showFeedback(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'bg-emerald-600' : 'bg-red-600'} text-white`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'} ml-2"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        window.validatePassword = () => {
+            const pass = document.getElementById('password-input').value;
+            if (pass === 'kefstore123') {
+                localStorage.setItem('kef_admin_logged', 'true');
+                showDashboard();
+            } else {
+                const error = document.getElementById('login-error');
+                error.classList.remove('hidden');
+                setTimeout(() => error.classList.add('hidden'), 3500);
+            }
+        };
+        
+        function showDashboard() {
+            document.getElementById('login-gate').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            renderLists();
+        }
+        
+        if (localStorage.getItem('kef_admin_logged') === 'true') {
+            showDashboard();
+        }
+        
+        window.logout = () => {
+            localStorage.removeItem('kef_admin_logged');
+            location.reload();
+        };
+        
+        window.toggleTheme = () => {
+            const icon = document.getElementById('theme-icon');
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                icon.className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                icon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'dark');
+            }
+        };
+        
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+        }
+        
+        window.switchTab = (tabId) => {
+            document.getElementById('dashboard-grid').classList.add('hidden');
+            document.getElementById('sub-panels-container').classList.remove('hidden');
+            
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+            
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            renderLists();
+        };
+        
+        window.backToDashboard = () => {
+            document.getElementById('sub-panels-container').classList.add('hidden');
+            document.getElementById('dashboard-grid').classList.remove('hidden');
+        };
+        
+        window.renderLists = renderLists;
+    </script>
+</body>
+</html>

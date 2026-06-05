@@ -55,24 +55,23 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* ========== القائمة الجانبية (LEFT SIDEBAR) ========== */
         .sidebar {
             position: fixed;
-            left: 0;          /* تغيير من right إلى left */
+            left: 0;
             top: 0;
             width: 280px;
             height: 100vh;
             background: var(--sidebar-bg);
             z-index: 1000;
-            transform: translateX(-100%);  /* إخفاء إلى اليسار */
+            transform: translateX(-100%);
             transition: transform 0.3s ease, background 0.3s ease;
             padding: 25px 20px;
             overflow-y: auto;
-            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5); /* ظل على اليمين */
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
         }
 
         .sidebar.open {
-            transform: translateX(0);  /* تظهر من اليسار */
+            transform: translateX(0);
         }
 
         .sidebar-header {
@@ -159,13 +158,11 @@
             margin-right: auto;
         }
 
-        /* ========== المحتوى الرئيسي ========== */
         .main-content {
-            margin-left: 0;   /* تعديل للتوافق مع القائمة اليسرى */
+            margin-left: 0;
             transition: margin-left 0.3s ease;
         }
 
-        /* ========== الشريط العلوي ========== */
         .topbar {
             position: sticky;
             top: 0;
@@ -235,7 +232,6 @@
             transition: all 0.2s;
         }
 
-        /* ========== القسم الرئيسي Hero ========== */
         .hero {
             background: linear-gradient(135deg, var(--panel), var(--panel-light));
             margin: 20px;
@@ -300,9 +296,9 @@
             filter: drop-shadow(0 10px 30px rgba(59,130,246,0.3));
         }
 
-        /* ========== أقسام التصنيفات ========== */
         .categories-section {
             padding: 20px;
+            position: relative;
         }
 
         .section-title {
@@ -311,31 +307,92 @@
             margin-bottom: 20px;
             padding-left: 10px;
             border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .scroll-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .scroll-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--panel-light);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .categories-wrapper {
+            position: relative;
+            overflow: hidden;
         }
 
         .categories-grid {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-wrap: nowrap;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 10px 5px 20px 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .categories-grid::-webkit-scrollbar {
+            display: none;
         }
 
         .category-card {
-            background: var(--panel);
+            background: linear-gradient(135deg, var(--panel), var(--panel-light));
             border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 15px 20px;
+            border-radius: 20px;
+            padding: 18px 24px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 14px;
             cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 0 0 auto;
             min-width: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
         }
 
         .category-card:hover {
             border-color: var(--primary);
-            background: var(--panel-light);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
         }
 
         .category-info {
@@ -345,23 +402,67 @@
         }
 
         .category-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(59, 130, 246, 0.15);
-            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
             color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
         }
 
         .category-name {
-            font-weight: 700;
-            font-size: 15px;
+            font-weight: 800;
+            font-size: 16px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
         }
 
-        /* ========== قسم المنتجات ========== */
+        .category-arrow {
+            color: var(--primary);
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .category-card:hover .category-arrow {
+            transform: translateX(5px);
+            opacity: 1;
+        }
+
+        .scroll-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .scroll-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.3;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .scroll-dot.active {
+            width: 24px;
+            border-radius: 4px;
+            background: var(--primary);
+            opacity: 1;
+        }
+
         .products-section {
             padding: 20px;
         }
@@ -388,9 +489,13 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
+            transition: transform 0.2s;
         }
 
-        /* صف واحد أفقي - حجم أقل */
+        .view-all-btn:hover {
+            transform: translateX(5px);
+        }
+
         .products-scroll {
             display: flex;
             overflow-x: auto;
@@ -413,7 +518,6 @@
             border-radius: 10px;
         }
 
-        /* بطاقات المنتجات - حجم مناسب */
         .product-card {
             min-width: 170px;
             max-width: 170px;
@@ -502,7 +606,6 @@
             color: white;
         }
 
-        /* شبكة المنتجات الكاملة */
         .products-full {
             display: none;
             padding: 20px;
@@ -531,7 +634,6 @@
             gap: 8px;
         }
 
-        /* ========== نافذة عرض المنتج (Modal) ========== */
         .product-modal {
             position: fixed;
             top: 0;
@@ -658,7 +760,6 @@
             transform: scale(1.02);
         }
 
-        /* ========== الفوتر ========== */
         .footer {
             background: var(--panel);
             padding: 40px 20px 20px;
@@ -730,7 +831,6 @@
             color: var(--primary);
         }
 
-        /* ========== واتساب ========== */
         .whatsapp-btn {
             position: fixed;
             bottom: 25px;
@@ -823,7 +923,6 @@
             cursor: pointer;
         }
 
-        /* ========== إعلان منبثق ========== */
         .ad-overlay {
             position: fixed;
             top: 0;
@@ -928,6 +1027,10 @@
             .hero-content p { margin: 0 auto 20px; }
             .products-full-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .product-card { min-width: 150px; max-width: 150px; }
+            .category-card { min-width: 140px; padding: 14px 18px; }
+            .category-name { font-size: 14px; }
+            .category-icon { width: 42px; height: 42px; font-size: 20px; }
+            .scroll-btn { width: 32px; height: 32px; }
         }
     </style>
 </head>
@@ -973,17 +1076,73 @@
     </div>
 
     <div class="categories-section">
-        <h3 class="section-title">Catégories</h3>
-        <div class="categories-grid">
-            <div class="category-card" data-category="Protéine"><div class="category-info"><div class="category-icon"><i class="fas fa-dumbbell"></i></div><span class="category-name">Protéine</span></div><i class="fas fa-chevron-right"></i></div>
-            <div class="category-card" data-category="Créatine"><div class="category-info"><div class="category-icon"><i class="fas fa-bolt"></i></div><span class="category-name">Créatine</span></div><i class="fas fa-chevron-right"></i></div>
-            <div class="category-card" data-category="Brûleur de graisse"><div class="category-info"><div class="category-icon"><i class="fas fa-fire"></i></div><span class="category-name">Brûleur de graisse</span></div><i class="fas fa-chevron-right"></i></div>
-            <div class="category-card" data-category="Pré-workout"><div class="category-info"><div class="category-icon"><i class="fas fa-bolt-lightning"></i></div><span class="category-name">Pré-workout</span></div><i class="fas fa-chevron-right"></i></div>
+        <div class="section-title">
+            <span>🏋️ Catégories</span>
+            <div class="scroll-buttons">
+                <button class="scroll-btn" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button>
+                <button class="scroll-btn" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
+        <div class="categories-wrapper">
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- الأقسام الموجودة -->
+                <div class="category-card" data-category="Protéine">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-dumbbell"></i></div>
+                        <span class="category-name">Protéine</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+                <div class="category-card" data-category="Créatine">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-bolt"></i></div>
+                        <span class="category-name">Créatine</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+                <div class="category-card" data-category="Brûleur de graisse">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-fire"></i></div>
+                        <span class="category-name">Brûleur de graisse</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+                <div class="category-card" data-category="Pré-workout">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-bolt-lightning"></i></div>
+                        <span class="category-name">Pré-workout</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+                <!-- الأقسام الجديدة -->
+                <div class="category-card" data-category="Mass Gainer">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-weight-hanging"></i></div>
+                        <span class="category-name">Mass Gainer</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+                <div class="category-card" data-category="Multivitamine">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-tablets"></i></div>
+                        <span class="category-name">Multivitamine</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+                <div class="category-card" data-category="Autre">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-box-open"></i></div>
+                        <span class="category-name">Autre</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator" id="scrollIndicator"></div>
     </div>
 
     <div class="products-section" id="mainProductsSection">
-        <div class="products-header"><h2>Nos produits populaires</h2><button class="view-all-btn" id="viewAllBtn">Voir tout <i class="fas fa-arrow-right"></i></button></div>
+        <div class="products-header"><h2>⭐ Nos produits populaires</h2><button class="view-all-btn" id="viewAllBtn">Voir tout <i class="fas fa-arrow-right"></i></button></div>
         <div class="products-scroll" id="productsScroll"><div style="text-align: center; width: 100%; padding: 40px;">Chargement des produits...</div></div>
     </div>
 
@@ -1003,7 +1162,6 @@
     </div>
 </div>
 
-<!-- Modal d'affichage produit -->
 <div class="product-modal" id="productModal">
     <div class="modal-container">
         <button class="modal-close" id="closeModalBtn"><i class="fas fa-times"></i></button>
@@ -1046,7 +1204,7 @@
     onValue(productsRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            allProducts = Object.values(data);
+            allProducts = Object.entries(data).map(([id, product]) => ({ ...product, firebaseId: id }));
             renderMainProducts();
             renderFullProducts();
         } else {
@@ -1077,11 +1235,16 @@
     }
 
     function generateProductCard(product) {
+        const oldPriceHtml = product.oldPrice ? `<span style="text-decoration: line-through; font-size: 9px; color: gray; margin-left: 5px;">${product.oldPrice} DT</span>` : '';
         return `
             <div class="product-card" data-product='${JSON.stringify(product)}'>
-                <div class="product-img"><span class="product-price">${product.price} DT</span><img src="${product.imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/150'"></div>
+                <div class="product-img">
+                    <span class="product-price">${product.price} DT ${oldPriceHtml}</span>
+                    <img src="${product.imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/150'">
+                </div>
                 <div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <div class="product-title">${product.name}</div><div class="product-category">${product.category}</div>
+                <div class="product-title">${product.name}</div>
+                <div class="product-category">${product.category}</div>
                 <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCartFromCard(this)"><i class="fas fa-cart-plus"></i> Ajouter</button>
             </div>
         `;
@@ -1089,11 +1252,14 @@
 
     function attachProductClickEvents() {
         document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('click', (e) => {
+            card.removeEventListener('click', card.clickHandler);
+            const handler = (e) => {
                 if (e.target.classList.contains('add-to-cart-btn')) return;
                 const productData = JSON.parse(card.dataset.product);
                 showProductModal(productData);
-            });
+            };
+            card.addEventListener('click', handler);
+            card.clickHandler = handler;
         });
     }
 
@@ -1153,10 +1319,10 @@
         adImg.style.width = 'auto';
         document.getElementById('adTitle').innerText = ad.title;
         document.getElementById('adDesc').innerText = ad.desc;
-        document.getElementById('newPrice').innerText = ad.price;
+        document.getElementById('newPrice').innerHTML = ad.price;
         document.getElementById('adBadge').innerText = ad.qty || 'Offre limitée';
         if (ad.oldPrice) {
-            document.getElementById('oldPriceDiv').style.display = 'block';
+            document.getElementById('oldPriceDiv').style.display = 'flex';
             document.getElementById('oldPrice').innerText = ad.oldPrice + ' DT';
         } else {
             document.getElementById('oldPriceDiv').style.display = 'none';
@@ -1191,7 +1357,7 @@
     updateCartCount();
 
     document.getElementById('searchInput')?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
+        const term = e.target.value.toLowerCase().trim();
         const activeSection = document.getElementById('productsFullPage').classList.contains('active') ? 'full' : 'main';
         if (activeSection === 'full') {
             document.querySelectorAll('#productsFullGrid .product-card').forEach(card => {
@@ -1206,21 +1372,26 @@
         }
     });
 
+    function filterAndShowProductsByCategory(categoryName) {
+        document.getElementById('productsFullPage').classList.add('active');
+        document.getElementById('mainProductsSection').style.display = 'none';
+        document.getElementById('homeSection').style.display = 'none';
+        document.querySelector('.categories-section').style.display = 'none';
+        
+        const filtered = allProducts.filter(p => p.category === categoryName);
+        const container = document.getElementById('productsFullGrid');
+        if (filtered.length) {
+            container.innerHTML = filtered.map(product => generateProductCard(product)).join('');
+            attachProductClickEvents();
+        } else {
+            container.innerHTML = `<div style="text-align: center; padding: 40px;">Aucun produit dans la catégorie ${categoryName}</div>`;
+        }
+    }
+
     document.querySelectorAll('.category-card').forEach(cat => {
         cat.addEventListener('click', () => {
-            const category = cat.querySelector('.category-name')?.innerText || cat.dataset.category;
-            document.getElementById('productsFullPage').classList.add('active');
-            document.getElementById('mainProductsSection').style.display = 'none';
-            document.getElementById('homeSection').style.display = 'none';
-            document.querySelector('.categories-section').style.display = 'none';
-            const filtered = allProducts.filter(p => p.category === category);
-            const container = document.getElementById('productsFullGrid');
-            if (filtered.length) {
-                container.innerHTML = filtered.map(product => generateProductCard(product)).join('');
-                attachProductClickEvents();
-            } else {
-                container.innerHTML = '<div style="text-align: center; padding: 40px;">Aucun produit dans cette catégorie</div>';
-            }
+            const categoryName = cat.querySelector('.category-name')?.innerText || cat.dataset.category;
+            filterAndShowProductsByCategory(categoryName);
         });
     });
 
@@ -1231,6 +1402,7 @@
         document.querySelector('.categories-section').style.display = 'none';
         renderFullProducts();
     });
+    
     document.getElementById('viewAllBtn')?.addEventListener('click', () => {
         document.getElementById('productsFullPage').classList.add('active');
         document.getElementById('mainProductsSection').style.display = 'none';
@@ -1238,6 +1410,7 @@
         document.querySelector('.categories-section').style.display = 'none';
         renderFullProducts();
     });
+    
     document.getElementById('backToHomeBtn')?.addEventListener('click', () => {
         document.getElementById('productsFullPage').classList.remove('active');
         document.getElementById('mainProductsSection').style.display = 'block';
@@ -1298,6 +1471,62 @@
     closeModal?.addEventListener('click', () => contactModal.classList.remove('show'));
     contactModal?.addEventListener('click', (e) => { if (e.target === contactModal) contactModal.classList.remove('show'); });
     document.getElementById('closeAdBtn')?.addEventListener('click', () => { document.getElementById('adOverlay').style.display = 'none'; });
+
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    const scrollLeftBtn = document.getElementById('scrollLeftBtn');
+    const scrollRightBtn = document.getElementById('scrollRightBtn');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+
+    function updateScrollIndicator() {
+        if (!categoriesGrid || !scrollIndicator) return;
+        const scrollWidth = categoriesGrid.scrollWidth - categoriesGrid.clientWidth;
+        const scrollLeft = categoriesGrid.scrollLeft;
+        const progress = scrollWidth > 0 ? (scrollLeft / scrollWidth) : 0;
+        const dots = scrollIndicator.querySelectorAll('.scroll-dot');
+        const dotIndex = Math.round(progress * (dots.length - 1));
+        dots.forEach((dot, index) => {
+            if (index === dotIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function createScrollDots() {
+        if (!categoriesGrid || !scrollIndicator) return;
+        const itemCount = categoriesGrid.children.length;
+        scrollIndicator.innerHTML = '';
+        for (let i = 0; i < itemCount; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('scroll-dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => {
+                const scrollAmount = categoriesGrid.children[i].offsetLeft - categoriesGrid.offsetLeft;
+                categoriesGrid.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+            });
+            scrollIndicator.appendChild(dot);
+        }
+    }
+
+    if (scrollLeftBtn && scrollRightBtn && categoriesGrid) {
+        scrollLeftBtn.addEventListener('click', () => {
+            categoriesGrid.scrollBy({ left: -250, behavior: 'smooth' });
+        });
+        scrollRightBtn.addEventListener('click', () => {
+            categoriesGrid.scrollBy({ left: 250, behavior: 'smooth' });
+        });
+        categoriesGrid.addEventListener('scroll', () => {
+            updateScrollIndicator();
+        });
+        createScrollDots();
+        updateScrollIndicator();
+        
+        window.addEventListener('resize', () => {
+            createScrollDots();
+            updateScrollIndicator();
+        });
+    }
 </script>
 </body>
 </html>

@@ -6,8 +6,9 @@
   <title>Panier & Suivi - KEF Muscle Store</title>
   
   <script>
+    // 1. فحص وتطبيق الثيم فورا باستخدام نفس الـ Key لـ assistant.html
     (function() {
-      const savedTheme = localStorage.getItem('theme');
+      const savedTheme = localStorage.getItem('kef-theme') || 'light';
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark-theme');
       } else {
@@ -181,10 +182,35 @@
     let infoStep = false;
     let userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
 
-    // التحقق من حالة الثيم المخزنة وتطبيقها على الـ body أيضاً عند تحميل الـ DOM
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-theme');
+    // ============================================================
+    // وظيفة مزامنة وتطبيق الثيم ليتوافق تماماً مع assistant.html
+    // ============================================================
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            document.body.classList.add('dark-theme');
+        } else {
+            document.documentElement.classList.remove('dark-theme');
+            document.body.classList.remove('dark-theme');
+        }
     }
+
+    function checkAndApplyInitialTheme() {
+        const savedTheme = localStorage.getItem('kef-theme') || 'light';
+        applyTheme(savedTheme);
+    }
+    checkAndApplyInitialTheme();
+
+    // الاستماع للتغييرات الفورية للثيم من التبويبات الأخرى
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'kef-theme') {
+            applyTheme(e.newValue);
+        }
+    });
+
+    // الاستماع عند العودة للتركيز على الصفحة
+    window.addEventListener('focus', checkAndApplyInitialTheme);
+    // ============================================================
 
     function showToast(message, isError = false) {
       const toast = document.createElement('div');

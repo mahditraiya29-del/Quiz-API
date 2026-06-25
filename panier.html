@@ -6,7 +6,7 @@
   <title>Panier & Suivi - KEF Muscle Store</title>
   
   <script>
-    // 1. فحص وتطبيق الثيم فورا باستخدام نفس الـ Key لـ assistant.html
+    // 1. Vérification et application immédiate du thème
     (function() {
       const savedTheme = localStorage.getItem('kef-theme') || 'light';
       if (savedTheme === 'dark') {
@@ -21,7 +21,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   
   <style>
-    /* الإعدادات الافتراضية (Light Mode) المتوافقة مع متجرك */
     :root {
       --bg: #f8f9fa;
       --panel: #ffffff;
@@ -38,7 +37,6 @@
       --red: #ef4444;
     }
 
-    /* إعدادات الوضع الداكن (Dark Mode) المتوافقة مع متجرك */
     .dark-theme, :root.dark-theme {
       --bg: #0a0c10;
       --panel: #111827;
@@ -53,7 +51,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
-      font-family: 'Tajawal', 'Inter', sans-serif;
+      font-family: 'Inter', 'Tajawal', sans-serif;
       background: var(--bg);
       color: var(--text);
       padding: 20px;
@@ -67,7 +65,7 @@
     .back-link:hover { opacity: 0.7; }
     
     .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-    .tab-btn { background: none; border: none; color: var(--text-muted); padding: 10px 20px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; font-weight: bold; transition: 0.3s; border-radius: 30px; }
+    .tab-btn { background: none; border: none; color: var(--text-muted); padding: 10px 20px; cursor: pointer; font-size: 0.95rem; font-weight: bold; transition: 0.3s; border-radius: 30px; }
     .tab-btn.active { background: var(--primary); color: white; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -83,20 +81,20 @@
     .qty-btn { width: 35px; height: 35px; border-radius: 10px; background: var(--panel-light); border: 1px solid var(--border); color: var(--text); cursor: pointer; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-weight: bold; }
     .qty-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
     
-    .remove-btn { background: rgba(239, 68, 68, 0.1); color: var(--red); border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer; margin-left: auto; transition: all 0.2s; font-family: 'Tajawal'; font-weight: bold; font-size: 0.85rem; }
+    .remove-btn { background: rgba(239, 68, 68, 0.1); color: var(--red); border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer; margin-left: auto; transition: all 0.2s; font-weight: bold; font-size: 0.85rem; }
     .remove-btn:hover { background: var(--red); color: #fff; }
     
     .cart-summary { margin-top: 30px; padding: 25px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
     .promo-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     
-    .promo-input { flex: 1; background: var(--panel-light); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 12px; outline: none; font-family: 'Tajawal'; font-size: 0.95rem; }
+    .promo-input { flex: 1; background: var(--panel-light); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 12px; outline: none; font-size: 0.95rem; }
     .promo-input:focus { border-color: var(--primary); }
     
     #pMsg { font-size: 0.85rem; margin-bottom: 15px; font-weight: 700; min-height: 20px; }
     .price-row { display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--text-muted); font-size: 0.95rem; }
     .total-row { border-top: 2px dashed var(--border); padding-top: 20px; margin-top: 15px; color: var(--primary); font-size: 1.4rem; font-weight: 800; }
     
-    .checkout-btn { width: 100%; padding: 16px; background: var(--primary); color: #fff; border-radius: 16px; font-weight: 800; border: none; cursor: pointer; margin-top: 20px; font-family: 'Tajawal'; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
+    .checkout-btn { width: 100%; padding: 16px; background: var(--primary); color: #fff; border-radius: 16px; font-weight: 800; border: none; cursor: pointer; margin-top: 20px; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
     .checkout-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
     
     .info-inputs { display: none; flex-direction: column; gap: 12px; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
@@ -106,10 +104,10 @@
     .empty-cart h2 { margin-bottom: 20px; font-weight: 700; }
     .empty-cart a { color: var(--primary); text-decoration: none; font-weight: bold; border-bottom: 2px solid var(--primary); padding-bottom: 3px; }
     
-    .toast-message { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--green); color: white; padding: 12px 24px; border-radius: 50px; font-weight: bold; z-index: 1000; font-family: 'Tajawal'; animation: fadeInOut 3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .toast-message { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--green); color: white; padding: 12px 24px; border-radius: 50px; font-weight: bold; z-index: 1000; animation: fadeInOut 3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
     @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 10% { opacity: 1; transform: translateX(-50%) translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
     
-    /* تنسيق تتبع الطلبات */
+    /* Style Suivi des Commandes */
     .order-card { background: var(--panel); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
     .order-card:hover { transform: translateY(-3px); border-color: var(--primary); }
     .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
@@ -141,13 +139,13 @@
     <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> RETOUR</a>
   </div>
 
-  <h1 style="text-align:center; font-family: 'Tajawal'; margin-bottom:30px; font-weight: 800;">
-    <i class="fa-solid fa-cart-shopping" style="color: var(--primary);"></i> سلة التسوق
+  <h1 style="text-align:center; margin-bottom:30px; font-weight: 800;">
+    <i class="fa-solid fa-cart-shopping" style="color: var(--primary);"></i> Mon Panier
   </h1>
 
-  <div class="tab-buttons" dir="rtl">
-    <button class="tab-btn active" onclick="switchTab('cart')"><i class="fa-solid fa-bag-shopping"></i> السلة</button>
-    <button class="tab-btn" onclick="switchTab('orders')"><i class="fa-solid fa-truck"></i> متابعة طلباتي</button>
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="switchTab('cart')"><i class="fa-solid fa-bag-shopping"></i> Panier</button>
+    <button class="tab-btn" onclick="switchTab('orders')"><i class="fa-solid fa-truck"></i> Suivi de mes commandes</button>
   </div>
 
   <div id="cart-tab" class="tab-content active">
@@ -182,9 +180,6 @@
     let infoStep = false;
     let userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
 
-    // ============================================================
-    // وظيفة مزامنة وتطبيق الثيم ليتوافق تماماً مع assistant.html
-    // ============================================================
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.documentElement.classList.add('dark-theme');
@@ -201,16 +196,13 @@
     }
     checkAndApplyInitialTheme();
 
-    // الاستماع للتغييرات الفورية للثيم من التبويبات الأخرى
     window.addEventListener('storage', (e) => {
         if (e.key === 'kef-theme') {
             applyTheme(e.newValue);
         }
     });
 
-    // الاستماع عند العودة للتركيز على الصفحة
     window.addEventListener('focus', checkAndApplyInitialTheme);
-    // ============================================================
 
     function showToast(message, isError = false) {
       const toast = document.createElement('div');
@@ -249,7 +241,7 @@
     window.updateCartDisplay = function() {
       const container = document.getElementById('cartContainer');
       if (cart.length === 0) {
-        container.innerHTML = `<div class="empty-cart"><h2>🛒 سلة التسوق فارغة حالياً</h2><a href="index.html">العودة للرئيسية وتصفح المنتجات</a></div>`;
+        container.innerHTML = `<div class="empty-cart"><h2>🛒 Votre panier est actuellement vide</h2><a href="index.html">Retour à l'accueil et voir les produits</a></div>`;
         return;
       }
       
@@ -267,27 +259,27 @@
                 <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
                 <span>${item.quantity || 1}</span>
                 <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
-                <button class="remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> حذف</button>
+                <button class="remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> Supprimer</button>
               </div>
             </div>
           </div>`;
       }).join('');
 
       container.innerHTML = itemsHtml + `
-        <div class="cart-summary" dir="rtl">
+        <div class="cart-summary">
           <div class="promo-group">
-            <input type="text" id="pInput" class="promo-input" placeholder="كود الخصم (كود برومو)">
-            <button class="qty-btn" style="width:auto; padding:0 25px;" onclick="applyPromo()">تطبيق</button>
+            <input type="text" id="pInput" class="promo-input" placeholder="Code promo">
+            <button class="qty-btn" style="width:auto; padding:0 25px;" onclick="applyPromo()">Appliquer</button>
           </div>
           <p id="pMsg"></p>
           <div id="priceDetails"></div>
           <div id="infoSection" class="info-inputs">
-            <input type="text" id="custNom" class="promo-input" placeholder="الاسم واللقب بالكامل *">
-            <input type="tel" id="custTel1" class="promo-input" placeholder="رقم الهاتف الأساسي *">
-            <input type="tel" id="custTel2" class="promo-input" placeholder="رقم هاتف ثانٍ (اختياري)">
-            <input type="text" id="custVille" class="promo-input" placeholder="المدينة / الولاية *">
+            <input type="text" id="custNom" class="promo-input" placeholder="Nom & Prénom complet *">
+            <input type="tel" id="custTel1" class="promo-input" placeholder="Téléphone principal *">
+            <input type="tel" id="custTel2" class="promo-input" placeholder="Téléphone secondaire (Optionnel)">
+            <input type="text" id="custVille" class="promo-input" placeholder="Ville / Gouvernorat *">
           </div>
-          <button class="checkout-btn" id="confirmBtn" onclick="handleOrder()">تأكيد الطلب والدفع عند الاستلام</button>
+          <button class="checkout-btn" id="confirmBtn" onclick="handleOrder()">Confirmer la commande (Paiement à la livraison)</button>
         </div>`;
       calculatePrices();
     }
@@ -304,13 +296,13 @@
             let discountHtml = '';
             if (activeDiscount > 0) {
               const discountAmount = (subtotal + fraisLivraison) - total;
-              discountHtml = `<div class="price-row"><span>قيمة الخصم (${activeDiscount}%)</span><span style="color: var(--green);">- ${discountAmount.toFixed(2)} DT</span></div>`;
+              discountHtml = `<div class="price-row"><span>Remise (${activeDiscount}%)</span><span style="color: var(--green);">- ${discountAmount.toFixed(2)} DT</span></div>`;
             }
             priceDetails.innerHTML = `
-              <div class="price-row"><span>المجموع الفرعي</span><span>${subtotal.toFixed(2)} DT</span></div>
-              <div class="price-row"><span>مصاريف الشحن</span><span>${fraisLivraison.toFixed(2)} DT</span></div>
+              <div class="price-row"><span>Sous-total</span><span>${subtotal.toFixed(2)} DT</span></div>
+              <div class="price-row"><span>Frais de livraison</span><span>${fraisLivraison.toFixed(2)} DT</span></div>
               ${discountHtml}
-              <div class="price-row total-row"><span>الإجمالي الصافي</span><span>${total.toFixed(2)} DT</span></div>`;
+              <div class="price-row total-row"><span>Total Net</span><span>${total.toFixed(2)} DT</span></div>`;
         }
         return total;
     }
@@ -319,8 +311,8 @@
         const msg = document.getElementById('pMsg');
         const input = document.getElementById('pInput');
         const code = input.value.toUpperCase().trim();
-        if(!code) { msg.innerText = "❌ الرجاء إدخال الكود أولاً"; msg.style.color = "var(--red)"; return; }
-        msg.innerText = "🔄 جاري التحقق من الكود..."; msg.style.color = "var(--text-muted)";
+        if(!code) { msg.innerText = "❌ Veuillez saisir un code d'abord"; msg.style.color = "var(--red)"; return; }
+        msg.innerText = "🔄 Vérification du code..."; msg.style.color = "var(--text-muted)";
         try {
             const snapshot = await get(child(dbRef, `promos/${code}`));
             if (snapshot.exists()) {
@@ -330,13 +322,13 @@
                     if ((data.used || 0) < (data.limit || 999)) {
                         activeDiscount = data.discount;
                         promoData = { code: code, ...data };
-                        msg.innerText = `✅ تم قبول الكود بنجاح! خصم قدره ${activeDiscount}%`;
+                        msg.innerText = `✅ Code appliqué ! Remise de ${activeDiscount}%`;
                         msg.style.color = "var(--green)";
-                    } else { activeDiscount = 0; promoData = null; msg.innerText = `⚠️ انتهت صلاحية استخدام الكود "${code}"`; msg.style.color = "var(--orange)"; }
-                } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ كود منتهي الصلاحية`; msg.style.color = "var(--red)"; }
-            } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ الكود غير صحيح`; msg.style.color = "var(--red)"; }
+                    } else { activeDiscount = 0; promoData = null; msg.innerText = `⚠️ Ce code promo a expiré "${code}"`; msg.style.color = "var(--orange)"; }
+                } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ Code expiré`; msg.style.color = "var(--red)"; }
+            } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ Code incorrect`; msg.style.color = "var(--red)"; }
             calculatePrices();
-        } catch (e) { console.error(e); msg.innerText = "⚠️ خطأ في الاتصال بقاعدة البيانات"; msg.style.color = "var(--red)"; }
+        } catch (e) { console.error(e); msg.innerText = "⚠️ Erreur de connexion à la base de données"; msg.style.color = "var(--red)"; }
     }
 
     window.handleOrder = async function() {
@@ -344,7 +336,7 @@
         const confirmBtn = document.getElementById('confirmBtn');
         if(!infoStep) {
             infoSection.classList.add('active');
-            confirmBtn.innerHTML = "✅ إرسال وتأكيد الطلب الآن";
+            confirmBtn.innerHTML = "✅ Envoyer et confirmer la commande";
             confirmBtn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
             infoSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             infoStep = true;
@@ -354,8 +346,8 @@
         const tel1 = document.getElementById('custTel1').value.trim();
         const tel2 = document.getElementById('custTel2').value.trim();
         const ville = document.getElementById('custVille').value.trim();
-        if(!nom || !tel1 || !ville) { showToast("❌ الرجاء ملء الحقول الإجبارية (*)", true); return; }
-        if(tel1.length < 8) { showToast("❌ يجب أن يتكون رقم الهاتف من 8 أرقام على الأقل", true); return; }
+        if(!nom || !tel1 || !ville) { showToast("❌ Veuillez remplir les champs obligatoires (*)", true); return; }
+        if(tel1.length < 8) { showToast("❌ Le numéro de téléphone doit contenir au moins 8 chiffres", true); return; }
 
         const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
         const fraisLivraison = 8;
@@ -394,13 +386,13 @@
             localStorage.removeItem('cart');
             cart = [];
             infoStep = false;
-            showToast(`✅ تم إرسال طلبك بنجاح برقم #${orderId.slice(-6)}`);
+            showToast(`✅ Commande envoyée avec succès ! N° #${orderId.slice(-6)}`);
             updateCartDisplay();
             switchTab('orders');
             loadOrders();
         } catch (error) {
             console.error("Erreur lors de l'envoi de la commande:", error);
-            showToast("❌ حدث خطأ أثناء إرسال الطلب، يرجى المحاولة لاحقاً", true);
+            showToast("❌ Une erreur est survenue lors de l'envoi, veuillez réessayer", true);
         }
     }
 
@@ -411,13 +403,13 @@
     }
 
     window.removeItem = (index) => {
-      if (confirm("هل أنت متأكد من حذف هذا المنتج من السلة؟")) { cart.splice(index, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartDisplay(); if (cart.length === 0) infoStep = false; }
+      if (confirm("Êtes-vous sûr de vouloir supprimer cet article du panier ?")) { cart.splice(index, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartDisplay(); if (cart.length === 0) infoStep = false; }
     }
 
     async function loadOrders() {
         const container = document.getElementById('ordersContainer');
         if (userOrders.length === 0) {
-            container.innerHTML = `<div class="empty-state" dir="rtl"><i class="fas fa-box-open"></i><p>لا توجد طلبات مسجلة ومحفوظة حالياً</p></div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Aucune commande enregistrée pour le moment</p></div>`;
             return;
         }
 
@@ -435,19 +427,30 @@
                         continue;
                     }
                     const statusClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : 'status-delivered');
-                    const statusText = order.status === 'pending' ? '⏳ قيد المراجعة' : (order.status === 'shipping' ? '🚚 قيد الشحن والتوصيل' : '✅ تم التوصيل');
-                    const productsHtml = order.products.map(p => `<div class="product-item"><span>${p.name}</span><span>${p.quantity} × ${p.price.toFixed(2)} DT</span></div>`).join('');
+                    const statusText = order.status === 'pending' ? '⏳ En cours de révision' : (order.status === 'shipping' ? '🚚 En cours de livraison' : '✅ Livrée');
+                    
+                    // إصلاح المشكلة هنا: تحويل المنتجات إلى مصفوفة بشكل آمن إذا كانت Object قادمة من الفايربيس
+                    const productsData = order.products;
+                    const productsArray = Array.isArray(productsData) ? productsData : Object.values(productsData || {});
+                    
+                    const productsHtml = productsArray.map(p => `
+                        <div class="product-item">
+                            <span>${escapeHtml(p.name)}</span>
+                            <span>${p.quantity} × ${Number(p.price).toFixed(2)} DT</span>
+                        </div>
+                    `).join('');
+
                     html += `
-                        <div class="order-card" dir="rtl">
+                        <div class="order-card">
                             <div class="order-header">
                                 <div>
                                     <span class="order-id">#${userOrder.orderId.slice(-8)}</span>
-                                    <span class="order-date" style="margin-right:10px;">${order.dateReadable || new Date(order.createdAt).toLocaleString('ar-TN')}</span>
+                                    <span class="order-date" style="margin-left:10px;">${order.dateReadable || new Date(order.createdAt).toLocaleString('fr-TN')}</span>
                                 </div>
                                 <span class="status-badge ${statusClass}">${statusText}</span>
                             </div>
                             <div class="products-list">${productsHtml}</div>
-                            <div class="total-price">الإجمالي المالي: ${order.total.toFixed(2)} DT</div>
+                            <div class="total-price">Total : ${Number(order.total).toFixed(2)} DT</div>
                         </div>
                     `;
                 } else {
@@ -464,7 +467,7 @@
         }
         
         if (html === '') {
-            container.innerHTML = `<div class="empty-state" dir="rtl"><i class="fas fa-check-circle"></i><p>جميع طلباتك مكتملة! شكراً لتسوقك معنا</p></div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle"></i><p>Toutes vos commandes sont complétées ! Merci pour votre confiance.</p></div>`;
         } else {
             container.innerHTML = html;
         }

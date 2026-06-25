@@ -7,62 +7,92 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    /* الإعدادات الافتراضية (Dark Theme) */
     :root {
       --bg: #05070c;
+      --bg-gradient: linear-gradient(180deg, #05070c 0%, #070b14 100%);
       --panel: rgba(255, 255, 255, .05);
       --text: #f5f7ff;
+      --text-muted: #888;
+      --text-gray: #9ca3af;
       --blue: #00a3ff;
       --glow: 0 0 24px rgba(0, 163, 255, .22);
       --radius: 28px;
       --green: #00ff88;
       --orange: #ff9500;
       --red: #ff3131;
+      --border: rgba(255, 255, 255, .1);
+      --input-bg: #0a0a14;
+      --input-border: #222;
+      --order-bg: #1f2937;
+      --order-border: #374151;
+      --product-list-bg: #111827;
     }
+
+    /* إعدادات الثيم الفاتح (Light Theme) في حال كان مفعل في index */
+    :root.light-mode {
+      --bg: #f4f6f9;
+      --bg-gradient: linear-gradient(180deg, #f4f6f9 0%, #e9ecef 100%);
+      --panel: #ffffff;
+      --text: #1a1f2c;
+      --text-muted: #6c757d;
+      --text-gray: #495057;
+      --blue: #0076ff;
+      --glow: 0 4px 12px rgba(0, 118, 255, 0.15);
+      --border: rgba(0, 0, 0, .08);
+      --input-bg: #ffffff;
+      --input-border: #ced4da;
+      --order-bg: #ffffff;
+      --order-border: #dee2e6;
+      --product-list-bg: #f8f9fa;
+    }
+
     * { box-sizing: border-box; }
     
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(180deg, #05070c 0%, #070b14 100%);
+      background: var(--bg-gradient);
       color: var(--text);
       margin: 0;
       padding: 20px;
       max-width: 1000px;
       margin: 0 auto;
+      transition: background 0.3s, color 0.3s;
     }
     .top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .back-link { color: var(--blue); text-decoration: none; font-family: 'Orbitron'; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
     .back-link:hover { opacity: 0.7; }
     
-    .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-    .tab-btn { background: none; border: none; color: #9ca3af; padding: 10px 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s; border-radius: 30px; }
+    .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .tab-btn { background: none; border: none; color: var(--text-gray); padding: 10px 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s; border-radius: 30px; }
     .tab-btn.active { background: var(--blue); color: white; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
-    .cart-item { display: flex; gap: 20px; padding: 20px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 20px; margin-bottom: 16px; background: var(--panel); align-items: center; flex-wrap: wrap; }
+    .cart-item { display: flex; gap: 20px; padding: 20px; border: 1px solid var(--border); border-radius: 20px; margin-bottom: 16px; background: var(--panel); align-items: center; flex-wrap: wrap; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
     .cart-img { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; background: #1a1a2e; }
     .cart-details { flex: 1; min-width: 150px; }
     .cart-name { font-family: 'Orbitron'; font-size: 0.9rem; margin: 0 0 8px; }
-    .cart-price { color: #5fcfff; font-weight: 700; margin-bottom: 10px; }
+    .cart-price { color: var(--blue); font-weight: 700; margin-bottom: 10px; }
     .quantity-controls { display: flex; gap: 10px; align-items: center; }
-    .qty-btn { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 163, 255, .2); border: 1px solid rgba(0, 163, 255, .3); color: #fff; cursor: pointer; font-size: 16px; transition: all 0.2s; }
-    .qty-btn:hover { background: rgba(0, 163, 255, .4); }
+    .qty-btn { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 163, 255, .1); border: 1px solid var(--blue); color: var(--blue); cursor: pointer; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .qty-btn:hover { background: var(--blue); color: #fff; }
     .remove-btn { background: rgba(220, 53, 69, .1); color: #ff6b7a; border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-left: auto; transition: all 0.2s; }
     .remove-btn:hover { background: rgba(220, 53, 69, .3); }
     
-    .cart-summary { margin-top: 30px; padding: 30px; border-radius: var(--radius); background: var(--panel); border: 1px solid rgba(255,255,255,.05); }
+    .cart-summary { margin-top: 30px; padding: 30px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
     .promo-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .promo-input { flex: 1; background: #0a0a14; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 12px; outline: none; font-family: 'Inter'; }
+    .promo-input { flex: 1; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); padding: 12px; border-radius: 12px; outline: none; font-family: 'Inter'; }
     .promo-input:focus { border-color: var(--blue); }
     #pMsg { font-size: 0.85rem; margin-bottom: 15px; font-weight: 700; min-height: 20px; }
-    .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #888; }
-    .total-row { border-top: 1px solid #222; padding-top: 20px; margin-top: 10px; color: var(--blue); font-family: 'Orbitron'; font-size: 1.5rem; }
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-muted); }
+    .total-row { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 10px; color: var(--blue); font-family: 'Orbitron'; font-size: 1.5rem; }
     .checkout-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #00a3ff, #0f66ff); color: #fff; border-radius: 20px; font-weight: 700; border: none; cursor: pointer; margin-top: 20px; font-family: 'Orbitron'; font-size: 1rem; box-shadow: var(--glow); transition: all 0.2s; }
     .checkout-btn:hover { transform: scale(1.02); opacity: 0.95; }
     
     .checkout-btn i { font-size: 1.2rem; margin-right: 8px; }
     
-    .info-inputs { display: none; flex-direction: column; gap: 12px; margin-top: 20px; border-top: 1px solid #222; padding-top: 20px; }
+    .info-inputs { display: none; flex-direction: column; gap: 12px; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
     .info-inputs.active { display: flex; }
     .empty-cart { text-align: center; padding: 60px 20px; }
     .empty-cart h2 { margin-bottom: 20px; font-family: 'Orbitron'; }
@@ -72,20 +102,20 @@
     @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 10% { opacity: 1; transform: translateX(-50%) translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
     
     /* تنسيق الطلبات */
-    .order-card { background: #1f2937; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #374151; transition: all 0.3s; }
+    .order-card { background: var(--order-bg); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--order-border); transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
     .order-card:hover { transform: translateY(-3px); border-color: var(--blue); }
     .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-    .order-id { background: var(--blue); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-    .order-date { font-size: 11px; color: #9ca3af; }
+    .order-id { background: var(--blue); color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .order-date { font-size: 11px; color: var(--text-gray); }
     .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
     .status-pending { background: #f59e0b; color: #000; }
     .status-shipping { background: #3b82f6; color: #fff; }
     .status-delivered { background: #10b981; color: #fff; }
-    .products-list { margin: 15px 0; padding: 10px; background: #111827; border-radius: 12px; }
-    .product-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #374151; font-size: 13px; }
+    .products-list { margin: 15px 0; padding: 10px; background: var(--product-list-bg); border-radius: 12px; }
+    .product-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--order-border); font-size: 13px; }
     .product-item:last-child { border-bottom: none; }
     .total-price { font-size: 18px; font-weight: 800; color: #10b981; margin-top: 10px; text-align: left; }
-    .empty-state { text-align: center; padding: 60px 20px; background: #1f2937; border-radius: 20px; }
+    .empty-state { text-align: center; padding: 60px 20px; background: var(--order-bg); border-radius: 20px; border: 1px solid var(--order-border); }
     .empty-state i { font-size: 60px; color: #4b5563; margin-bottom: 20px; }
     
     @media (max-width: 600px) { 
@@ -99,6 +129,18 @@
       .checkout-btn i { font-size: 1rem; margin-right: 5px; }
     }
   </style>
+
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      // إذا كان الثيم المخزن في index.html هو light، يتم تطبيقه فوراً هنا
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-mode');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -261,7 +303,7 @@
         const tel2 = document.getElementById('custTel2').value.trim();
         const ville = document.getElementById('custVille').value.trim();
         if(!nom || !tel1 || !ville) { showToast("❌ Veuillez remplir tous les champs obligatoires (*)", true); return; }
-        if(tel1.length < 8) { showToast("❌ Le numéro de téléphone doit contenir au moins 8 chiffres", true); return; }
+        if(tel1.length < 8) { showToast("❌ Le numéro de téléphone doit contenir au menos 8 chiffres", true); return; }
 
         const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
         const fraisLivraison = 8;

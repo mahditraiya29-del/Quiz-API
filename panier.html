@@ -124,6 +124,12 @@
     .empty-state { text-align: center; padding: 60px 20px; background: var(--panel); border-radius: var(--radius-sm); border: 1px solid var(--border); }
     .empty-state i { font-size: 50px; color: var(--text-muted); margin-bottom: 20px; }
     
+    /* État de chargement pour les commandes */
+    .order-loading { opacity: 0.6; pointer-events: none; }
+    .order-loading .status-badge { background: rgba(156, 163, 175, 0.2); color: var(--text-muted); }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
     @media (max-width: 600px) { 
       body { padding: 15px; } 
       .cart-item { flex-direction: column; text-align: center; } 
@@ -179,6 +185,9 @@
     let promoData = null;
     let infoStep = false;
     let userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
+    
+    // État de chargement des commandes
+    let ordersLoading = {};
 
     function applyTheme(theme) {
         if (theme === 'dark') {
@@ -355,13 +364,29 @@
         if (activeDiscount > 0) total = total * (1 - (activeDiscount / 100));
 
         const orderId = push(ref(db, 'orders/')).key;
+        
+        // ★ CORRECTION 1 : Sauvegarder la commande dans le tableau userOrders AVANT l'envoi à Firebase
+        const orderEntry = { 
+            orderId: orderId, 
+            status: "pending", 
+            createdAt: Date.now(),
+            _pending: true  // Marqueur pour indiquer que la commande est en cours d'envoi
+        };
+        userOrders.push(orderEntry);
+        localStorage.setItem('userOrders', JSON.stringify(userOrders));
+
         const orderData = {
             orderId: orderId,
             clientName: nom,
             phone1: tel1,
             phone2: tel2 || "",
             city: ville,
-            products: cart.map(item => ({ name: item.name, price: getProductPrice(item), quantity: item.quantity || 1, imageUrl: item.img || item.imageUrl })),
+            products: cart.map(item => ({ 
+                name: item.name, 
+                price: getProductPrice(item), 
+                quantity: item.quantity || 1, 
+                imageUrl: item.img || item.imageUrl || ''
+            })),
             subtotal: subtotal,
             deliveryFee: fraisLivraison,
             discountPercent: activeDiscount,
@@ -372,27 +397,53 @@
             dateReadable: new Date().toLocaleString('fr-TN')
         };
 
+        // Désactiver le bouton pendant l'envoi
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span class="spinner"></span> Envoi en cours...';
+        confirmBtn.style.opacity = '0.7';
+
         try {
             await set(ref(db, `orders/${orderId}`), orderData);
-            userOrders.push({ orderId: orderId, status: "pending", createdAt: Date.now() });
-            localStorage.setItem('userOrders', JSON.stringify(userOrders));
             
+            // ★ CORRECTION 2 : Marquer la commande comme envoyée
+            const idx = userOrders.findIndex(o => o.orderId === orderId);
+            if (idx !== -1) {
+                userOrders[idx]._pending = false;
+                userOrders[idx]._sent = true;
+                localStorage.setItem('userOrders', JSON.stringify(userOrders));
+            }
+
             if(promoData && promoData.code) {
                 const currentSnap = await get(child(dbRef, `promos/${promoData.code}`));
                 if (currentSnap.exists()) {
                     await update(ref(db, `promos/${promoData.code}`), { used: (currentSnap.val().used || 0) + 1 });
                 }
             }
+            
             localStorage.removeItem('cart');
             cart = [];
             infoStep = false;
+            
             showToast(`✅ Commande envoyée avec succès ! N° #${orderId.slice(-6)}`);
             updateCartDisplay();
+            
+            // ★ CORRECTION 3 : Attendre un court instant puis recharger les commandes
+            await new Promise(r => setTimeout(r, 800));
             switchTab('orders');
-            loadOrders();
+            // Forcer un rechargement complet des commandes
+            await loadOrders(true);
+            
         } catch (error) {
             console.error("Erreur lors de l'envoi de la commande:", error);
             showToast("❌ Une erreur est survenue lors de l'envoi, veuillez réessayer", true);
+            
+            // Supprimer la commande de userOrders en cas d'échec
+            userOrders = userOrders.filter(o => o.orderId !== orderId);
+            localStorage.setItem('userOrders', JSON.stringify(userOrders));
+        } finally {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = "✅ Envoyer et confirmer la commande";
+            confirmBtn.style.opacity = '1';
         }
     }
 
@@ -406,39 +457,96 @@
       if (confirm("Êtes-vous sûr de vouloir supprimer cet article du panier ?")) { cart.splice(index, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartDisplay(); if (cart.length === 0) infoStep = false; }
     }
 
-    async function loadOrders() {
+    // ★ CORRECTION 4 : Fonction loadOrders améliorée avec gestion des commandes en attente et retry
+    async function loadOrders(forceRefresh = false) {
         const container = document.getElementById('ordersContainer');
-        if (userOrders.length === 0) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Aucune commande enregistrée pour le moment</p></div>`;
+        
+        // Filtrer les commandes qui ont été livrées (pour nettoyage)
+        const ordersToCheck = userOrders.filter(o => !o._delivered);
+        
+        if (ordersToCheck.length === 0) {
+            // Vérifier s'il y a des commandes livrées à afficher
+            const deliveredOrders = userOrders.filter(o => o._delivered);
+            if (deliveredOrders.length > 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle"></i><p>Toutes vos commandes sont complétées ! Merci pour votre confiance.</p></div>`;
+            } else {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Aucune commande enregistrée pour le moment</p></div>`;
+            }
             return;
         }
 
         let html = '';
         let updatedOrders = false;
-        
-        for (const userOrder of [...userOrders]) {
+        let hasPendingOrders = false;
+        let hasLoadingOrders = false;
+
+        // Trier les commandes : d'abord les commandes en attente d'envoi, puis les autres
+        const sortedOrders = [...ordersToCheck].sort((a, b) => {
+            if (a._pending && !b._pending) return -1;
+            if (!a._pending && b._pending) return 1;
+            return (b.createdAt || 0) - (a.createdAt || 0);
+        });
+
+        for (const userOrder of sortedOrders) {
             try {
+                // ★ CORRECTION 5 : Si la commande est en attente d'envoi, afficher un état de chargement
+                if (userOrder._pending) {
+                    hasLoadingOrders = true;
+                    html += `
+                        <div class="order-card order-loading">
+                            <div class="order-header">
+                                <div>
+                                    <span class="order-id">#${userOrder.orderId.slice(-8)}</span>
+                                    <span class="order-date" style="margin-left:10px;">⏳ Envoi en cours...</span>
+                                </div>
+                                <span class="status-badge"><span class="spinner"></span> En cours</span>
+                            </div>
+                            <div class="products-list" style="text-align:center; color: var(--text-muted); padding:20px;">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des produits...
+                            </div>
+                        </div>
+                    `;
+                    continue;
+                }
+
                 const snapshot = await get(child(dbRef, `orders/${userOrder.orderId}`));
                 if (snapshot.exists()) {
                     const order = snapshot.val();
+                    
+                    // Si la commande est livrée, la marquer comme telle
                     if (order.status === 'delivered') {
-                        userOrders = userOrders.filter(o => o.orderId !== userOrder.orderId);
+                        userOrder._delivered = true;
                         updatedOrders = true;
                         continue;
                     }
+                    
+                    // Si la commande est en attente ou en cours de livraison
+                    hasPendingOrders = true;
                     const statusClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : 'status-delivered');
                     const statusText = order.status === 'pending' ? '⏳ En cours de révision' : (order.status === 'shipping' ? '🚚 En cours de livraison' : '✅ Livrée');
                     
-                    // Résolution du problème d'affichage des produits
-                    const productsData = order.products;
-                    const productsArray = Array.isArray(productsData) ? productsData : Object.values(productsData || {});
+                    // ★ CORRECTION 6 : Récupération robuste des produits
+                    let productsArray = [];
+                    if (order.products) {
+                        if (Array.isArray(order.products)) {
+                            productsArray = order.products;
+                        } else if (typeof order.products === 'object') {
+                            // Firebase stocke les tableaux comme des objets avec des clés numériques
+                            productsArray = Object.values(order.products);
+                        }
+                    }
                     
-                    const productsHtml = productsArray.map(p => `
-                        <div class="product-item">
-                            <span>${escapeHtml(p.name)}</span>
-                            <span>${p.quantity} × ${Number(p.price).toFixed(2)} DT</span>
-                        </div>
-                    `).join('');
+                    // Filtrer les produits invalides
+                    productsArray = productsArray.filter(p => p && typeof p === 'object' && p.name);
+                    
+                    const productsHtml = productsArray.length > 0 
+                        ? productsArray.map(p => `
+                            <div class="product-item">
+                                <span>${escapeHtml(p.name)}</span>
+                                <span>${p.quantity || 1} × ${Number(p.price || 0).toFixed(2)} DT</span>
+                            </div>
+                        `).join('')
+                        : `<div style="text-align:center; color: var(--text-muted); padding:10px;">Aucun produit dans cette commande</div>`;
 
                     html += `
                         <div class="order-card">
@@ -450,37 +558,130 @@
                                 <span class="status-badge ${statusClass}">${statusText}</span>
                             </div>
                             <div class="products-list">${productsHtml}</div>
-                            <div class="total-price">Total : ${Number(order.total).toFixed(2)} DT</div>
+                            <div class="total-price">Total : ${Number(order.total || 0).toFixed(2)} DT</div>
                         </div>
                     `;
                 } else {
-                    userOrders = userOrders.filter(o => o.orderId !== userOrder.orderId);
-                    updatedOrders = true;
+                    // ★ CORRECTION 7 : Si la commande n'est pas trouvée, vérifier si elle a été créée récemment
+                    const age = Date.now() - (userOrder.createdAt || 0);
+                    if (age < 10000) { // moins de 10 secondes
+                        // La commande vient d'être créée, on attend qu'elle apparaisse
+                        hasLoadingOrders = true;
+                        html += `
+                            <div class="order-card order-loading">
+                                <div class="order-header">
+                                    <div>
+                                        <span class="order-id">#${userOrder.orderId.slice(-8)}</span>
+                                        <span class="order-date" style="margin-left:10px;">⏳ Synchronisation...</span>
+                                    </div>
+                                    <span class="status-badge"><span class="spinner"></span> Chargement</span>
+                                </div>
+                                <div class="products-list" style="text-align:center; color: var(--text-muted); padding:20px;">
+                                    <i class="fa-solid fa-spinner fa-spin"></i> Récupération des données...
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // La commande est trop vieille et n'existe pas, on la supprime
+                        userOrders = userOrders.filter(o => o.orderId !== userOrder.orderId);
+                        updatedOrders = true;
+                    }
                 }
             } catch (error) {
                 console.error("Error loading order:", error);
+                // En cas d'erreur, on garde la commande pour réessayer plus tard
+                hasLoadingOrders = true;
+                html += `
+                    <div class="order-card order-loading">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-id">#${userOrder.orderId.slice(-8)}</span>
+                                <span class="order-date" style="margin-left:10px;">⚠️ Erreur de chargement</span>
+                            </div>
+                            <span class="status-badge" style="background: rgba(239, 68, 68, 0.15); color: var(--red);">⚠️ Erreur</span>
+                        </div>
+                        <div class="products-list" style="text-align:center; color: var(--text-muted); padding:20px;">
+                            Impossible de charger cette commande
+                        </div>
+                    </div>
+                `;
             }
         }
-        
+
+        // Sauvegarder les modifications de userOrders
         if (updatedOrders) {
             localStorage.setItem('userOrders', JSON.stringify(userOrders));
         }
-        
+
+        // ★ CORRECTION 8 : Si des commandes sont en attente de chargement, programmer un rechargement
+        if (hasLoadingOrders) {
+            // Annuler tout timeout précédent
+            if (window._loadOrdersTimeout) {
+                clearTimeout(window._loadOrdersTimeout);
+            }
+            window._loadOrdersTimeout = setTimeout(() => {
+                if (document.getElementById('orders-tab').classList.contains('active')) {
+                    loadOrders();
+                }
+            }, 2000);
+        }
+
+        // Afficher le contenu
         if (html === '') {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle"></i><p>Toutes vos commandes sont complétées ! Merci pour votre confiance.</p></div>`;
+            // Vérifier s'il y a des commandes livrées
+            const hasDelivered = userOrders.some(o => o._delivered);
+            if (hasDelivered) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle"></i><p>Toutes vos commandes sont complétées ! Merci pour votre confiance.</p></div>`;
+            } else {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Aucune commande enregistrée pour le moment</p></div>`;
+            }
         } else {
             container.innerHTML = html;
         }
     }
 
+    // ★ CORRECTION 9 : Listener onValue amélioré pour les commandes
     const ordersRef = ref(db, 'orders');
+    let ordersListenerActive = false;
+    
     onValue(ordersRef, () => {
         if (document.getElementById('orders-tab').classList.contains('active')) {
-            loadOrders();
+            // Vérifier si des commandes sont en attente d'envoi
+            const hasPending = userOrders.some(o => o._pending);
+            if (hasPending) {
+                // Si des commandes sont en attente, attendre un peu avant de recharger
+                setTimeout(() => loadOrders(), 1000);
+            } else {
+                loadOrders();
+            }
         }
     });
 
+    // ★ CORRECTION 10 : Nettoyer les commandes obsolètes au chargement
+    function cleanupOldOrders() {
+        const now = Date.now();
+        let changed = false;
+        userOrders = userOrders.filter(o => {
+            // Supprimer les commandes de plus de 7 jours qui ne sont pas en attente
+            if (!o._pending && !o._delivered && (now - (o.createdAt || 0)) > 7 * 24 * 60 * 60 * 1000) {
+                changed = true;
+                return false;
+            }
+            return true;
+        });
+        if (changed) {
+            localStorage.setItem('userOrders', JSON.stringify(userOrders));
+        }
+    }
+    cleanupOldOrders();
+
+    // Initialisation
     updateCartDisplay();
+    
+    // Si des commandes existent, les charger au démarrage
+    if (userOrders.length > 0) {
+        setTimeout(() => loadOrders(), 500);
+    }
   </script>
 </body>
 </html>

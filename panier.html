@@ -304,6 +304,8 @@
     window.handleOrder = async function() {
         const infoSection = document.getElementById('infoSection');
         const confirmBtn = document.getElementById('confirmBtn');
+        
+        // فتح حقول الإدخال إذا لم تكن مفتوحة
         if(!infoStep) {
             infoSection.classList.add('active');
             confirmBtn.innerHTML = "✅ CONFIRMER L'ENVOI";
@@ -312,12 +314,36 @@
             infoStep = true;
             return;
         }
+
         const nom = document.getElementById('custNom').value.trim();
         const tel1 = document.getElementById('custTel1').value.trim();
         const tel2 = document.getElementById('custTel2').value.trim();
         const ville = document.getElementById('custVille').value.trim();
-        if(!nom || !tel1 || !ville) { showToast("❌ Veuillez remplir tous les champs obligatoires (*)", true); return; }
-        if(tel1.length < 8) { showToast("❌ Le numéro de téléphone doit contenir au moins 8 chiffres", true); return; }
+
+        // 1. التحقق من الحقول الفارغة
+        if(!nom || !tel1 || !ville) { 
+            showToast("❌ Veuillez remplir tous les champs obligatoires (*)", true); 
+            return; 
+        }
+
+        // 2. التحقق من طول الاسم (8 أحرف على الأقل)
+        if(nom.length < 8) { 
+            showToast("❌ الاسم يجب أن يتكون من 8 أحرف على الأقل", true); 
+            return; 
+        }
+
+        // 3. التحقق من رقم الهاتف (8 أرقام، يبدأ بـ 2 أو 5 أو 9)
+        const phoneRegex = /^[259]\d{7}$/;
+        if(!phoneRegex.test(tel1)) { 
+            showToast("❌ رقم الهاتف يجب أن يتكون من 8 أرقام ويبدأ بـ 2 أو 5 أو 9", true); 
+            return; 
+        }
+
+        // 4. تعطيل الزر لمنع الإرسال المتعدد (حماية)
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
+        confirmBtn.style.cursor = 'not-allowed';
+        confirmBtn.style.opacity = '0.7';
 
         const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
         const fraisLivraison = 8;
@@ -353,16 +379,25 @@
                     await set(ref(db, `promos/${promoData.code}/used`), (currentSnap.val().used || 0) + 1);
                 }
             }
+            
+            // تفريغ السلة وإعادة تعيين المتغيرات
             localStorage.removeItem('cart');
             cart = [];
             infoStep = false;
+            
             showToast(`✅ Commande #${orderId.slice(-6)} envoyée ! Suivez votre commande dans "متابعة طلباتي"`);
-            updateCartDisplay();
+            updateCartDisplay(); // سيقوم هذا بإعادة رسم الزر لحالته الطبيعية
             switchTab('orders');
             loadOrders();
         } catch (error) {
             console.error("Erreur lors de l'envoi de la commande:", error);
             showToast("❌ Une erreur s'est produite, veuillez réessayer", true);
+            
+            // إعادة تفعيل الزر في حالة فشل الاتصال بقاعدة البيانات
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = "✅ CONFIRMER L'ENVOI";
+            confirmBtn.style.cursor = 'pointer';
+            confirmBtn.style.opacity = '1';
         }
     }
 

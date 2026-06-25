@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Panier - KEF Muscle Store</title>
+  <title>Panier & Suivi - KEF Muscle Store</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
@@ -19,6 +19,7 @@
       --red: #ff3131;
     }
     * { box-sizing: border-box; }
+    
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(180deg, #05070c 0%, #070b14 100%);
@@ -28,123 +29,74 @@
       max-width: 1000px;
       margin: 0 auto;
     }
-
-    .top-nav { display: flex; align-items: center; margin-bottom: 20px; }
+    .top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .back-link { color: var(--blue); text-decoration: none; font-family: 'Orbitron'; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
     .back-link:hover { opacity: 0.7; }
-
-    .cart-item { 
-      display: flex; 
-      gap: 20px; 
-      padding: 20px; 
-      border: 1px solid rgba(255, 255, 255, .1); 
-      border-radius: 20px; 
-      margin-bottom: 16px; 
-      background: var(--panel); 
-      align-items: center; 
-      flex-wrap: wrap;
-    }
+    
+    .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+    .tab-btn { background: none; border: none; color: #9ca3af; padding: 10px 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s; border-radius: 30px; }
+    .tab-btn.active { background: var(--blue); color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .cart-item { display: flex; gap: 20px; padding: 20px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 20px; margin-bottom: 16px; background: var(--panel); align-items: center; flex-wrap: wrap; }
     .cart-img { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; background: #1a1a2e; }
     .cart-details { flex: 1; min-width: 150px; }
     .cart-name { font-family: 'Orbitron'; font-size: 0.9rem; margin: 0 0 8px; }
     .cart-price { color: #5fcfff; font-weight: 700; margin-bottom: 10px; }
-    
     .quantity-controls { display: flex; gap: 10px; align-items: center; }
-    .qty-btn { 
-      width: 35px; 
-      height: 35px; 
-      border-radius: 10px; 
-      background: rgba(0, 163, 255, .2); 
-      border: 1px solid rgba(0, 163, 255, .3); 
-      color: #fff; 
-      cursor: pointer; 
-      font-size: 16px;
-      transition: all 0.2s;
-    }
+    .qty-btn { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 163, 255, .2); border: 1px solid rgba(0, 163, 255, .3); color: #fff; cursor: pointer; font-size: 16px; transition: all 0.2s; }
     .qty-btn:hover { background: rgba(0, 163, 255, .4); }
-    .remove-btn { 
-      background: rgba(220, 53, 69, .1); 
-      color: #ff6b7a; 
-      border: none; 
-      padding: 10px; 
-      border-radius: 10px; 
-      cursor: pointer; 
-      margin-left: auto;
-      transition: all 0.2s;
-    }
+    .remove-btn { background: rgba(220, 53, 69, .1); color: #ff6b7a; border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-left: auto; transition: all 0.2s; }
     .remove-btn:hover { background: rgba(220, 53, 69, .3); }
     
-    .cart-summary { 
-      margin-top: 30px; 
-      padding: 30px; 
-      border-radius: var(--radius); 
-      background: var(--panel); 
-      border: 1px solid rgba(255,255,255,.05); 
-    }
+    .cart-summary { margin-top: 30px; padding: 30px; border-radius: var(--radius); background: var(--panel); border: 1px solid rgba(255,255,255,.05); }
     .promo-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .promo-input { 
-      flex: 1; 
-      background: #0a0a14; 
-      border: 1px solid #222; 
-      color: #fff; 
-      padding: 12px; 
-      border-radius: 12px; 
-      outline: none; 
-      font-family: 'Inter';
-    }
+    .promo-input { flex: 1; background: #0a0a14; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 12px; outline: none; font-family: 'Inter'; }
     .promo-input:focus { border-color: var(--blue); }
-    
     #pMsg { font-size: 0.85rem; margin-bottom: 15px; font-weight: 700; min-height: 20px; }
-
     .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #888; }
-    .total-row { 
-      border-top: 1px solid #222; 
-      padding-top: 20px; 
-      margin-top: 10px;
-      color: var(--blue); 
-      font-family: 'Orbitron'; 
-      font-size: 1.5rem; 
-    }
-    .checkout-btn { 
-      width: 100%; 
-      padding: 18px; 
-      background: linear-gradient(135deg, #00a3ff, #0f66ff); 
-      color: #fff; 
-      border-radius: 20px; 
-      font-weight: 700; 
-      border: none; 
-      cursor: pointer; 
-      margin-top: 20px; 
-      font-family: 'Orbitron'; 
-      font-size: 1rem;
-      box-shadow: var(--glow); 
-      transition: all 0.2s;
-    }
+    .total-row { border-top: 1px solid #222; padding-top: 20px; margin-top: 10px; color: var(--blue); font-family: 'Orbitron'; font-size: 1.5rem; }
+    .checkout-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #00a3ff, #0f66ff); color: #fff; border-radius: 20px; font-weight: 700; border: none; cursor: pointer; margin-top: 20px; font-family: 'Orbitron'; font-size: 1rem; box-shadow: var(--glow); transition: all 0.2s; }
     .checkout-btn:hover { transform: scale(1.02); opacity: 0.95; }
     
-    .info-inputs { 
-      display: none; 
-      flex-direction: column; 
-      gap: 12px; 
-      margin-top: 20px; 
-      border-top: 1px solid #222; 
-      padding-top: 20px; 
-    }
+    .checkout-btn i { font-size: 1.2rem; margin-right: 8px; }
+    
+    .info-inputs { display: none; flex-direction: column; gap: 12px; margin-top: 20px; border-top: 1px solid #222; padding-top: 20px; }
     .info-inputs.active { display: flex; }
-
-    .empty-cart {
-      text-align: center;
-      padding: 60px 20px;
-    }
+    .empty-cart { text-align: center; padding: 60px 20px; }
     .empty-cart h2 { margin-bottom: 20px; font-family: 'Orbitron'; }
     .empty-cart a { color: var(--blue); text-decoration: none; font-family: 'Orbitron'; }
-
-    @media (max-width: 600px) {
-      body { padding: 15px; }
-      .cart-item { flex-direction: column; text-align: center; }
-      .cart-details { text-align: center; }
-      .remove-btn { margin-left: 0; }
-      .quantity-controls { justify-content: center; }
+    
+    .toast-message { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 24px; border-radius: 50px; font-weight: bold; z-index: 1000; animation: fadeInOut 3s ease; }
+    @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 10% { opacity: 1; transform: translateX(-50%) translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
+    
+    /* تنسيق الطلبات */
+    .order-card { background: #1f2937; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #374151; transition: all 0.3s; }
+    .order-card:hover { transform: translateY(-3px); border-color: var(--blue); }
+    .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .order-id { background: var(--blue); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .order-date { font-size: 11px; color: #9ca3af; }
+    .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .status-pending { background: #f59e0b; color: #000; }
+    .status-shipping { background: #3b82f6; color: #fff; }
+    .status-delivered { background: #10b981; color: #fff; }
+    .products-list { margin: 15px 0; padding: 10px; background: #111827; border-radius: 12px; }
+    .product-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #374151; font-size: 13px; }
+    .product-item:last-child { border-bottom: none; }
+    .total-price { font-size: 18px; font-weight: 800; color: #10b981; margin-top: 10px; text-align: left; }
+    .empty-state { text-align: center; padding: 60px 20px; background: #1f2937; border-radius: 20px; }
+    .empty-state i { font-size: 60px; color: #4b5563; margin-bottom: 20px; }
+    
+    @media (max-width: 600px) { 
+      body { padding: 15px; } 
+      .cart-item { flex-direction: column; text-align: center; } 
+      .cart-details { text-align: center; } 
+      .remove-btn { margin-left: 0; } 
+      .quantity-controls { justify-content: center; } 
+      .order-header { flex-direction: column; align-items: flex-start; } 
+      .total-price { text-align: right; } 
+      .checkout-btn i { font-size: 1rem; margin-right: 5px; }
     }
   </style>
 </head>
@@ -157,14 +109,24 @@
   <h1 style="text-align:center; font-family: 'Orbitron'; color: var(--blue); margin-bottom:30px;">
     <i class="fa-solid fa-cart-shopping"></i> Mon Panier
   </h1>
-  
-  <div id="cartContainer"></div>
+
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="switchTab('cart')"><i class="fa-solid fa-bag-shopping"></i> panier </button>
+    <button class="tab-btn" onclick="switchTab('orders')"><i class="fa-solid fa-truck"></i> suivre mes commandes </button>
+  </div>
+
+  <div id="cart-tab" class="tab-content active">
+    <div id="cartContainer"></div>
+  </div>
+
+  <div id="orders-tab" class="tab-content">
+    <div id="ordersContainer"></div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, get, child, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, get, child, push, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // ✅ إعدادات Firebase الصحيحة (نفس المستخدمة في index.html)
     const firebaseConfig = {
         apiKey: "AIzaSyC56JLEqoOhQo194L8cv33nI7o5m04Ya9g",
         authDomain: "kef-muscle-store-b3ba0.firebaseapp.com",
@@ -179,36 +141,53 @@
     const db = getDatabase(app);
     const dbRef = ref(db);
 
-    // ✅ جلب المنتجات من localStorage (نفس هيكل التخزين في index.html)
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let activeDiscount = 0;
     let promoData = null;
     let infoStep = false;
+    let userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
 
-    function updateCartCount() {
-      const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-      const cartCountEl = document.getElementById('cartCount');
-      if (cartCountEl) cartCountEl.innerText = count;
+    function showToast(message, isError = false) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-message';
+      toast.style.background = isError ? '#ef4444' : '#22c55e';
+      toast.innerText = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
 
-    function getProductPrice(item) {
-      // التعامل مع السعر سواء كان رقم أو نص مع DT
-      if (typeof item.price === 'number') return item.price;
-      if (typeof item.price === 'string') {
-        const priceNum = parseFloat(item.price.replace('DT', '').replace(',', '.').trim());
-        return isNaN(priceNum) ? 0 : priceNum;
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      if (tab === 'cart') {
+        document.getElementById('cart-tab').classList.add('active');
+        document.querySelector('.tab-btn:first-child').classList.add('active');
+      } else {
+        document.getElementById('orders-tab').classList.add('active');
+        document.querySelector('.tab-btn:last-child').classList.add('active');
+        loadOrders();
       }
-      return 0;
+    }
+    window.switchTab = switchTab;
+
+    function getProductPrice(item) {
+        let price = item.price || item.currentPrice;
+        if (typeof price === 'number') return price;
+        if (typeof price === 'string') {
+            const priceNum = parseFloat(price.replace('DT', '').replace(',', '.').trim());
+            return isNaN(priceNum) ? 0 : priceNum;
+        }
+        if (item.finalPrice) return parseFloat(item.finalPrice);
+        if (item.originalPrice && item.discountPercent) {
+            return item.originalPrice * (1 - item.discountPercent / 100);
+        }
+        return 0;
     }
 
     window.updateCartDisplay = function() {
       const container = document.getElementById('cartContainer');
       if (cart.length === 0) {
-        container.innerHTML = `
-          <div class="empty-cart">
-            <h2>🛒 Votre panier est vide</h2>
-            <a href="index.html">RETOUR À L'ACCUEIL</a>
-          </div>`;
+        container.innerHTML = `<div class="empty-cart"><h2>🛒 Votre panier est vide</h2><a href="index.html">RETOUR À L'ACCUEIL</a></div>`;
         return;
       }
       
@@ -216,70 +195,20 @@
         const priceNum = getProductPrice(item);
         const priceDisplay = priceNum.toFixed(2) + ' DT';
         const imgSrc = item.img || item.imageUrl || 'https://via.placeholder.com/80';
-        
-        return `
-          <div class="cart-item" data-index="${index}">
-            <img src="${imgSrc}" class="cart-img" onerror="this.src='https://via.placeholder.com/80'">
-            <div class="cart-details">
-              <h3 class="cart-name">${escapeHtml(item.name)}</h3>
-              <div class="cart-price">${priceDisplay}</div>
-              <div class="quantity-controls">
-                <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
-                <span>${item.quantity || 1}</span>
-                <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
-                <button class="remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> Supprimer</button>
-              </div>
-            </div>
-          </div>
-        `;
+        return `<div class="cart-item" data-index="${index}"><img src="${imgSrc}" class="cart-img" onerror="this.src='https://via.placeholder.com/80'"><div class="cart-details"><h3 class="cart-name">${escapeHtml(item.name)}</h3><div class="cart-price">${priceDisplay}</div><div class="quantity-controls"><button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button><span>${item.quantity || 1}</span><button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button><button class="remove-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> Supprimer</button></div></div></div>`;
       }).join('');
 
-      container.innerHTML = itemsHtml + `
-        <div class="cart-summary">
-          <div class="promo-group">
-            <input type="text" id="pInput" class="promo-input" placeholder="CODE PROMO">
-            <button class="qty-btn" style="width:auto; padding:0 25px;" onclick="applyPromo()">APPLIQUER</button>
-          </div>
-          <p id="pMsg"></p>
-
-          <div id="priceDetails"></div>
-
-          <div id="infoSection" class="info-inputs">
-            <input type="text" id="custNom" class="promo-input" placeholder="Nom et Prénom *">
-            <input type="tel" id="custTel1" class="promo-input" placeholder="Téléphone 1 *">
-            <input type="tel" id="custTel2" class="promo-input" placeholder="Téléphone 2 (Optionnel)">
-            <input type="text" id="custVille" class="promo-input" placeholder="Ville *">
-          </div>
-          <button class="checkout-btn" id="confirmBtn" onclick="handleOrder()">PASSER À LA CAISSE</button>
-        </div>
-      `;
+      container.innerHTML = itemsHtml + `<div class="cart-summary"><div class="promo-group"><input type="text" id="pInput" class="promo-input" placeholder="CODE PROMO"><button class="qty-btn" style="width:auto; padding:0 25px;" onclick="applyPromo()">APPLIQUER</button></div><p id="pMsg"></p><div id="priceDetails"></div><div id="infoSection" class="info-inputs"><input type="text" id="custNom" class="promo-input" placeholder="Nom et Prénom *"><input type="tel" id="custTel1" class="promo-input" placeholder="Téléphone 1 *"><input type="tel" id="custTel2" class="promo-input" placeholder="Téléphone 2 (Optionnel)"><input type="text" id="custVille" class="promo-input" placeholder="Ville *"></div><button class="checkout-btn" id="confirmBtn" onclick="handleOrder()">PASSER À LA CAISSE</button></div>`;
       calculatePrices();
-      updateCartCount();
     }
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
-    }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
 
     window.calculatePrices = function() {
-        const subtotal = cart.reduce((sum, item) => {
-            const priceNum = getProductPrice(item);
-            return sum + (priceNum * (item.quantity || 1));
-        }, 0);
-        
-        const fraisLivraison = 7;
+        const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
+        const fraisLivraison = 8;
         let total = (subtotal + fraisLivraison);
-        
-        if (activeDiscount > 0) {
-          total = total * (1 - (activeDiscount / 100));
-        }
-        
+        if (activeDiscount > 0) total = total * (1 - (activeDiscount / 100));
         const priceDetails = document.getElementById('priceDetails');
         if(priceDetails) {
             let discountHtml = '';
@@ -287,12 +216,7 @@
               const discountAmount = (subtotal + fraisLivraison) - total;
               discountHtml = `<div class="price-row"><span>Réduction (${activeDiscount}%)</span><span style="color: var(--green);">- ${discountAmount.toFixed(2)} DT</span></div>`;
             }
-            priceDetails.innerHTML = `
-                <div class="price-row"><span>Sous-total</span><span>${subtotal.toFixed(2)} DT</span></div>
-                <div class="price-row"><span>Livraison</span><span>${fraisLivraison.toFixed(2)} DT</span></div>
-                ${discountHtml}
-                <div class="price-row total-row"><span>TOTAL À PAYER</span><span style="font-size: 1.8rem;">${total.toFixed(2)} DT</span></div>
-            `;
+            priceDetails.innerHTML = `<div class="price-row"><span>Sous-total</span><span>${subtotal.toFixed(2)} DT</span></div><div class="price-row"><span>Livraison</span><span>${fraisLivraison.toFixed(2)} DT</span></div>${discountHtml}<div class="price-row total-row"><span>TOTAL À PAYER</span><span style="font-size: 1.8rem;">${total.toFixed(2)} DT</span></div>`;
         }
         return total;
     }
@@ -301,184 +225,166 @@
         const msg = document.getElementById('pMsg');
         const input = document.getElementById('pInput');
         const code = input.value.toUpperCase().trim();
-        
-        if(!code) {
-          msg.innerText = "❌ Entrez un code promo";
-          msg.style.color = "var(--red)";
-          return;
-        }
-        
-        msg.innerText = "🔄 Vérification en cours...";
-        msg.style.color = "gray";
-
+        if(!code) { msg.innerText = "❌ Entrez un code promo"; msg.style.color = "var(--red)"; return; }
+        msg.innerText = "🔄 Vérification en cours..."; msg.style.color = "gray";
         try {
             const snapshot = await get(child(dbRef, `promos/${code}`));
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 const today = new Date().toISOString().split('T')[0];
-                const expiryDate = data.expiry;
-                
-                if (today <= expiryDate) {
-                    const usedCount = data.used || 0;
-                    const limitCount = data.limit || 999;
-                    
-                    if (usedCount < limitCount) {
+                if (today <= data.expiry) {
+                    if ((data.used || 0) < (data.limit || 999)) {
                         activeDiscount = data.discount;
                         promoData = { code: code, ...data };
                         msg.innerText = `✅ CODE ACCEPTÉ ! Réduction de ${activeDiscount}%`;
                         msg.style.color = "var(--green)";
-                        input.style.borderColor = "var(--green)";
-                    } else {
-                        activeDiscount = 0;
-                        promoData = null;
-                        msg.innerText = `⚠️ Code "${code}" a atteint sa limite d'utilisation (${usedCount}/${limitCount})`;
-                        msg.style.color = "var(--orange)";
-                        input.style.borderColor = "var(--orange)";
-                    }
-                } else {
-                    activeDiscount = 0;
-                    promoData = null;
-                    msg.innerText = `❌ Code "${code}" expiré le ${expiryDate}`;
-                    msg.style.color = "var(--red)";
-                    input.style.borderColor = "var(--red)";
-                }
-            } else {
-                activeDiscount = 0;
-                promoData = null;
-                msg.innerText = `❌ Code "${code}" invalide`;
-                msg.style.color = "var(--red)";
-                input.style.borderColor = "var(--red)";
-            }
+                    } else { activeDiscount = 0; promoData = null; msg.innerText = `⚠️ Code "${code}" a atteint sa limite`; msg.style.color = "var(--orange)"; }
+                } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ Code "${code}" expiré`; msg.style.color = "var(--red)"; }
+            } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ Code "${code}" invalide`; msg.style.color = "var(--red)"; }
             calculatePrices();
-            
-            setTimeout(() => {
-              input.style.borderColor = "";
-            }, 3000);
-            
-        } catch (e) {
-            console.error("Promo error:", e);
-            msg.innerText = "⚠️ Erreur de connexion";
-            msg.style.color = "var(--red)";
-        }
+        } catch (e) { console.error(e); msg.innerText = "⚠️ Erreur de connexion"; msg.style.color = "var(--red)"; }
     }
 
     window.handleOrder = async function() {
         const infoSection = document.getElementById('infoSection');
         const confirmBtn = document.getElementById('confirmBtn');
-
         if(!infoStep) {
             infoSection.classList.add('active');
             confirmBtn.innerHTML = "✅ CONFIRMER L'ENVOI";
             confirmBtn.style.background = "linear-gradient(135deg, #00ff88, #00cc66)";
-            // تمرير سلس إلى قسم المعلومات
             infoSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             infoStep = true;
             return;
         }
-
         const nom = document.getElementById('custNom').value.trim();
         const tel1 = document.getElementById('custTel1').value.trim();
         const tel2 = document.getElementById('custTel2').value.trim();
         const ville = document.getElementById('custVille').value.trim();
+        if(!nom || !tel1 || !ville) { showToast("❌ Veuillez remplir tous les champs obligatoires (*)", true); return; }
+        if(tel1.length < 8) { showToast("❌ Le numéro de téléphone doit contenir au moins 8 chiffres", true); return; }
 
-        if(!nom || !tel1 || !ville) {
-            alert("❌ Veuillez remplir tous les champs obligatoires (*)");
-            return;
-        }
-
-        // التحقق من صحة رقم الهاتف (على الأقل 8 أرقام)
-        if(tel1.length < 8) {
-            alert("❌ Le numéro de téléphone doit contenir au moins 8 chiffres");
-            return;
-        }
-
-        // تجهيز نص الطلب
-        let itemsText = "";
-        cart.forEach(item => {
-            const priceNum = getProductPrice(item);
-            itemsText += `▸ ${item.name} (x${item.quantity || 1}) → ${(priceNum * (item.quantity || 1)).toFixed(2)} DT\n`;
-        });
-        
         const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
-        const fraisLivraison = 7;
+        const fraisLivraison = 8;
         let total = (subtotal + fraisLivraison);
         if (activeDiscount > 0) total = total * (1 - (activeDiscount / 100));
-        
-        const discountText = activeDiscount > 0 ? `\n🏷️ Réduction: ${activeDiscount}%` : "";
-        const promoCodeText = promoData ? `\n🎫 Code promo: ${promoData.code}` : "";
 
-        const finalMsg = `🚀 *NOUVELLE COMMANDE KEF MUSCLE STORE* 🚀\n\n` +
-          `👤 *Client:* ${nom}\n` +
-          `📞 *Tél 1:* ${tel1}\n` +
-          `${tel2 ? `📞 *Tél 2:* ${tel2}\n` : ''}` +
-          `📍 *Ville:* ${ville}\n` +
-          `──────────────────\n` +
-          `🛒 *PRODUITS:*\n${itemsText}\n` +
-          `──────────────────\n` +
-          `💰 *Sous-total:* ${subtotal.toFixed(2)} DT\n` +
-          `🚚 *Livraison:* ${fraisLivraison.toFixed(2)} DT${discountText}${promoCodeText}\n` +
-          `✨ *TOTAL:* ${total.toFixed(2)} DT ✨\n\n` +
-          `📅 ${new Date().toLocaleString('fr-TN')}`;
+        const orderId = push(ref(db, 'orders/')).key;
+        const orderData = {
+            orderId: orderId,
+            clientName: nom,
+            phone1: tel1,
+            phone2: tel2 || "",
+            city: ville,
+            products: cart.map(item => ({ name: item.name, price: getProductPrice(item), quantity: item.quantity || 1, imageUrl: item.img || item.imageUrl })),
+            subtotal: subtotal,
+            deliveryFee: fraisLivraison,
+            discountPercent: activeDiscount,
+            promoCode: promoData ? promoData.code : null,
+            total: total,
+            status: "pending",
+            createdAt: Date.now(),
+            dateReadable: new Date().toLocaleString('fr-TN')
+        };
 
-        // تحديث عدد مرات استخدام الكوبون إذا وجد
-        if(promoData && promoData.code) {
-            try {
+        try {
+            await set(ref(db, `orders/${orderId}`), orderData);
+            userOrders.push({ orderId: orderId, status: "pending", createdAt: Date.now() });
+            localStorage.setItem('userOrders', JSON.stringify(userOrders));
+            
+            if(promoData && promoData.code) {
                 const currentSnap = await get(child(dbRef, `promos/${promoData.code}`));
                 if (currentSnap.exists()) {
-                    const currentData = currentSnap.val();
-                    await update(ref(db, `promos/${promoData.code}`), { 
-                        used: (currentData.used || 0) + 1 
-                    });
+                    await update(ref(db, `promos/${promoData.code}`), { used: (currentSnap.val().used || 0) + 1 });
                 }
-            } catch(e) {
-                console.error("Error updating promo usage:", e);
             }
-        }
-
-        // نسخ النص وعرض النتيجة
-        try {
-            await navigator.clipboard.writeText(finalMsg);
-            alert("✅ Commande copiée avec succès !\n\nVous allez être redirigé vers Instagram pour l'envoyer.");
-            
-            // فتح إنستغرام في تبويب جديد
-            window.open("https://www.instagram.com/kefmusclestore/", "_blank");
-            
-            // مسح السلة بعد ثواني
-            setTimeout(() => {
-                localStorage.removeItem('cart');
-                window.location.href = "index.html";
-            }, 2000);
-            
-        } catch (err) {
-            alert("❌ Erreur de copie. Veuillez copier manuellement:\n\n" + finalMsg);
-            console.error(err);
+            localStorage.removeItem('cart');
+            cart = [];
+            infoStep = false;
+            showToast(`✅ Commande #${orderId.slice(-6)} envoyée ! Suivez votre commande dans "متابعة طلباتي"`);
+            updateCartDisplay();
+            switchTab('orders');
+            loadOrders();
+        } catch (error) {
+            console.error("Erreur lors de l'envoi de la commande:", error);
+            showToast("❌ Une erreur s'est produite, veuillez réessayer", true);
         }
     }
 
     window.changeQuantity = (index, delta) => {
       if (!cart[index]) return;
       const newQuantity = (cart[index].quantity || 1) + delta;
-      if (newQuantity > 0) {
-        cart[index].quantity = newQuantity;
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartDisplay();
-      }
+      if (newQuantity > 0) { cart[index].quantity = newQuantity; localStorage.setItem('cart', JSON.stringify(cart)); updateCartDisplay(); }
     }
 
     window.removeItem = (index) => {
-      if (confirm("Supprimer ce produit du panier ?")) {
-        cart.splice(index, 1);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartDisplay();
-        // إعادة تعيين خطوة المعلومات إذا أصبح السلة فارغة
-        if (cart.length === 0) {
-          infoStep = false;
-        }
-      }
+      if (confirm("Supprimer ce produit du panier ?")) { cart.splice(index, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartDisplay(); if (cart.length === 0) infoStep = false; }
     }
 
-    // تهيئة العرض عند تحميل الصفحة
+    async function loadOrders() {
+        const container = document.getElementById('ordersContainer');
+        if (userOrders.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>لا توجد طلبات مسجلة حتى الآن</p></div>`;
+            return;
+        }
+
+        let html = '';
+        let updatedOrders = false;
+        
+        for (const userOrder of [...userOrders]) {
+            try {
+                const snapshot = await get(child(dbRef, `orders/${userOrder.orderId}`));
+                if (snapshot.exists()) {
+                    const order = snapshot.val();
+                    if (order.status === 'delivered') {
+                        userOrders = userOrders.filter(o => o.orderId !== userOrder.orderId);
+                        updatedOrders = true;
+                        continue;
+                    }
+                    const statusClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : 'status-delivered');
+                    const statusText = order.status === 'pending' ? '⏳ قيد الانتظار' : (order.status === 'shipping' ? '🚚 قيد الشحن' : '✅ تم التوصيل');
+                    const productsHtml = order.products.map(p => `<div class="product-item"><span>${p.name}</span><span>${p.quantity} × ${p.price.toFixed(2)} DT</span></div>`).join('');
+                    html += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <span class="order-id">#${userOrder.orderId.slice(-8)}</span>
+                                    <span class="order-date mr-2">${order.dateReadable || new Date(order.createdAt).toLocaleString('ar-TN')}</span>
+                                </div>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="products-list">${productsHtml}</div>
+                            <div class="total-price">الإجمالي: ${order.total.toFixed(2)} DT</div>
+                        </div>
+                    `;
+                } else {
+                    userOrders = userOrders.filter(o => o.orderId !== userOrder.orderId);
+                    updatedOrders = true;
+                }
+            } catch (error) {
+                console.error("Error loading order:", error);
+            }
+        }
+        
+        if (updatedOrders) {
+            localStorage.setItem('userOrders', JSON.stringify(userOrders));
+        }
+        
+        if (html === '') {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle"></i><p>جميع طلباتك مكتملة! شكراً لتسوقك معنا</p></div>`;
+        } else {
+            container.innerHTML = html;
+        }
+    }
+
+    const ordersRef = ref(db, 'orders');
+    onValue(ordersRef, () => {
+        if (document.getElementById('orders-tab').classList.contains('active')) {
+            loadOrders();
+        }
+    });
+
     updateCartDisplay();
+    window.switchTab = switchTab;
   </script>
 </body>
 </html>

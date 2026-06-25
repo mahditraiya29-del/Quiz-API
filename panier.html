@@ -126,8 +126,40 @@
 </head>
 <body>
 
+  <script>
+    // ============================================================
+    // التحكم في الثيم (الوضع النهاري / الليلي) بالتزامن مع index.html
+    // ============================================================
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+    }
+
+    // فحص وتطبيق الثيم عند فتح الصفحة ليتطابق مع القيمة المخزنة
+    function checkAndApplyInitialTheme() {
+        const savedTheme = localStorage.getItem('kef-theme') || 'light';
+        applyTheme(savedTheme);
+    }
+    
+    // التطبيق الفوري لتجنب وميض الألوان
+    checkAndApplyInitialTheme();
+
+    // الاستماع لتغيرات الثيم في localStorage فورا أثناء عمل التطبيق عبر التبويبات
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'kef-theme') {
+            applyTheme(e.newValue);
+        }
+    });
+
+    // التأكد من الثيم عند العودة للتركيز على الصفحة
+    window.addEventListener('focus', checkAndApplyInitialTheme);
+  </script>
+
   <div class="top-nav">
-    <a class='back-link' href='/'><i class="fa-solid fa-arrow-left"></i> RETOUR</a>
+    <a class='back-link' href='index.html'><i class="fa-solid fa-arrow-left"></i> RETOUR</a>
   </div>
 
   <h1 style="text-align:center; font-family: 'Orbitron'; color: var(--blue); margin-bottom:30px;">

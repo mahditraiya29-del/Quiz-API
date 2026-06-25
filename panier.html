@@ -429,7 +429,7 @@
                     const statusClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : 'status-delivered');
                     const statusText = order.status === 'pending' ? '⏳ En cours de révision' : (order.status === 'shipping' ? '🚚 En cours de livraison' : '✅ Livrée');
                     
-                    // إصلاح المشكلة هنا: تحويل المنتجات إلى مصفوفة بشكل آمن إذا كانت Object قادمة من الفايربيس
+                    // Résolution du problème d'affichage des produits
                     const productsData = order.products;
                     const productsArray = Array.isArray(productsData) ? productsData : Object.values(productsData || {});
                     

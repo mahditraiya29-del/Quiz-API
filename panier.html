@@ -269,7 +269,7 @@
     }
 
     // =========================================================================
-    // 🎫 دالة التحقق من الكود (لا تزيد العداد أبداً)
+    // 🎫 التحقق من الكود - فقط قراءة، لا تعديل في قاعدة البيانات
     // =========================================================================
     window.applyPromo = async function() {
         const msg = document.getElementById('pMsg');
@@ -316,7 +316,7 @@
     }
 
     // =========================================================================
-    // 🛒 إرسال الطلب (مع حفظ الكود فقط بدون زيادة العداد)
+    // 🛒 إرسال الطلب - نحفظ الكود فقط بدون تعديل العداد
     // =========================================================================
     window.handleOrder = async function() {
         const infoSection = document.getElementById('infoSection');
@@ -388,8 +388,8 @@
             total: total,
             status: "pending",
             createdAt: Date.now(),
-            dateReadable: new Date().toLocaleString('fr-TN'),
-            // ✅ لا نضيف promoUsed هنا، ستتم إضافتها فقط عند التوصيل من لوحة الإدارة
+            dateReadable: new Date().toLocaleString('fr-TN')
+            // ✅ لا نضيف promoUsed هنا أبداً
         };
 
         try {
@@ -400,7 +400,6 @@
             localStorage.removeItem('cart');
             cart = [];
             infoStep = false;
-            // ✅ نعيد تعيين الخصم ولكن لا نعدل قاعدة البيانات
             activeDiscount = 0;
             promoData = null;
             

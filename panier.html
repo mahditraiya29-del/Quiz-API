@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      /* Thème Clair par défaut */
       --bg: #f8f9fa;
       --bg-gradient: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
       --panel: #ffffff;
@@ -26,7 +25,6 @@
     }
     
     body.dark-theme {
-      /* Thème Sombre */
       --bg: #05070c;
       --bg-gradient: linear-gradient(180deg, #05070c 0%, #070b14 100%);
       --panel: rgba(255, 255, 255, .05);
@@ -95,7 +93,6 @@
     .toast-message { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 24px; border-radius: 50px; font-weight: bold; z-index: 1000; animation: fadeInOut 3s ease; }
     @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 10% { opacity: 1; transform: translateX(-50%) translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
     
-    /* تنسيق الطلبات */
     .order-card { background: var(--panel); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--panel-border); transition: all 0.3s; }
     .order-card:hover { transform: translateY(-3px); border-color: var(--blue); }
     .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
@@ -111,6 +108,7 @@
     .total-price { font-size: 18px; font-weight: 800; color: #10b981; margin-top: 10px; text-align: left; }
     .empty-state { text-align: center; padding: 60px 20px; background: var(--panel); border-radius: 20px; }
     .empty-state i { font-size: 60px; color: var(--text-muted); margin-bottom: 20px; }
+    .promo-used-badge { background: #10b981; color: white; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: bold; }
     
     @media (max-width: 600px) { 
       body { padding: 15px; } 
@@ -127,9 +125,6 @@
 <body>
 
   <script>
-    // ============================================================
-    // التحكم في الثيم (الوضع النهاري / الليلي) بالتزامن مع index.html
-    // ============================================================
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.body.classList.add('dark-theme');
@@ -138,23 +133,19 @@
         }
     }
 
-    // فحص وتطبيق الثيم عند فتح الصفحة ليتطابق مع القيمة المخزنة
     function checkAndApplyInitialTheme() {
         const savedTheme = localStorage.getItem('kef-theme') || 'light';
         applyTheme(savedTheme);
     }
     
-    // التطبيق الفوري لتجنب وميض الألوان
     checkAndApplyInitialTheme();
 
-    // الاستماع لتغيرات الثيم في localStorage فورا أثناء عمل التطبيق عبر التبويبات
     window.addEventListener('storage', (e) => {
         if (e.key === 'kef-theme') {
             applyTheme(e.newValue);
         }
     });
 
-    // التأكد من الثيم عند العودة للتركيز على الصفحة
     window.addEventListener('focus', checkAndApplyInitialTheme);
   </script>
 
@@ -277,6 +268,9 @@
         return total;
     }
 
+    // =========================================================================
+    // 🎫 دالة التحقق من الكود (لا تزيد العداد أبداً)
+    // =========================================================================
     window.applyPromo = async function() {
         const msg = document.getElementById('pMsg');
         const input = document.getElementById('pInput');
@@ -290,22 +284,44 @@
                 const today = new Date().toISOString().split('T')[0];
                 if (today <= data.expiry) {
                     if ((data.used || 0) < (data.limit || 999)) {
+                        // ✅ هنا فقط نطبق الخصم ولا نعدل العداد
                         activeDiscount = data.discount;
                         promoData = { code: code, ...data };
-                        msg.innerText = `✅ CODE ACCEPTÉ ! Réduction de ${activeDiscount}%`;
+                        msg.innerText = `✅ CODE ACCEPTÉ ! Réduction de ${activeDiscount}% (${data.used}/${data.limit} utilisations)`;
                         msg.style.color = "var(--green)";
-                    } else { activeDiscount = 0; promoData = null; msg.innerText = `⚠️ Code "${code}" a atteint sa limite`; msg.style.color = "var(--orange)"; }
-                } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ Code "${code}" expiré`; msg.style.color = "var(--red)"; }
-            } else { activeDiscount = 0; promoData = null; msg.innerText = `❌ Code "${code}" invalide`; msg.style.color = "var(--red)"; }
+                    } else { 
+                        activeDiscount = 0; 
+                        promoData = null; 
+                        msg.innerText = `⚠️ Code "${code}" a atteint sa limite (${data.used}/${data.limit})`; 
+                        msg.style.color = "var(--orange)"; 
+                    }
+                } else { 
+                    activeDiscount = 0; 
+                    promoData = null; 
+                    msg.innerText = `❌ Code "${code}" expiré`; 
+                    msg.style.color = "var(--red)"; 
+                }
+            } else { 
+                activeDiscount = 0; 
+                promoData = null; 
+                msg.innerText = `❌ Code "${code}" invalide`; 
+                msg.style.color = "var(--red)"; 
+            }
             calculatePrices();
-        } catch (e) { console.error(e); msg.innerText = "⚠️ Erreur de connexion"; msg.style.color = "var(--red)"; }
+        } catch (e) { 
+            console.error(e); 
+            msg.innerText = "⚠️ Erreur de connexion"; 
+            msg.style.color = "var(--red)"; 
+        }
     }
 
+    // =========================================================================
+    // 🛒 إرسال الطلب (مع حفظ الكود فقط بدون زيادة العداد)
+    // =========================================================================
     window.handleOrder = async function() {
         const infoSection = document.getElementById('infoSection');
         const confirmBtn = document.getElementById('confirmBtn');
         
-        // فتح حقول الإدخال إذا لم تكن مفتوحة
         if(!infoStep) {
             infoSection.classList.add('active');
             confirmBtn.innerHTML = "✅ CONFIRMER L'ENVOI";
@@ -320,26 +336,22 @@
         const tel2 = document.getElementById('custTel2').value.trim();
         const ville = document.getElementById('custVille').value.trim();
 
-        // 1. التحقق من الحقول الفارغة
         if(!nom || !tel1 || !ville) { 
             showToast("❌ Veuillez remplir tous les champs obligatoires (*)", true); 
             return; 
         }
 
-        // 2. التحقق من طول الاسم (8 أحرف على الأقل)
         if(nom.length < 8) { 
             showToast("❌ الاسم يجب أن يتكون من 8 أحرف على الأقل", true); 
             return; 
         }
 
-        // 3. التحقق من رقم الهاتف (8 أرقام، يبدأ بـ 2 أو 5 أو 9)
         const phoneRegex = /^[259]\d{7}$/;
         if(!phoneRegex.test(tel1)) { 
             showToast("فما رقم زايد و لا ناقص تأكد من نمروك", true); 
             return; 
         }
 
-        // 4. تعطيل الزر لمنع الإرسال المتعدد (حماية)
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
         confirmBtn.style.cursor = 'not-allowed';
@@ -348,7 +360,11 @@
         const subtotal = cart.reduce((sum, item) => sum + (getProductPrice(item) * (item.quantity || 1)), 0);
         const fraisLivraison = 8;
         let total = (subtotal + fraisLivraison);
-        if (activeDiscount > 0) total = total * (1 - (activeDiscount / 100));
+        let discountAmount = 0;
+        if (activeDiscount > 0) {
+            discountAmount = (subtotal + fraisLivraison) * (activeDiscount / 100);
+            total = (subtotal + fraisLivraison) - discountAmount;
+        }
 
         const orderId = push(ref(db, 'orders/')).key;
         const orderData = {
@@ -357,15 +373,23 @@
             phone1: tel1,
             phone2: tel2 || "",
             city: ville,
-            products: cart.map(item => ({ name: item.name, price: getProductPrice(item), quantity: item.quantity || 1, imageUrl: item.img || item.imageUrl })),
+            products: cart.map(item => ({ 
+                name: item.name, 
+                price: getProductPrice(item), 
+                quantity: item.quantity || 1, 
+                imageUrl: item.img || item.imageUrl 
+            })),
             subtotal: subtotal,
             deliveryFee: fraisLivraison,
             discountPercent: activeDiscount,
-            promoCode: promoData ? promoData.code : null,
+            discountAmount: discountAmount,
+            promoCode: promoData ? promoData.code : null, // ✅ نحفظ الكود فقط
+            totalBeforeDiscount: subtotal + fraisLivraison,
             total: total,
             status: "pending",
             createdAt: Date.now(),
-            dateReadable: new Date().toLocaleString('fr-TN')
+            dateReadable: new Date().toLocaleString('fr-TN'),
+            // ✅ لا نضيف promoUsed هنا، ستتم إضافتها فقط عند التوصيل من لوحة الإدارة
         };
 
         try {
@@ -373,27 +397,20 @@
             userOrders.push({ orderId: orderId, status: "pending", createdAt: Date.now() });
             localStorage.setItem('userOrders', JSON.stringify(userOrders));
             
-            if(promoData && promoData.code) {
-                const currentSnap = await get(child(dbRef, `promos/${promoData.code}`));
-                if (currentSnap.exists()) {
-                    await set(ref(db, `promos/${promoData.code}/used`), (currentSnap.val().used || 0) + 1);
-                }
-            }
-            
-            // تفريغ السلة وإعادة تعيين المتغيرات
             localStorage.removeItem('cart');
             cart = [];
             infoStep = false;
+            // ✅ نعيد تعيين الخصم ولكن لا نعدل قاعدة البيانات
+            activeDiscount = 0;
+            promoData = null;
             
             showToast(`✅ Commande #${orderId.slice(-6)} envoyée ! Suivez votre commande dans "متابعة طلباتي"`);
-            updateCartDisplay(); // سيقوم هذا بإعادة رسم الزر لحالته الطبيعية
+            updateCartDisplay();
             switchTab('orders');
             loadOrders();
         } catch (error) {
             console.error("Erreur lors de l'envoi de la commande:", error);
             showToast("❌ Une erreur s'est produite, veuillez réessayer", true);
-            
-            // إعادة تفعيل الزر في حالة فشل الاتصال بقاعدة البيانات
             confirmBtn.disabled = false;
             confirmBtn.innerHTML = "✅ CONFIRMER L'ENVOI";
             confirmBtn.style.cursor = 'pointer';
@@ -434,6 +451,16 @@
                     const statusClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : 'status-delivered');
                     const statusText = order.status === 'pending' ? '⏳ قيد الانتظار' : (order.status === 'shipping' ? '🚚 قيد الشحن' : '✅ تم التوصيل');
                     const productsHtml = order.products.map(p => `<div class="product-item"><span>${p.name}</span><span>${p.quantity} × ${p.price.toFixed(2)} DT</span></div>`).join('');
+                    
+                    let promoInfo = '';
+                    if (order.promoCode) {
+                        promoInfo = `<div style="font-size:12px; color: var(--blue); margin-top:5px;">
+                            <span class="promo-used-badge">🎫 ${order.promoCode}</span>
+                            ${order.discountPercent > 0 ? ` -${order.discountPercent}% (${order.discountAmount.toFixed(2)} DT)` : ''}
+                            ${order.promoUsed ? ' ✅ تم احتسابه' : ' ⏳ في انتظار التوصيل'}
+                        </div>`;
+                    }
+                    
                     html += `
                         <div class="order-card">
                             <div class="order-header">
@@ -444,7 +471,11 @@
                                 <span class="status-badge ${statusClass}">${statusText}</span>
                             </div>
                             <div class="products-list">${productsHtml}</div>
-                            <div class="total-price">الإجمالي: ${order.total.toFixed(2)} DT</div>
+                            ${promoInfo}
+                            <div class="total-price" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                                <span>💰 السعر قبل الخصم: ${(order.totalBeforeDiscount || order.subtotal + order.deliveryFee).toFixed(2)} DT</span>
+                                <span style="color: var(--blue);">💰 السعر بعد الخصم: ${order.total.toFixed(2)} DT</span>
+                            </div>
                         </div>
                     `;
                 } else {

@@ -120,6 +120,18 @@
       .total-price { text-align: right; } 
       .checkout-btn i { font-size: 1rem; margin-right: 5px; }
     }
+    @media (max-width: 380px) {
+      body { padding: 12px; }
+      h1 { font-size: 1.3rem !important; }
+      .tab-btn { padding: 8px 14px; font-size: 0.7rem; }
+      .cart-summary { padding: 20px; }
+      .total-row { font-size: 1.2rem; }
+      .promo-group { flex-direction: column; }
+    }
+    .toast-message { bottom: calc(30px + env(safe-area-inset-bottom)); }
+    @media (min-width: 1000px) {
+      body { padding: 30px 0; }
+    }
   </style>
 </head>
 <body>

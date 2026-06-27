@@ -4,6 +4,7 @@
    ============================================================ */
 
 *{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 :root{
   /* Light mode */
@@ -60,12 +61,14 @@ body{
 /* === SIDEBAR === */
 .sidebar{
   position:fixed;left:0;top:0;
-  width:285px;height:100vh;
+  width:285px;max-width:82vw;height:100vh;height:100dvh;
   background:var(--sidebar-bg);
   z-index:1000;
   transform:translateX(-100%);
   transition:transform 0.35s cubic-bezier(.4,0,.2,1);
   padding:28px 20px;
+  padding-top:calc(28px + env(safe-area-inset-top));
+  padding-bottom:calc(28px + env(safe-area-inset-bottom));
   overflow-y:auto;
   border-right:1px solid var(--border);
   box-shadow:8px 0 40px rgba(0,0,0,0.35);
@@ -191,12 +194,13 @@ body{
 
 /* === SEARCH PANEL === */
 .search-panel{
-  position:fixed;top:0;left:0;width:100%;height:100%;
+  position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;
   background:rgba(0,0,0,0.97);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   z-index:2000;display:none;
   align-items:center;justify-content:center;
   flex-direction:column;padding:30px;
+  padding-top:calc(30px + env(safe-area-inset-top));
   animation:fadeIn 0.3s ease;
 }
 .search-panel.active{display:flex}
@@ -544,7 +548,7 @@ body{
 
 /* === PRODUCT MODAL === */
 .product-modal{
-  position:fixed;top:0;left:0;width:100%;height:100%;
+  position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;
   background:rgba(0,0,0,0.92);z-index:4000;
   display:none;align-items:center;justify-content:center;padding:20px;
 }
@@ -659,7 +663,7 @@ body{
 
 /* === FIXED BUTTONS === */
 .fixed-btn{
-  position:fixed;bottom:24px;
+  position:fixed;bottom:24px;bottom:calc(24px + env(safe-area-inset-bottom));
   width:54px;height:54px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;z-index:99;
@@ -668,9 +672,9 @@ body{
 }
 .fixed-btn:hover{transform:scale(1.1);box-shadow:0 10px 30px rgba(0,0,0,0.45)}
 .fixed-btn i{font-size:26px;color:#fff}
-.cart-fixed{left:24px;background:var(--primary)}
+.cart-fixed{left:24px;left:calc(24px + env(safe-area-inset-left));background:var(--primary)}
 .cart-fixed i{color:#000}
-.whatsapp-fixed{right:24px;background:#25D366}
+.whatsapp-fixed{right:24px;right:calc(24px + env(safe-area-inset-right));background:#25D366}
 .cart-count-badge-fixed{
   position:absolute;top:-4px;right:-4px;
   background:#ef4444;color:#fff;border-radius:50%;
@@ -681,7 +685,7 @@ body{
 
 /* === CONTACT MODAL === */
 .contact-modal{
-  position:fixed;top:0;left:0;width:100%;height:100%;
+  position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;
   background:rgba(0,0,0,0.75);z-index:2000;
   display:none;align-items:center;justify-content:center;
   backdrop-filter:blur(6px);
@@ -717,7 +721,7 @@ body{
 
 /* === AD OVERLAY === */
 .ad-overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
+  position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;
   background:rgba(0,0,0,0.88);z-index:3000;
   display:none;align-items:center;justify-content:center;padding:20px;
   backdrop-filter:blur(8px);
@@ -759,6 +763,29 @@ body{
 .products-top-anchor{scroll-margin-top:80px}
 
 /* === RESPONSIVE === */
+
+/* Large desktops / wide screens: keep content centered, don't stretch forever */
+@media(min-width:1400px){
+  .hero{max-width:1320px;margin-left:auto;margin-right:auto;margin-top:20px}
+  .categories-section,.products-section,.products-full,.footer-grid,.footer{
+    max-width:1320px;margin-left:auto;margin-right:auto;
+  }
+  .products-full-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+  .product-card{min-width:190px;max-width:210px}
+}
+
+/* Laptops / small desktops */
+@media(min-width:993px) and (max-width:1399px){
+  .hero{max-width:96%;margin-left:auto;margin-right:auto}
+}
+
+/* Tablets (portrait & landscape) */
+@media(max-width:992px){
+  .hero{padding:40px 28px}
+  .hero-content h1{font-size:38px}
+  .products-full-grid{grid-template-columns:repeat(3,1fr)}
+}
+
 @media(max-width:768px){
   .hero{flex-direction:column;text-align:center;padding:36px 22px;margin:12px}
   .hero-content h1{font-size:34px}
@@ -773,6 +800,8 @@ body{
   .menu-toggle,.search-icon-btn,.theme-toggle{width:38px;height:38px;font-size:15px;border-radius:9px}
   .footer-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+/* Standard phones */
 @media(max-width:480px){
   .hero-content h1{font-size:28px}
   .welcome-slide{font-size:13px}
@@ -780,4 +809,49 @@ body{
   .topbar{gap:5px}
   .hero-image{display:none}
   .products-full-grid{grid-template-columns:repeat(2,1fr)}
+  .modal-container{max-width:94vw}
+  .ad-card{max-width:94vw}
+  .fixed-btn{width:48px;height:48px;bottom:16px;bottom:calc(16px + env(safe-area-inset-bottom))}
+  .fixed-btn i{font-size:22px}
+  .cart-fixed{left:16px;left:calc(16px + env(safe-area-inset-left))}
+  .whatsapp-fixed{right:16px;right:calc(16px + env(safe-area-inset-right))}
+}
+
+/* Small / narrow phones (e.g. iPhone SE, older Android) */
+@media(max-width:380px){
+  .hero{padding:28px 16px;margin:8px}
+  .hero-content h1{font-size:24px}
+  .hero-content p{font-size:13px}
+  .hero-btn{padding:12px 22px;font-size:13px}
+  .products-full-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .product-card{min-width:0;padding:10px}
+  .category-card{min-width:100px;padding:12px 10px}
+  .category-icon{width:38px;height:38px;font-size:16px}
+  .section-title{font-size:17px}
+  .products-header h2{font-size:17px}
+  .view-all-btn{padding:7px 14px;font-size:12px}
+  .sidebar{padding:20px 14px}
+  .footer-grid{grid-template-columns:1fr}
+}
+
+/* Very small / fold-style screens */
+@media(max-width:320px){
+  .hero-content h1{font-size:21px}
+  .modal-info h2{font-size:18px}
+  .modal-price{font-size:21px}
+}
+
+/* Short / landscape phones: avoid oversized hero pushing content off-screen */
+@media(max-height:480px) and (orientation:landscape){
+  .hero{min-height:auto;padding:24px 28px}
+  .hero-image{max-width:140px}
+  .hero-image img{max-width:140px}
+  .sidebar{padding-top:calc(16px + env(safe-area-inset-top))}
+}
+
+/* Touch devices: slightly larger tap targets for comfort */
+@media(hover:none) and (pointer:coarse){
+  .nav-item{padding:14px 16px}
+  .add-to-cart-btn{padding:10px}
+  .category-card,.product-card{cursor:default}
 }

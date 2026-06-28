@@ -1,890 +1,123 @@
-<!DOCTYPE html>
-<html lang="fr" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>KEF Muscle Store | Suppléments nutritionnels professionnels</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* ================================================================ */
-        /* --- إصلاح جذري: تكبير منتجات "Nos produits populaires" --- */
-        /* ================================================================ */
+<!DOCTYPE html><html lang="fr" dir="ltr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>KEF Muscle Store | Suppléments nutritionnels professionnels</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><link rel="stylesheet" href="style.css"></head><body><div class="sidebar" id="sidebar"><div class="sidebar-header"><div class="logo-area"><img src="ze.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/50'"><div><h2>KEF Muscle Store</h2><p>Suppléments sportifs professionnels</p></div></div><button class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button></div><button class="nav-item active" data-section="home"><i class="fas fa-home"></i> Accueil</button><button class="nav-item" data-section="products-full-page"><i class="fas fa-box"></i> Tous les produits</button><button class="nav-item" id="sidebarCartBtn"><i class="fas fa-shopping-cart"></i> Panier <span class="cart-badge" id="cartCountSidebar">0</span></button><button class="nav-item" id="assistantNavBtn"><i class="fas fa-robot"></i> Assistant intelligent</button><button class="nav-item" data-section="contact"><i class="fas fa-headset"></i> Contactez-nous</button></div><div class="main-content" id="mainContent"><div class="topbar"><div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;"><button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button><div class="avatar-wrapper"><div class="user-avatar-container"><img src="aa.webp" alt="User" class="user-avatar-img" onerror="this.src='https://via.placeholder.com/44'"></div></div></div><div class="welcome-text-center" id="welcomeSlideshow"><div class="welcome-slide">💪 <strong>KEF Muscle Store</strong> 💪</div><div class="welcome-slide">⚡️ <strong>KEF Muscle Store</strong> ⚡️</div><div class="welcome-slide">🔥 <strong>KEF Muscle Store</strong> 🔥</div></div><div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;"><button class="search-icon-btn" id="openSearchBtn"><i class="fas fa-search"></i></button><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button></div></div><div class="search-panel" id="searchPanel"><button class="close-search" id="closeSearchPanel"><i class="fas fa-times"></i></button><h3><i class="fas fa-search"></i> Rechercher un produit</h3><div class="search-input-wrapper"><input type="text" id="globalSearchInput" placeholder="Nom du produit, catégorie..."><button class="search-submit" id="globalSearchSubmit"><i class="fas fa-arrow-right"></i></button></div><div class="search-results" id="searchResults"><div class="no-results">🔍 Entrez un terme de recherche</div></div></div><div class="hero" id="homeSection"><div class="hero-content"><h1>La puissance <span>commence ici</span></h1><p>Suppléments nutritionnels premium pour la masse musculaire, la force, l'énergie et la performance</p><button class="hero-btn" id="discoverBtn">Découvrir maintenant <i class="fas fa-arrow-right"></i></button></div><div class="hero-image"><img id="heroImage" src="qq.webp" alt="Product" onerror="this.src='https://via.placeholder.com/250'"></div></div><div class="categories-section"><div class="section-title"><span>Catégories</span><div class="scroll-buttons"><button class="scroll-btn" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button><button class="scroll-btn" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button></div></div><div class="categories-wrapper"><div class="categories-grid" id="categoriesGrid"><div class="category-card" data-category="Protéine"><div class="category-icon"><i class="fas fa-dumbbell"></i></div><span class="category-name">Protéine</span></div><div class="category-card" data-category="Créatine"><div class="category-icon"><i class="fas fa-bolt"></i></div><span class="category-name">Créatine</span></div><div class="category-card" data-category="Brûleur de graisse"><div class="category-icon"><i class="fas fa-fire"></i></div><span class="category-name">Brûleur de graisse</span></div><div class="category-card" data-category="Pré-workout"><div class="category-icon"><i class="fas fa-bolt-lightning"></i></div><span class="category-name">Pré-workout</span></div><div class="category-card" data-category="Mass Gainer"><div class="category-icon"><i class="fas fa-weight-hanging"></i></div><span class="category-name">Mass Gainer</span></div><div class="category-card" data-category="Multivitamine"><div class="category-icon"><i class="fas fa-tablets"></i></div><span class="category-name">Multivitamine</span></div><div class="category-card" data-category="Autre"><div class="category-icon"><i class="fas fa-box-open"></i></div><span class="category-name">Autre</span></div></div></div><div class="scroll-indicator" id="scrollIndicator"></div></div><div class="products-section" id="mainProductsSection"><div class="products-header"><h2>Nos produits populaires</h2><button class="view-all-btn" id="viewAllBtn">Voir tout <i class="fas fa-arrow-right"></i></button></div><div class="products-scroll" id="productsScroll"><div style="text-align: center; width: 100%; padding: 40px;">Chargement des produits...</div></div></div><div id="productsTopAnchor" class="products-top-anchor"></div><div class="products-full" id="productsFullPage"><div style="padding: 20px;"><button class="back-btn" id="backToHomeBtn"><i class="fas fa-arrow-left"></i> Retour à l'accueil</button></div><div class="products-full-grid" id="productsFullGrid"></div></div><div class="footer" id="contactSection"><div class="footer-grid"><div class="footer-card"><div class="footer-icon"><i class="fas fa-truck-fast"></i></div><div><h4>Livraison rapide</h4><p>Partout en Tunisie</p></div></div><div class="footer-card"><div class="footer-icon"><i class="fas fa-shield-halved"></i></div><div><h4>Produits authentiques</h4><p>100% garantis</p></div></div><div class="footer-card"><div class="footer-icon"><i class="fas fa-lock"></i></div><div><h4>Paiement sécurisé</h4><p>Transactions protégées</p></div></div><div class="footer-card"><div class="footer-icon"><i class="fas fa-headset"></i></div><div><h4>Support 24/7</h4><p>Nous sommes là</p></div></div></div><div class="copyright"><p>© 2026 KEF Muscle Store. Tous droits réservés</p><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61585802145680" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook"></i></a><a href="https://www.tiktok.com/@kef.muscle.store?_r=1&_t=ZS-97XGGKKNkUH" target="_blank" rel="noopener noreferrer" title="TikTok"><i class="fab fa-tiktok"></i></a><a href="https://www.instagram.com/kefmusclestore?igsh=MW5nNXB2aXBrY3B2MQ==" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a></div></div></div></div><button class="fixed-btn cart-fixed" id="fixedCartBtn"><i class="fas fa-shopping-cart"></i><span class="cart-count-badge-fixed" id="cartCountFixed">0</span></button><button class="fixed-btn whatsapp-fixed" id="whatsappBtn"><i class="fab fa-whatsapp"></i></button><div class="product-modal" id="productModal"><div class="modal-container"><button class="modal-close" id="closeModalBtn"><i class="fas fa-times"></i></button><div class="modal-image"><img id="modalImg" src="" alt="Product"></div><div class="modal-info"><h2 id="modalTitle"></h2><span class="modal-category" id="modalCategory"></span><div class="modal-price" id="modalPrice"></div><p class="modal-desc" id="modalDesc"></p><button class="modal-add-btn" id="modalAddBtn"><i class="fas fa-cart-plus"></i> Ajouter au panier</button></div></div></div><div class="contact-modal" id="contactModal"><div class="modal-content"><h3>Contacter KEF Muscle Store</h3><div class="contact-options"><a href="https://wa.me/21693188883" target="_blank" class="contact-option wa-option"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="tel:+21693188883" class="contact-option call-option"><i class="fas fa-phone"></i> Appel téléphonique</a></div><button class="close-modal" id="closeModalBtnContact">Annuler</button></div></div><div class="ad-overlay" id="adOverlay"><div class="ad-card"><button class="close-ad" id="closeAdBtn"><i class="fas fa-times"></i></button><img id="adImage" src="" alt="Publicité"><div class="ad-body"><span class="ad-badge" id="adBadge">⚡ Offre limitée</span><h3 class="ad-title" id="adTitle"></h3><p class="ad-desc" id="adDesc"></p><div class="ad-prices"><div class="old-price" id="oldPriceDiv" style="display: none;">Ancien prix<br><del id="oldPrice"></del></div><div class="new-price">Prix actuel<br><span id="newPrice"></span> DT</div></div></div></div></div><script type="module" src="script.js"></script>
+<script>
+  (function() {
+    // تحديد التقييم بناءً على السعر
+    function getRatingByPrice(price) {
+      if (price < 100) return 3.5;
+      if (price >= 100 && price <= 150) return 4;
+      if (price > 150 && price <= 200) return 4.5;
+      return 5;
+    }
 
-        /* جعل حاوية المنتجات تأخذ عرضاً أكبر */
-        .products-scroll {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px;
-            padding: 15px 10px 25px 10px;
-            scrollbar-width: thin;
-            align-items: stretch;
-            scroll-behavior: smooth;
+    // توليد كود النجوم (كاملة، نصف، فارغة)
+    function generateStarsHtml(rating) {
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          html += '<i class="fas fa-star"></i>';
+        } else if (i - 0.5 === rating) {
+          html += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+          html += '<i class="far fa-star"></i>';
         }
+      }
+      return html;
+    }
 
-        /* تكبير البطاقات في القسم الرئيسي - هذا هو الحل الجذري */
-        .products-scroll .product-card,
-        #productsScroll .product-card,
-        .products-scroll > .product-card {
-            min-width: 240px !important;
-            max-width: 240px !important;
-            width: 240px !important;
-            flex: 0 0 240px !important;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 18px 16px 16px 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            display: flex !important;
-            flex-direction: column;
-            height: auto;
-            position: relative;
-        }
+    // تحديث نجوم منتج واحد
+    function updateCardRating(card) {
+      const priceEl = card.querySelector('.final-price, .product-price, .new-price span');
+      let priceText = '';
+      if (priceEl) {
+        priceText = priceEl.textContent;
+      } else {
+        const allText = card.innerText || "";
+        const match = allText.match(/(\d+(?:\.\d+)?)\s*DT/i);
+        if (match) priceText = match[0];
+      }
 
-        /* تأثير Hover على البطاقة */
-        .products-scroll .product-card:hover,
-        #productsScroll .product-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-6px);
-            box-shadow: 0 15px 35px rgba(0, 123, 192, 0.15);
-        }
-
-        body.dark-theme .products-scroll .product-card:hover,
-        body.dark-theme #productsScroll .product-card:hover {
-            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2);
-        }
-
-        /* حاوية الصورة - كبيرة وواضحة */
-        .products-scroll .product-img,
-        #productsScroll .product-img {
-            background: var(--panel-light);
-            border-radius: 14px;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            flex-shrink: 0;
-            position: relative;
-            width: 100%;
-            min-height: 200px;
-            max-height: 240px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* الصورة نفسها - تأخذ المساحة بالكامل */
-        .products-scroll .product-img img,
-        #productsScroll .product-img img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: contain !important;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
-            display: block;
-            max-height: 240px;
-        }
-
-        /* تأثير Hover على الصورة - تكبير مع ظل */
-        .products-scroll .product-card:hover .product-img img,
-        #productsScroll .product-card:hover .product-img img {
-            transform: scale(1.10) !important;
-            filter: brightness(1.05) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.12));
-        }
-
-        body.dark-theme .products-scroll .product-card:hover .product-img img,
-        body.dark-theme #productsScroll .product-card:hover .product-img img {
-            filter: brightness(1.10) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.3));
-        }
-
-        .products-scroll .product-img:hover img,
-        #productsScroll .product-img:hover img {
-            transform: scale(1.15) !important;
-            filter: brightness(1.08) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
-        }
-
-        body.dark-theme .products-scroll .product-img:hover img,
-        body.dark-theme #productsScroll .product-img:hover img {
-            filter: brightness(1.12) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35));
-        }
-
-        /* Overlay خفيف عند hover */
-        .products-scroll .product-img::after,
-        #productsScroll .product-img::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, rgba(0, 123, 192, 0.06), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-            border-radius: 14px;
-        }
-
-        .products-scroll .product-card:hover .product-img::after,
-        #productsScroll .product-card:hover .product-img::after {
-            opacity: 1;
-        }
-
-        body.dark-theme .products-scroll .product-img::after,
-        body.dark-theme #productsScroll .product-img::after {
-            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.10), transparent 60%);
-        }
-
-        /* تحسين النصوص */
-        .products-scroll .product-title,
-        #productsScroll .product-title {
-            font-size: 15px !important;
-            font-weight: 700;
-            margin-bottom: 5px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-height: 40px;
-            line-height: 1.4;
-            flex-shrink: 0;
-            transition: color 0.3s ease;
-        }
-
-        .products-scroll .product-card:hover .product-title,
-        #productsScroll .product-card:hover .product-title {
-            color: var(--primary);
-        }
-
-        .products-scroll .product-category,
-        #productsScroll .product-category {
-            font-size: 12px !important;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            flex-shrink: 0;
-        }
-
-        .products-scroll .product-rating,
-        #productsScroll .product-rating {
-            margin: 6px 0 5px;
-            color: #fbbf24;
-            font-size: 12px !important;
-            flex-shrink: 0;
-            letter-spacing: 2px;
-        }
-
-        /* السعر */
-        .products-scroll .product-price-wrapper,
-        #productsScroll .product-price-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-            min-height: 44px;
-            flex-shrink: 0;
-        }
-
-        .products-scroll .original-price,
-        #productsScroll .original-price {
-            font-size: 14px !important;
-            color: #9ca3af;
-            text-decoration: line-through;
-        }
-
-        .products-scroll .final-price,
-        #productsScroll .final-price {
-            font-size: 20px !important;
-            font-weight: 800;
-            color: var(--primary);
-            transition: color 0.3s ease;
-        }
-
-        .products-scroll .product-card:hover .final-price,
-        #productsScroll .product-card:hover .final-price {
-            color: var(--primary-dark);
-        }
-
-        .products-scroll .discount-badge,
-        #productsScroll .discount-badge {
-            font-size: 12px !important;
-            background: #ef4444;
-            color: #fff;
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-
-        /* ================================================================ */
-        /* --- زر Ajouter المحسن مع تأثير عند النقر --- */
-        /* ================================================================ */
-
-        .products-scroll .add-to-cart-btn,
-        #productsScroll .add-to-cart-btn {
-            margin-top: auto;
-            width: 100%;
-            background: var(--panel-light);
-            border: none;
-            padding: 12px 16px;
-            border-radius: 30px;
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 14px !important;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-family: 'Tajawal', sans-serif;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* تأثير عند hover */
-        .products-scroll .add-to-cart-btn:hover,
-        #productsScroll .add-to-cart-btn:hover {
-            background: var(--primary);
-            color: #fff;
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(0, 123, 192, 0.3);
-        }
-
-        body.dark-theme .products-scroll .add-to-cart-btn:hover,
-        body.dark-theme #productsScroll .add-to-cart-btn:hover {
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        /* تأثير عند النقر (active) */
-        .products-scroll .add-to-cart-btn:active,
-        #productsScroll .add-to-cart-btn:active {
-            transform: scale(0.95) !important;
-            background: var(--primary-dark);
-            box-shadow: 0 2px 10px rgba(0, 123, 192, 0.2);
-        }
-
-        /* تأثير Ripple عند النقر */
-        .products-scroll .add-to-cart-btn .ripple,
-        #productsScroll .add-to-cart-btn .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-            pointer-events: none;
-        }
-
-        @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
+      if (priceText) {
+        const priceNum = parseFloat(priceText.replace(/[^\d.]/g, ''));
+        if (!isNaN(priceNum)) {
+          const rating = getRatingByPrice(priceNum);
+          const ratingEl = card.querySelector('.product-rating');
+          if (ratingEl) {
+            const targetHtml = generateStarsHtml(rating);
+            if (ratingEl.innerHTML !== targetHtml) {
+              ratingEl.innerHTML = targetHtml;
             }
+          }
         }
+      }
+    }
 
-        /* أيقونة السلة في الزر */
-        .products-scroll .add-to-cart-btn i,
-        #productsScroll .add-to-cart-btn i {
-            font-size: 16px;
-            transition: transform 0.3s ease;
+    function updateAllCards() {
+      document.querySelectorAll('.product-card').forEach(updateCardRating);
+    }
+
+    // التحديث الفوري عند تحميل كروت جديدة في الصفحة
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.classList.contains('product-card')) {
+              updateCardRating(node);
+            } else {
+              node.querySelectorAll('.product-card').forEach(updateCardRating);
+            }
+          }
         }
+      }
+    });
 
-        .products-scroll .add-to-cart-btn:hover i,
-        #productsScroll .add-to-cart-btn:hover i {
-            transform: rotate(-15deg) scale(1.1);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // تحديث دوري احتياطي للتأكد من عدم إعادة التقييم الافتراضي بواسطة كود الصفحة الرئيسي
+    setInterval(updateAllCards, 500);
+  })();
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    const contactModal = document.getElementById('contactModal');
+    const closeModalBtnContact = document.getElementById('closeModalBtnContact');
+
+    if (whatsappBtn && contactModal) {
+      whatsappBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        contactModal.classList.add('show');
+      });
+    }
+
+    if (closeModalBtnContact && contactModal) {
+      closeModalBtnContact.addEventListener('click', (e) => {
+        e.preventDefault();
+        contactModal.classList.remove('show');
+      });
+    }
+
+    if (contactModal) {
+      contactModal.addEventListener('click', (e) => {
+        if (e.target === contactModal) {
+          contactModal.classList.remove('show');
         }
+      });
+    }
 
-        /* ================================================================ */
-        /* --- تأثير عند التنقل (scroll animation) --- */
-        /* ================================================================ */
-
-        /* إضافة تأثير ظهور متحرك للبطاقات عند التمرير */
-        .products-scroll .product-card,
-        #productsScroll .product-card {
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            animation: cardAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    // Force contact sections to open contact modal
+    document.querySelectorAll('[data-section="contact"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (contactModal) {
+          contactModal.classList.add('show');
         }
-
-        /* تأخير متدرج لكل بطاقة */
-        .products-scroll .product-card:nth-child(1),
-        #productsScroll .product-card:nth-child(1) { animation-delay: 0.05s; }
-        .products-scroll .product-card:nth-child(2),
-        #productsScroll .product-card:nth-child(2) { animation-delay: 0.10s; }
-        .products-scroll .product-card:nth-child(3),
-        #productsScroll .product-card:nth-child(3) { animation-delay: 0.15s; }
-        .products-scroll .product-card:nth-child(4),
-        #productsScroll .product-card:nth-child(4) { animation-delay: 0.20s; }
-        .products-scroll .product-card:nth-child(5),
-        #productsScroll .product-card:nth-child(5) { animation-delay: 0.25s; }
-        .products-scroll .product-card:nth-child(6),
-        #productsScroll .product-card:nth-child(6) { animation-delay: 0.30s; }
-        .products-scroll .product-card:nth-child(7),
-        #productsScroll .product-card:nth-child(7) { animation-delay: 0.35s; }
-        .products-scroll .product-card:nth-child(8),
-        #productsScroll .product-card:nth-child(8) { animation-delay: 0.40s; }
-        .products-scroll .product-card:nth-child(9),
-        #productsScroll .product-card:nth-child(9) { animation-delay: 0.45s; }
-        .products-scroll .product-card:nth-child(10),
-        #productsScroll .product-card:nth-child(10) { animation-delay: 0.50s; }
-
-        @keyframes cardAppear {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* ================================================================ */
-        /* --- المودال --- */
-        /* ================================================================ */
-
-        .modal-image {
-            width: 100%;
-            background: var(--panel-light);
-            border-radius: var(--radius) var(--radius) 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            aspect-ratio: 1;
-            max-height: 300px;
-        }
-        .modal-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            max-height: 250px;
-        }
-
-        /* بطاقات المنتجات في العرض الكامل */
-        .products-full-grid .product-card {
-            min-width: unset;
-            max-width: unset;
-        }
-
-        /* صورة الهيرو */
-        .hero-image {
-            flex: 0 0 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .hero-image img {
-            width: 100%;
-            max-width: 250px;
-            object-fit: contain;
-            filter: drop-shadow(0 10px 30px rgba(0, 123, 192, 0.3));
-            transition: opacity 0.5s ease;
-            aspect-ratio: 1;
-        }
-        body.dark-theme .hero-image img {
-            filter: drop-shadow(0 10px 30px rgba(59, 130, 246, 0.3));
-        }
-
-        /* --- Responsive pour la section produits populaires --- */
-        @media (max-width: 992px) {
-            .products-scroll .product-card,
-            #productsScroll .product-card {
-                min-width: 210px !important;
-                max-width: 210px !important;
-                width: 210px !important;
-                flex: 0 0 210px !important;
-                padding: 14px 12px 14px 12px;
-            }
-            .products-scroll .product-img,
-            #productsScroll .product-img {
-                min-height: 170px;
-                max-height: 200px;
-            }
-            .products-scroll .product-img img,
-            #productsScroll .product-img img {
-                max-height: 200px;
-            }
-            .products-scroll .final-price,
-            #productsScroll .final-price {
-                font-size: 18px !important;
-            }
-            .products-scroll .add-to-cart-btn,
-            #productsScroll .add-to-cart-btn {
-                padding: 10px 14px;
-                font-size: 13px !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .products-scroll .product-card,
-            #productsScroll .product-card {
-                min-width: 180px !important;
-                max-width: 180px !important;
-                width: 180px !important;
-                flex: 0 0 180px !important;
-                padding: 12px 10px 12px 10px;
-                border-radius: 14px;
-            }
-            .products-scroll .product-img,
-            #productsScroll .product-img {
-                min-height: 140px;
-                max-height: 170px;
-                border-radius: 10px;
-            }
-            .products-scroll .product-img img,
-            #productsScroll .product-img img {
-                max-height: 170px;
-            }
-            .products-scroll .product-card:hover .product-img img,
-            #productsScroll .product-card:hover .product-img img {
-                transform: scale(1.06) !important;
-            }
-            .products-scroll .product-img:hover img,
-            #productsScroll .product-img:hover img {
-                transform: scale(1.10) !important;
-            }
-            .products-scroll .product-title,
-            #productsScroll .product-title {
-                font-size: 13px !important;
-                min-height: 34px;
-            }
-            .products-scroll .final-price,
-            #productsScroll .final-price {
-                font-size: 16px !important;
-            }
-            .products-scroll .original-price,
-            #productsScroll .original-price {
-                font-size: 12px !important;
-            }
-            .products-scroll .add-to-cart-btn,
-            #productsScroll .add-to-cart-btn {
-                padding: 8px 12px;
-                font-size: 12px !important;
-                border-radius: 25px;
-            }
-            .products-scroll .add-to-cart-btn i,
-            #productsScroll .add-to-cart-btn i {
-                font-size: 13px;
-            }
-            .products-scroll .discount-badge,
-            #productsScroll .discount-badge {
-                font-size: 10px !important;
-                padding: 2px 8px;
-            }
-            .products-scroll {
-                gap: 14px;
-                padding: 12px 8px 20px 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .products-scroll .product-card,
-            #productsScroll .product-card {
-                min-width: 150px !important;
-                max-width: 150px !important;
-                width: 150px !important;
-                flex: 0 0 150px !important;
-                padding: 10px 8px 10px 8px;
-                border-radius: 12px;
-            }
-            .products-scroll .product-img,
-            #productsScroll .product-img {
-                min-height: 110px;
-                max-height: 140px;
-                border-radius: 8px;
-            }
-            .products-scroll .product-img img,
-            #productsScroll .product-img img {
-                max-height: 140px;
-            }
-            .products-scroll .product-title,
-            #productsScroll .product-title {
-                font-size: 12px !important;
-                min-height: 28px;
-            }
-            .products-scroll .product-category,
-            #productsScroll .product-category {
-                font-size: 10px !important;
-            }
-            .products-scroll .product-rating,
-            #productsScroll .product-rating {
-                font-size: 10px !important;
-                letter-spacing: 1px;
-            }
-            .products-scroll .product-price-wrapper,
-            #productsScroll .product-price-wrapper {
-                gap: 6px;
-                min-height: 34px;
-            }
-            .products-scroll .final-price,
-            #productsScroll .final-price {
-                font-size: 14px !important;
-            }
-            .products-scroll .original-price,
-            #productsScroll .original-price {
-                font-size: 11px !important;
-            }
-            .products-scroll .discount-badge,
-            #productsScroll .discount-badge {
-                font-size: 9px !important;
-                padding: 2px 6px;
-            }
-            .products-scroll .add-to-cart-btn,
-            #productsScroll .add-to-cart-btn {
-                padding: 6px 10px;
-                font-size: 10px !important;
-                border-radius: 20px;
-                gap: 5px;
-            }
-            .products-scroll .add-to-cart-btn i,
-            #productsScroll .add-to-cart-btn i {
-                font-size: 11px;
-            }
-            .products-scroll {
-                gap: 10px;
-                padding: 10px 6px 16px 6px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-area">
-                <img src="ze.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/50'">
-                <div>
-                    <h2>KEF Muscle Store</h2>
-                    <p>Suppléments sportifs professionnels</p>
-                </div>
-            </div>
-            <button class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
-        </div>
-        <button class="nav-item active" data-section="home"><i class="fas fa-home"></i> Accueil</button>
-        <button class="nav-item" data-section="products-full-page"><i class="fas fa-box"></i> Tous les produits</button>
-        <button class="nav-item" id="sidebarCartBtn"><i class="fas fa-shopping-cart"></i> Panier <span class="cart-badge" id="cartCountSidebar">0</span></button>
-        <button class="nav-item" id="assistantNavBtn"><i class="fas fa-robot"></i> Assistant intelligent</button>
-        <button class="nav-item" data-section="contact"><i class="fas fa-headset"></i> Contactez-nous</button>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <!-- Topbar -->
-        <div class="topbar">
-            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
-                <div class="avatar-wrapper">
-                    <div class="user-avatar-container">
-                        <img src="aa.webp" alt="User" class="user-avatar-img" onerror="this.src='https://via.placeholder.com/44'">
-                    </div>
-                </div>
-            </div>
-            <div class="welcome-text-center" id="welcomeSlideshow">
-                <div class="welcome-slide">💪 <strong>KEF Muscle Store</strong> 💪</div>
-                <div class="welcome-slide">⚡️ <strong>KEF Muscle Store</strong> ⚡️</div>
-                <div class="welcome-slide">🔥 <strong>KEF Muscle Store</strong> 🔥</div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                <button class="search-icon-btn" id="openSearchBtn"><i class="fas fa-search"></i></button>
-                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-            </div>
-        </div>
-
-        <!-- Search Panel -->
-        <div class="search-panel" id="searchPanel">
-            <button class="close-search" id="closeSearchPanel"><i class="fas fa-times"></i></button>
-            <h3><i class="fas fa-search"></i> Rechercher un produit</h3>
-            <div class="search-input-wrapper">
-                <input type="text" id="globalSearchInput" placeholder="Nom du produit, catégorie...">
-                <button class="search-submit" id="globalSearchSubmit"><i class="fas fa-arrow-right"></i></button>
-            </div>
-            <div class="search-results" id="searchResults">
-                <div class="no-results">🔍 Entrez un terme de recherche</div>
-            </div>
-        </div>
-
-        <!-- Hero Section -->
-        <div class="hero" id="homeSection">
-            <div class="hero-content">
-                <h1>La puissance <span>commence ici</span></h1>
-                <p>Suppléments nutritionnels premium pour la masse musculaire, la force, l'énergie et la performance</p>
-                <button class="hero-btn" id="discoverBtn">Découvrir maintenant <i class="fas fa-arrow-right"></i></button>
-            </div>
-            <div class="hero-image">
-                <img id="heroImage" src="qq.webp" alt="Product" onerror="this.src='https://via.placeholder.com/250'">
-            </div>
-        </div>
-
-        <!-- Categories Section -->
-        <div class="categories-section">
-            <div class="section-title">
-                <span>Catégories</span>
-                <div class="scroll-buttons">
-                    <button class="scroll-btn" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button>
-                    <button class="scroll-btn" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-            <div class="categories-wrapper">
-                <div class="categories-grid" id="categoriesGrid">
-                    <div class="category-card" data-category="Protéine"><div class="category-icon"><i class="fas fa-dumbbell"></i></div><span class="category-name">Protéine</span></div>
-                    <div class="category-card" data-category="Créatine"><div class="category-icon"><i class="fas fa-bolt"></i></div><span class="category-name">Créatine</span></div>
-                    <div class="category-card" data-category="Brûleur de graisse"><div class="category-icon"><i class="fas fa-fire"></i></div><span class="category-name">Brûleur de graisse</span></div>
-                    <div class="category-card" data-category="Pré-workout"><div class="category-icon"><i class="fas fa-bolt-lightning"></i></div><span class="category-name">Pré-workout</span></div>
-                    <div class="category-card" data-category="Mass Gainer"><div class="category-icon"><i class="fas fa-weight-hanging"></i></div><span class="category-name">Mass Gainer</span></div>
-                    <div class="category-card" data-category="Multivitamine"><div class="category-icon"><i class="fas fa-tablets"></i></div><span class="category-name">Multivitamine</span></div>
-                    <div class="category-card" data-category="Autre"><div class="category-icon"><i class="fas fa-box-open"></i></div><span class="category-name">Autre</span></div>
-                </div>
-            </div>
-            <div class="scroll-indicator" id="scrollIndicator"></div>
-        </div>
-
-        <!-- Products Section -->
-        <div class="products-section" id="mainProductsSection">
-            <div class="products-header">
-                <h2>Nos produits populaires</h2>
-                <button class="view-all-btn" id="viewAllBtn">Voir tout <i class="fas fa-arrow-right"></i></button>
-            </div>
-            <div class="products-scroll" id="productsScroll">
-                <div style="text-align: center; width: 100%; padding: 40px; font-size: 18px; color: var(--text-muted);">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; display: block; margin-bottom: 15px;"></i>
-                    Chargement des produits...
-                </div>
-            </div>
-        </div>
-
-        <div id="productsTopAnchor" class="products-top-anchor"></div>
-
-        <!-- Products Full Page -->
-        <div class="products-full" id="productsFullPage">
-            <div style="padding: 20px;">
-                <button class="back-btn" id="backToHomeBtn"><i class="fas fa-arrow-left"></i> Retour à l'accueil</button>
-            </div>
-            <div class="products-full-grid" id="productsFullGrid"></div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer" id="contactSection">
-            <div class="footer-grid">
-                <div class="footer-card">
-                    <div class="footer-icon"><i class="fas fa-truck-fast"></i></div>
-                    <div><h4>Livraison rapide</h4><p>Partout en Tunisie</p></div>
-                </div>
-                <div class="footer-card">
-                    <div class="footer-icon"><i class="fas fa-shield-halved"></i></div>
-                    <div><h4>Produits authentiques</h4><p>100% garantis</p></div>
-                </div>
-                <div class="footer-card">
-                    <div class="footer-icon"><i class="fas fa-lock"></i></div>
-                    <div><h4>Paiement sécurisé</h4><p>Transactions protégées</p></div>
-                </div>
-                <div class="footer-card">
-                    <div class="footer-icon"><i class="fas fa-headset"></i></div>
-                    <div><h4>Support 24/7</h4><p>Nous sommes là</p></div>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>© 2026 KEF Muscle Store. Tous droits réservés</p>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/profile.php?id=61585802145680" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="https://www.tiktok.com/@kef.muscle.store?_r=1&_t=ZS-97XGGKKNkUH" target="_blank" rel="noopener noreferrer" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.instagram.com/kefmusclestore?igsh=MW5nNXB2aXBrY3B2MQ==" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Fixed Buttons -->
-    <button class="fixed-btn cart-fixed" id="fixedCartBtn"><i class="fas fa-shopping-cart"></i><span class="cart-count-badge-fixed" id="cartCountFixed">0</span></button>
-    <button class="fixed-btn whatsapp-fixed" id="whatsappBtn"><i class="fab fa-whatsapp"></i></button>
-
-    <!-- Product Modal -->
-    <div class="product-modal" id="productModal">
-        <div class="modal-container">
-            <button class="modal-close" id="closeModalBtn"><i class="fas fa-times"></i></button>
-            <div class="modal-image">
-                <img id="modalImg" src="" alt="Product">
-            </div>
-            <div class="modal-info">
-                <h2 id="modalTitle"></h2>
-                <span class="modal-category" id="modalCategory"></span>
-                <div class="modal-price" id="modalPrice"></div>
-                <p class="modal-desc" id="modalDesc"></p>
-                <button class="modal-add-btn" id="modalAddBtn"><i class="fas fa-cart-plus"></i> Ajouter au panier</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Modal -->
-    <div class="contact-modal" id="contactModal">
-        <div class="modal-content">
-            <h3>Contacter KEF Muscle Store</h3>
-            <div class="contact-options">
-                <a href="https://wa.me/21693188883" target="_blank" class="contact-option wa-option"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a href="tel:+21693188883" class="contact-option call-option"><i class="fas fa-phone"></i> Appel téléphonique</a>
-            </div>
-            <button class="close-modal" id="closeModalBtnContact">Annuler</button>
-        </div>
-    </div>
-
-    <!-- Ad Overlay -->
-    <div class="ad-overlay" id="adOverlay">
-        <div class="ad-card">
-            <button class="close-ad" id="closeAdBtn"><i class="fas fa-times"></i></button>
-            <img id="adImage" src="" alt="Publicité">
-            <div class="ad-body">
-                <span class="ad-badge" id="adBadge">⚡ Offre limitée</span>
-                <h3 class="ad-title" id="adTitle"></h3>
-                <p class="ad-desc" id="adDesc"></p>
-                <div class="ad-prices">
-                    <div class="old-price" id="oldPriceDiv" style="display: none;">Ancien prix<br><del id="oldPrice"></del></div>
-                    <div class="new-price">Prix actuel<br><span id="newPrice"></span> DT</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="script.js"></script>
-    
-    <!-- JavaScript لتأثير Ripple على زر Ajouter -->
-    <script>
-        // إضافة تأثير Ripple على أزرار Ajouter
-        document.addEventListener('click', function(e) {
-            const btn = e.target.closest('.add-to-cart-btn');
-            if (!btn) return;
-            
-            const ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            
-            const rect = btn.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-            
-            btn.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-
-        // نظام التقييم التلقائي
-        (function() {
-            function getRatingByPrice(price) {
-                if (price < 100) return 3.5;
-                if (price >= 100 && price <= 150) return 4;
-                if (price > 150 && price <= 200) return 4.5;
-                return 5;
-            }
-
-            function generateStarsHtml(rating) {
-                let html = '';
-                for (let i = 1; i <= 5; i++) {
-                    if (i <= rating) {
-                        html += '<i class="fas fa-star"></i>';
-                    } else if (i - 0.5 === rating) {
-                        html += '<i class="fas fa-star-half-alt"></i>';
-                    } else {
-                        html += '<i class="far fa-star"></i>';
-                    }
-                }
-                return html;
-            }
-
-            function updateCardRating(card) {
-                const priceEl = card.querySelector('.final-price, .product-price, .new-price span');
-                let priceText = '';
-                if (priceEl) {
-                    priceText = priceEl.textContent;
-                } else {
-                    const allText = card.innerText || "";
-                    const match = allText.match(/(\d+(?:\.\d+)?)\s*DT/i);
-                    if (match) priceText = match[0];
-                }
-
-                if (priceText) {
-                    const priceNum = parseFloat(priceText.replace(/[^\d.]/g, ''));
-                    if (!isNaN(priceNum)) {
-                        const rating = getRatingByPrice(priceNum);
-                        const ratingEl = card.querySelector('.product-rating');
-                        if (ratingEl) {
-                            const targetHtml = generateStarsHtml(rating);
-                            if (ratingEl.innerHTML !== targetHtml) {
-                                ratingEl.innerHTML = targetHtml;
-                            }
-                        }
-                    }
-                }
-            }
-
-            function updateAllCards() {
-                document.querySelectorAll('.product-card').forEach(updateCardRating);
-            }
-
-            const observer = new MutationObserver((mutations) => {
-                for (const mutation of mutations) {
-                    for (const node of mutation.addedNodes) {
-                        if (node.nodeType === Node.ELEMENT_NODE) {
-                            if (node.classList && node.classList.contains('product-card')) {
-                                updateCardRating(node);
-                            } else if (node.querySelectorAll) {
-                                node.querySelectorAll('.product-card').forEach(updateCardRating);
-                            }
-                        }
-                    }
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-
-            setInterval(updateAllCards, 500);
-        })();
-
-        // Contact Modal
-        document.addEventListener('DOMContentLoaded', () => {
-            const whatsappBtn = document.getElementById('whatsappBtn');
-            const contactModal = document.getElementById('contactModal');
-            const closeModalBtnContact = document.getElementById('closeModalBtnContact');
-
-            if (whatsappBtn && contactModal) {
-                whatsappBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    contactModal.classList.add('show');
-                });
-            }
-
-            if (closeModalBtnContact && contactModal) {
-                closeModalBtnContact.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    contactModal.classList.remove('show');
-                });
-            }
-
-            if (contactModal) {
-                contactModal.addEventListener('click', (e) => {
-                    if (e.target === contactModal) {
-                        contactModal.classList.remove('show');
-                    }
-                });
-            }
-
-            document.querySelectorAll('[data-section="contact"]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (contactModal) {
-                        contactModal.classList.add('show');
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+      });
+    });
+  });
+</script>
+</body></html>

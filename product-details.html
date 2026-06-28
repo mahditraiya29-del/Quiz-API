@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>KEF Muscle Store | Détails du produit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* تنسيق صفحة تفاصيل المنتج */
+        .product-details-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .back-to-store {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--panel-light);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            text-decoration: none;
+        }
+
+        .back-to-store:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        .product-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            background: var(--panel);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .product-image-section {
+            position: relative;
+        }
+
+        .main-image-container {
+            position: relative;
+            background: var(--panel-light);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-in;
+            transition: all 0.3s ease;
+        }
+
+        .main-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            max-height: 500px;
+        }
+
+        .main-image-container.zoomed {
+            cursor: zoom-out;
+        }
+
+        .main-image-container.zoomed img {
+            transform: scale(1.8);
+        }
+
+        .zoom-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-image-container:hover .zoom-overlay {
+            opacity: 1;
+        }
+
+        .zoom-overlay i {
+            font-size: 48px;
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .thumbnail-gallery {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+
+        .thumbnail-gallery::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .thumbnail-gallery::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        .thumbnail-gallery::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .thumbnail-item {
+            width: 80px;
+            height: 80px;
+            min-width: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--panel-light);
+            flex-shrink: 0;
+        }
+
+        .thumbnail-item:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .thumbnail-item.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 123, 192, 0.3);
+        }
+
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .product-info-section .product-category-badge {
+            display: inline-block;
+            background: rgba(0, 123, 192, 0.15);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        body.dark-theme .product-info-section .product-category-badge {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .product-info-section h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .product-info-section .product-rating-large {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-info-section .product-rating-large .stars {
+            color: #fbbf24;
+            font-size: 18px;
+        }
+
+        .product-info-section .product-rating-large .reviews-count {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .product-info-section .price-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .product-info-section .price-section .current-price {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .product-info-section .price-section .original-price {
+            font-size: 20px;
+            color: #9ca3af;
+            text-decoration: line-through;
+        }
+
+        .product-info-section .price-section .discount-badge {
+            background: #ef4444;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .product-info-section .description {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .product-info-section .product-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .product-info-section .product-features .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--panel-light);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .product-info-section .product-features .feature-item i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .add-to-cart-section {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .add-to-cart-section .quantity-selector {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+
+        .add-to-cart-section .quantity-selector button {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: var(--panel-light);
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .add-to-cart-section .quantity-selector button:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .add-to-cart-section .quantity-selector span {
+            width: 50px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .add-to-cart-section .add-to-cart-main {
+            flex: 1;
+            background: var(--primary);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Tajawal', sans-serif;
+            min-width: 150px;
+        }
+
+        .add-to-cart-section .add-to-cart-main:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        .add-to-cart-section .add-to-cart-main:active {
+            transform: scale(0.98);
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--panel);
+            color: var(--text);
+            padding: 16px 32px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.5s ease;
+            font-weight: 600;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-notification i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .loading-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .not-found i {
+            font-size: 64px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .not-found h2 {
+            font-size: 28px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .not-found p {
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 992px) {
+            .product-details-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 25px;
+            }
+
+            .product-info-section h1 {
+                font-size: 26px;
+            }
+
+            .product-info-section .price-section .current-price {
+                font-size: 28px;
+            }
+
+            .product-info-section .product-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-details-page {
+                padding: 15px;
+            }
+
+            .product-details-grid {
+                padding: 15px;
+                border-radius: var(--radius-sm);
+            }
+
+            .add-to-cart-section {
+                flex-direction: column;
+            }
+
+            .add-to-cart-section .add-to-cart-main {
+                width: 100%;
+            }
+
+            .product-info-section h1 {
+                font-size: 22px;
+            }
+
+            .product-info-section .price-section .current-price {
+                font-size: 24px;
+            }
+
+            .thumbnail-item {
+                width: 60px;
+                height: 60px;
+                min-width: 60px;
+            }
+
+            .back-to-store {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+
+            .main-image-container img {
+                max-height: 300px;
+            }
+
+            .product-info-section .product-features .feature-item {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="main-content">
+        <div class="topbar">
+            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                <div class="avatar-wrapper">
+                    <div class="user-avatar-container">
+                        <img src="aa.webp" alt="User" class="user-avatar-img" onerror="this.src='https://via.placeholder.com/44'">
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-text-center">
+                <div class="welcome-slide active">📦 <strong>Détails du produit</strong> 📦</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <button class="cart-fixed-btn" id="cartBtn" style="background:var(--primary);border:none;width:44px;height:44px;border-radius:12px;color:#fff;cursor:pointer;font-size:18px;position:relative;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartCount" style="position:absolute;top:-5px;right:-5px;background:#ef4444;color:#fff;border-radius:50%;width:20px;height:20px;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700;">0</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="product-details-page" id="productDetailsPage">
+            <a href="index.html" class="back-to-store">
+                <i class="fas fa-arrow-left"></i> Retour au magasin
+            </a>
+
+            <div id="productContent">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Chargement du produit...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-grid">
+                <div class="footer-card">
+                    <div class="footer-icon"><i class="fas fa-truck-fast"></i></div>
+                    <div><h4>Livraison rapide</h4><p>Partout en Tunisie</p></div>
+                </div>
+                <div class="footer-card">
+                    <div class="footer-icon"><i class="fas fa-shield-halved"></i></div>
+                    <div><h4>Produits authentiques</h4><p>100% garantis</p></div>
+                </div>
+                <div class="footer-card">
+                    <div class="footer-icon"><i class="fas fa-lock"></i></div>
+                    <div><h4>Paiement sécurisé</h4><p>Transactions protégées</p></div>
+                </div>
+                <div class="footer-card">
+                    <div class="footer-icon"><i class="fas fa-headset"></i></div>
+                    <div><h4>Support 24/7</h4><p>Nous sommes là</p></div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2026 KEF Muscle Store. Tous droits réservés</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61585802145680" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.tiktok.com/@kef.muscle.store?_r=1&_t=ZS-97XGGKKNkUH" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/kefmusclestore?igsh=MW5nNXB2aXBrY3B2MQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-notification" id="toastNotification">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Ajouté au panier !</span>
+    </div>
+
+    <script>
+        // ============================================================
+        // DONNÉES DES PRODUITS (copiées depuis la base de données)
+        // ============================================================
+        // Ces données doivent correspondre à celles dans votre base Firebase
+        const PRODUCTS_DATA = {
+            proteins: [
+                {
+                    id: "prot1",
+                    name: "Whey Gold Standard 100%",
+                    category: "Protéine",
+                    price: 89.90,
+                    originalPrice: 109.90,
+                    imageUrl: "https://via.placeholder.com/400x400/007bc0/ffffff?text=Whey+Gold",
+                    images: [
+                        "https://via.placeholder.com/400x400/007bc0/ffffff?text=Whey+Gold+1",
+                        "https://via.placeholder.com/400x400/0056b3/ffffff?text=Whey+Gold+2"
+                    ],
+                    desc: "La protéine de lactosérum la plus vendue au monde. Mélange exclusif de protéines isolées, concentrées et hydrolysées pour une absorption rapide.",
+                    rating: 4.5,
+                    reviews: 1240,
+                    features: ["27g de protéine", "5.5g de BCAA", "Sans gluten"]
+                },
+                {
+                    id: "prot2",
+                    name: "Whey Isolate Zero",
+                    category: "Protéine",
+                    price: 99.90,
+                    originalPrice: 129.90,
+                    imageUrl: "https://via.placeholder.com/400x400/10b981/ffffff?text=Whey+Isolate",
+                    images: [
+                        "https://via.placeholder.com/400x400/10b981/ffffff?text=Isolate+1",
+                        "https://via.placeholder.com/400x400/059669/ffffff?text=Isolate+2"
+                    ],
+                    desc: "Protéine de lactosérum isolée ultra-filtrée. Absorption rapide, idéale pour la prise de masse musculaire.",
+                    rating: 4.8,
+                    reviews: 856,
+                    features: ["30g de protéine", "Zéro lactose", "Zéro sucre"]
+                }
+            ],
+            creatine: [
+                {
+                    id: "crea1",
+                    name: "Créatine Monohydrate",
+                    category: "Créatine",
+                    price: 34.90,
+                    originalPrice: 44.90,
+                    imageUrl: "https://via.placeholder.com/400x400/ec4899/ffffff?text=Creatine",
+                    images: [
+                        "https://via.placeholder.com/400x400/ec4899/ffffff?text=Creatine+1",
+                        "https://via.placeholder.com/400x400/db2777/ffffff?text=Creatine+2"
+                    ],
+                    desc: "Créatine monohydrate pure et micronisée pour une absorption maximale. Augmente la force et la puissance.",
+                    rating: 4.9,
+                    reviews: 2100,
+                    features: ["100% pure", "Micronisée", "Sans additifs"]
+                }
+            ],
+            fatburn: [
+                {
+                    id: "fat1",
+                    name: "Brûleur de Graisse Extreme",
+                    category: "Brûleur de graisse",
+                    price: 44.90,
+                    originalPrice: 59.90,
+                    imageUrl: "https://via.placeholder.com/400x400/ef4444/ffffff?text=Br%C3%BBleur",
+                    images: [
+                        "https://via.placeholder.com/400x400/ef4444/ffffff?text=Bruleur+1",
+                        "https://via.placeholder.com/400x400/dc2626/ffffff?text=Bruleur+2"
+                    ],
+                    desc: "Brûleur de graisse puissant pour une perte de poids rapide et efficace. Stimule le métabolisme.",
+                    rating: 4.2,
+                    reviews: 345,
+                    features: ["Thermogenèse", "Sans stimulants", "Naturel"]
+                }
+            ],
+            preworkout: [
+                {
+                    id: "pre1",
+                    name: "Pré-Workout Blast X",
+                    category: "Pré-workout",
+                    price: 54.90,
+                    originalPrice: 69.90,
+                    imageUrl: "https://via.placeholder.com/400x400/f59e0b/ffffff?text=Pre-Workout",
+                    images: [
+                        "https://via.placeholder.com/400x400/f59e0b/ffffff?text=Pre-Workout+1",
+                        "https://via.placeholder.com/400x400/d97706/ffffff?text=Pre-Workout+2"
+                    ],
+                    desc: "Pré-workout explosif pour une énergie maximale et une concentration laser.",
+                    rating: 4.6,
+                    reviews: 678,
+                    features: ["250mg de caféine", "4g de bêta-alanine", "6g de citrulline"]
+                }
+            ],
+            massgainer: [
+                {
+                    id: "mass1",
+                    name: "Mass Gainer Extreme",
+                    category: "Mass Gainer",
+                    price: 79.90,
+                    originalPrice: 99.90,
+                    imageUrl: "https://via.placeholder.com/400x400/8b5cf6/ffffff?text=Mass+Gainer",
+                    images: [
+                        "https://via.placeholder.com/400x400/8b5cf6/ffffff?text=Mass+Gainer+1",
+                        "https://via.placeholder.com/400x400/7c3aed/ffffff?text=Mass+Gainer+2"
+                    ],
+                    desc: "Gainer de masse de haute qualité pour une prise de poids et de muscle rapide.",
+                    rating: 4.3,
+                    reviews: 421,
+                    features: ["50g de protéine", "250g de glucides", "1260 calories"]
+                }
+            ],
+            multivitamine: [
+                {
+                    id: "multi1",
+                    name: "Multivitamine Sport",
+                    category: "Multivitamine",
+                    price: 29.90,
+                    originalPrice: 39.90,
+                    imageUrl: "https://via.placeholder.com/400x400/22d3ee/ffffff?text=Multivitamine",
+                    images: [
+                        "https://via.placeholder.com/400x400/22d3ee/ffffff?text=Multivitamine+1",
+                        "https://via.placeholder.com/400x400/06b6d4/ffffff?text=Multivitamine+2"
+                    ],
+                    desc: "Multivitamine complète spécialement conçue pour les sportifs.",
+                    rating: 4.4,
+                    reviews: 512,
+                    features: ["12 vitamines", "8 minéraux", "Complexe B"]
+                }
+            ],
+            autre: [
+                {
+                    id: "aut1",
+                    name: "Omega 3 HD",
+                    category: "Autre",
+                    price: 24.90,
+                    originalPrice: 34.90,
+                    imageUrl: "https://via.placeholder.com/400x400/6366f1/ffffff?text=Omega+3",
+                    images: [
+                        "https://via.placeholder.com/400x400/6366f1/ffffff?text=Omega+3+1",
+                        "https://via.placeholder.com/400x400/4f46e5/ffffff?text=Omega+3+2"
+                    ],
+                    desc: "Oméga-3 concentré pour la santé cardiovasculaire et la réduction de l'inflammation.",
+                    rating: 4.7,
+                    reviews: 789,
+                    features: ["1000mg EPA/DHA", "Purifié", "Sans mercure"]
+                }
+            ]
+        };
+
+        // ============================================================
+        // FONCTIONS UTILITAIRES
+        // ============================================================
+
+        function getAllProducts() {
+            const all = [];
+            Object.keys(PRODUCTS_DATA).forEach(cat => {
+                PRODUCTS_DATA[cat].forEach(p => {
+                    all.push({ ...p, categoryKey: cat });
+                });
+            });
+            return all;
+        }
+
+        function getProductById(id) {
+            const all = getAllProducts();
+            return all.find(p => p.id === id) || null;
+        }
+
+        function generateStarsHtml(rating) {
+            let html = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating - fullStars >= 0.5;
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    html += '<i class="fas fa-star"></i>';
+                } else if (i === fullStars + 1 && hasHalfStar) {
+                    html += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    html += '<i class="far fa-star"></i>';
+                }
+            }
+            return html;
+        }
+
+        function formatPrice(price) {
+            return price.toFixed(2) + ' DT';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateCartCount() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                document.getElementById('cartCount').textContent = count;
+            } catch (e) {
+                document.getElementById('cartCount').textContent = '0';
+            }
+        }
+
+        function addToCart(productId) {
+            const product = getProductById(productId);
+            if (!product) {
+                showToast('Produit non trouvé !');
+                return;
+            }
+
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existing = cart.find(item => item.id === productId);
+
+            if (existing) {
+                existing.quantity = (existing.quantity || 1) + 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.imageUrl,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showToast(`${product.name} ajouté au panier !`);
+        }
+
+        // ============================================================
+        // AFFICHAGE DU PRODUIT
+        // ============================================================
+
+        function renderProduct(product) {
+            const container = document.getElementById('productContent');
+            
+            if (!product) {
+                container.innerHTML = `
+                    <div class="not-found">
+                        <i class="fas fa-box-open"></i>
+                        <h2>Produit non trouvé</h2>
+                        <p>Le produit que vous recherchez n'existe pas ou a été supprimé.</p>
+                        <a href="index.html" class="back-to-store" style="display:inline-flex;margin-top:20px;">
+                            <i class="fas fa-arrow-left"></i> Retour au magasin
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const discount = product.originalPrice && product.originalPrice > product.price 
+                ? Math.round((1 - product.price / product.originalPrice) * 100) 
+                : 0;
+
+            const images = product.images && product.images.length > 0 
+                ? product.images 
+                : [product.imageUrl];
+
+            const features = product.features || [];
+
+            container.innerHTML = `
+                <div class="product-details-grid">
+                    <div class="product-image-section">
+                        <div class="main-image-container" id="mainImageContainer">
+                            <img id="productMainImage" src="${product.imageUrl}" alt="${product.name}" 
+                                 onerror="this.src='https://via.placeholder.com/400x400/007bc0/ffffff?text=${encodeURIComponent(product.name)}'">
+                            <div class="zoom-overlay">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                        </div>
+                        <div class="thumbnail-gallery" id="thumbnailGallery">
+                            ${images.map((img, index) => `
+                                <div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+                                    <img src="${img}" alt="${product.name} ${index + 1}" 
+                                         onerror="this.src='https://via.placeholder.com/80x80/007bc0/ffffff?text=${encodeURIComponent(product.name)}'">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="product-info-section">
+                        <span class="product-category-badge">${product.category}</span>
+                        <h1>${product.name}</h1>
+                        <div class="product-rating-large">
+                            <span class="stars">${generateStarsHtml(product.rating || 4.5)}</span>
+                            <span class="reviews-count">(${product.reviews || 0} avis)</span>
+                        </div>
+                        <div class="price-section">
+                            <span class="current-price">${formatPrice(product.price)}</span>
+                            ${product.originalPrice && product.originalPrice > product.price ? `
+                                <span class="original-price">${formatPrice(product.originalPrice)}</span>
+                                <span class="discount-badge">-${discount}%</span>
+                            ` : ''}
+                        </div>
+                        <p class="description">${product.desc || 'Aucune description disponible.'}</p>
+                        <div class="product-features">
+                            ${features.map(f => `
+                                <div class="feature-item">
+                                    <i class="fas fa-check-circle"></i> ${f}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="add-to-cart-section">
+                            <div class="quantity-selector">
+                                <button id="decrementQty"><i class="fas fa-minus"></i></button>
+                                <span id="quantityDisplay">1</span>
+                                <button id="incrementQty"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <button class="add-to-cart-main" id="addToCartMain">
+                                <i class="fas fa-cart-plus"></i> Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // --- Gestion de la quantité ---
+            let quantity = 1;
+            document.getElementById('decrementQty').addEventListener('click', () => {
+                if (quantity > 1) {
+                    quantity--;
+                    document.getElementById('quantityDisplay').textContent = quantity;
+                }
+            });
+            document.getElementById('incrementQty').addEventListener('click', () => {
+                if (quantity < 99) {
+                    quantity++;
+                    document.getElementById('quantityDisplay').textContent = quantity;
+                }
+            });
+
+            // --- Ajout au panier ---
+            document.getElementById('addToCartMain').addEventListener('click', () => {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const existing = cart.find(item => item.id === product.id);
+                if (existing) {
+                    existing.quantity = (existing.quantity || 1) + quantity;
+                } else {
+                    cart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.imageUrl,
+                        quantity: quantity
+                    });
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                showToast(`${product.name} (x${quantity}) ajouté au panier !`);
+            });
+
+            // --- Zoom sur l'image ---
+            document.getElementById('mainImageContainer').addEventListener('click', function() {
+                this.classList.toggle('zoomed');
+            });
+
+            // --- Miniatures ---
+            document.querySelectorAll('.thumbnail-item').forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    const imgSrc = this.querySelector('img').src;
+                    document.getElementById('productMainImage').src = imgSrc;
+                    document.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('mainImageContainer').classList.remove('zoomed');
+                });
+            });
+        }
+
+        // ============================================================
+        // INITIALISATION
+        // ============================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thème
+            const savedTheme = localStorage.getItem('kef-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.querySelector('#themeToggle i').className = 'fas fa-sun';
+            }
+
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                document.body.classList.toggle('dark-theme');
+                const isDark = document.body.classList.contains('dark-theme');
+                localStorage.setItem('kef-theme', isDark ? 'dark' : 'light');
+                this.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            });
+
+            // Panier
+            document.getElementById('cartBtn').addEventListener('click', () => {
+                window.location.href = 'panier.html';
+            });
+
+            updateCartCount();
+
+            // Récupérer l'ID du produit depuis l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (productId) {
+                const product = getProductById(productId);
+                renderProduct(product);
+            } else {
+                document.getElementById('productContent').innerHTML = `
+                    <div class="not-found">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h2>ID de produit manquant</h2>
+                        <p>Aucun produit spécifié dans l'URL.</p>
+                        <a href="index.html" class="back-to-store" style="display:inline-flex;margin-top:20px;">
+                            <i class="fas fa-arrow-left"></i> Retour au magasin
+                        </a>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -25,15 +25,13 @@
         .product-img img {
             width: 100%;
             height: 100%;
-            object-fit: contain;  /* تغيير من cover إلى contain */
+            object-fit: contain;
             transition: transform 0.3s ease;
             display: block;
         }
-        /* إضافة صورة احتياطية */
         .product-img img[src=""] {
             opacity: 0.3;
         }
-        /* في حالة الصور التي قد تكون كبيرة جداً */
         .product-card {
             min-width: 180px;
             max-width: 180px;
@@ -48,7 +46,6 @@
             width: 100%;
             height: auto;
         }
-        /* ضبط المودال أيضاً */
         .modal-image {
             width: 100%;
             background: var(--panel-light);
@@ -63,15 +60,13 @@
         .modal-image img {
             width: 100%;
             height: 100%;
-            object-fit: contain;  /* تغيير من cover إلى contain */
+            object-fit: contain;
             max-height: 250px;
         }
-        /* تنسيق بطاقات المنتجات في العرض الكامل */
         .products-full-grid .product-card {
             min-width: unset;
             max-width: unset;
         }
-        /* صورة الهيرو */
         .hero-image {
             flex: 0 0 250px;
             display: flex;
@@ -89,10 +84,116 @@
         body.dark-theme .hero-image img {
             filter: drop-shadow(0 10px 30px rgba(59, 130, 246, 0.3));
         }
+
+        /* --- تحسينات صور المنتجات مع تأثير Hover احترافي --- */
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 123, 192, 0.25), 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        body.dark-theme .product-card:hover {
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3), 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-img img {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .product-card:hover .product-img img {
+            transform: scale(1.15) rotate(-2deg);
+        }
+
+        /* تأثير "Voir détails" عند التمرير */
+        .product-card::after {
+            content: '🔍 Voir détails';
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 10;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .product-card:hover::after {
+            bottom: 80px;
+            opacity: 1;
+        }
+
+        /* تحسين الشبكة الكاملة */
+        .products-full-grid .product-card {
+            min-width: unset;
+            max-width: unset;
+        }
+
+        .products-full-grid .product-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 123, 192, 0.25), 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .products-full-grid .product-card .product-img {
+            aspect-ratio: 1;
+        }
+
+        .products-full-grid .product-card .product-img img {
+            object-fit: contain;
+        }
+
+        .products-full-grid .product-card:hover .product-img img {
+            transform: scale(1.2) rotate(-1deg);
+        }
+
+        @media (max-width: 768px) {
+            .product-card:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+            
+            .product-card::after {
+                font-size: 10px;
+                padding: 4px 12px;
+                bottom: 50px;
+            }
+            
+            .product-card:hover::after {
+                bottom: 65px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-card {
+                min-width: 140px;
+                max-width: 140px;
+                padding: 10px;
+            }
+            
+            .products-full-grid .product-card {
+                min-width: unset;
+                max-width: unset;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- بقية الكود كما هو -->
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-area">
@@ -196,82 +297,6 @@
             <div class="products-full-grid" id="productsFullGrid"></div>
         </div>
 
-        <!-- ===== صفحة تفاصيل المنتج ===== -->
-        <div class="product-detail-page" id="productDetailPage">
-            <!-- شريط التنقل -->
-            <div class="pdp-nav">
-                <button class="pdp-back-btn" id="pdpBackBtn"><i class="fas fa-arrow-left"></i></button>
-                <span class="pdp-nav-title" id="pdpNavTitle">تفاصيل المنتج</span>
-                <button class="pdp-share-btn" id="pdpShareBtn"><i class="fas fa-share-alt"></i></button>
-            </div>
-
-            <!-- قسم الصورة -->
-            <div class="pdp-hero">
-                <div class="pdp-image-container" id="pdpImageContainer">
-                    <span class="pdp-discount-badge" id="pdpDiscountBadge"></span>
-                    <img id="pdpImg" src="" alt="Product" onerror="this.src='https://via.placeholder.com/300'">
-                    <div class="pdp-zoom-hint"><i class="fas fa-search-plus"></i> اضغط للتكبير</div>
-                </div>
-
-                <!-- معلومات المنتج -->
-                <div class="pdp-info">
-                    <div class="pdp-meta">
-                        <span class="pdp-category-badge" id="pdpCategory"></span>
-                        <span class="pdp-stock-badge in-stock" id="pdpStock">
-                            <span class="stock-dot"></span>
-                            <span id="pdpStockText">متوفر</span>
-                        </span>
-                    </div>
-
-                    <h1 class="pdp-product-name" id="pdpName"></h1>
-
-                    <!-- الأسعار -->
-                    <div class="pdp-price-section">
-                        <div class="pdp-price-current" id="pdpPriceCurrent"><span>DT</span> <span id="pdpPriceVal"></span></div>
-                        <div class="pdp-price-original" id="pdpPriceOriginal"></div>
-                        <div class="pdp-savings" id="pdpSavings"></div>
-                    </div>
-
-                    <!-- الوصف -->
-                    <div class="pdp-section-label">الوصف</div>
-                    <div class="pdp-description" id="pdpDesc">لا يوجد وصف متاح لهذا المنتج.</div>
-
-                    <div class="pdp-divider"></div>
-
-                    <!-- الكمية -->
-                    <div class="pdp-qty-section">
-                        <div class="pdp-section-label">الكمية</div>
-                        <div class="pdp-qty-row">
-                            <div class="qty-control">
-                                <button class="qty-btn" id="pdpQtyMinus"><i class="fas fa-minus"></i></button>
-                                <input type="number" class="qty-value" id="pdpQtyValue" value="1" min="1" max="99" readonly>
-                                <button class="qty-btn" id="pdpQtyPlus"><i class="fas fa-plus"></i></button>
-                            </div>
-                            <span class="qty-label">قطعة</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- المنتجات المشابهة -->
-            <div class="pdp-related" id="pdpRelatedSection">
-                <h3 class="pdp-related-title">منتجات مشابهة</h3>
-                <div class="pdp-related-grid" id="pdpRelatedGrid"></div>
-            </div>
-        </div>
-
-        <!-- أزرار الإضافة والشراء (ثابتة) -->
-        <div class="pdp-actions" id="pdpActions">
-            <div class="pdp-actions-inner">
-                <button class="pdp-add-to-cart-btn" id="pdpAddToCartBtn">
-                    <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                </button>
-                <button class="pdp-buy-now-btn" id="pdpBuyNowBtn">
-                    <i class="fas fa-bolt"></i> اشتر الآن
-                </button>
-            </div>
-        </div>
-
         <div class="footer" id="contactSection">
             <div class="footer-grid">
                 <div class="footer-card">
@@ -349,309 +374,8 @@
     </div>
 
     <script type="module" src="script.js"></script>
-
-    <!-- ===== منطق صفحة تفاصيل المنتج ===== -->
-    <script>
-    (function() {
-        // ===== المتغيرات =====
-        let currentPdpProduct = null;
-        let pdpQty = 1;
-
-        // ===== العناصر =====
-        const detailPage   = document.getElementById('productDetailPage');
-        const pdpActions   = document.getElementById('pdpActions');
-        const pdpBackBtn   = document.getElementById('pdpBackBtn');
-        const pdpShareBtn  = document.getElementById('pdpShareBtn');
-        const pdpNavTitle  = document.getElementById('pdpNavTitle');
-        const pdpImg       = document.getElementById('pdpImg');
-        const pdpImgCon    = document.getElementById('pdpImageContainer');
-        const pdpDiscBadge = document.getElementById('pdpDiscountBadge');
-        const pdpCategory  = document.getElementById('pdpCategory');
-        const pdpStock     = document.getElementById('pdpStock');
-        const pdpStockTxt  = document.getElementById('pdpStockText');
-        const pdpName      = document.getElementById('pdpName');
-        const pdpPriceCur  = document.getElementById('pdpPriceCurrent');
-        const pdpPriceVal  = document.getElementById('pdpPriceVal');
-        const pdpPriceOrig = document.getElementById('pdpPriceOriginal');
-        const pdpSavings   = document.getElementById('pdpSavings');
-        const pdpDesc      = document.getElementById('pdpDesc');
-        const pdpQtyMinus  = document.getElementById('pdpQtyMinus');
-        const pdpQtyPlus   = document.getElementById('pdpQtyPlus');
-        const pdpQtyVal    = document.getElementById('pdpQtyValue');
-        const pdpAddBtn    = document.getElementById('pdpAddToCartBtn');
-        const pdpBuyBtn    = document.getElementById('pdpBuyNowBtn');
-        const pdpRelGrid   = document.getElementById('pdpRelatedGrid');
-        const pdpRelSec    = document.getElementById('pdpRelatedSection');
-
-        // الأقسام الرئيسية
-        const mainContent  = document.getElementById('mainContent');
-
-        // ===== إظهار صفحة التفاصيل =====
-        function showProductDetail(product) {
-            if (!product) return;
-            currentPdpProduct = product;
-            pdpQty = 1;
-            pdpQtyVal.value = 1;
-            pdpQtyMinus.disabled = true;
-            pdpImgCon.classList.remove('zoomed');
-
-            // الصورة
-            pdpImg.src = product.imageUrl || 'https://via.placeholder.com/300';
-            pdpImg.alt = product.name || '';
-
-            // العنوان والفئة
-            pdpNavTitle.textContent = product.name || 'تفاصيل المنتج';
-            pdpName.textContent     = product.name || '';
-            pdpCategory.textContent = product.category || '';
-
-            // الأسعار
-            const price    = parseFloat(product.price) || 0;
-            const origPrice= parseFloat(product.originalPrice) || 0;
-            const discount = parseInt(product.discountPercent) || 0;
-            pdpPriceVal.textContent = price.toFixed(2);
-
-            if (discount > 0 && origPrice > 0) {
-                pdpPriceOrig.textContent    = origPrice.toFixed(2) + ' DT';
-                pdpPriceOrig.style.display  = 'block';
-                pdpSavings.textContent      = 'وفّر ' + (origPrice - price).toFixed(2) + ' DT';
-                pdpSavings.style.display    = 'block';
-                pdpDiscBadge.textContent    = '-' + discount + '%';
-                pdpDiscBadge.style.display  = 'block';
-            } else {
-                pdpPriceOrig.style.display  = 'none';
-                pdpSavings.style.display    = 'none';
-                pdpDiscBadge.style.display  = 'none';
-            }
-
-            // الوصف
-            const desc = (product.desc || product.description || '').trim();
-            pdpDesc.textContent = desc || 'لا يوجد وصف متاح لهذا المنتج.';
-
-            // حالة التوفر (دائماً متوفر ما لم يُحدَّد خلاف ذلك)
-            const inStock = product.inStock !== false && product.stock !== 0;
-            pdpStock.className = 'pdp-stock-badge ' + (inStock ? 'in-stock' : 'out-stock');
-            pdpStockTxt.textContent = inStock ? 'متوفر' : 'غير متوفر';
-            pdpAddBtn.disabled = !inStock;
-
-            // إخفاء كل الأقسام الرئيسية وإظهار صفحة التفاصيل
-            hideMainSections(true);
-            detailPage.classList.add('active');
-            pdpActions.classList.add('active');
-
-            // التمرير للأعلى
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            // تحميل المنتجات المشابهة
-            loadRelatedProducts(product);
-        }
-
-        // ===== إخفاء/إظهار أقسام الصفحة الرئيسية =====
-        function hideMainSections(hide) {
-            const sections = [
-                document.getElementById('homeSection'),
-                document.querySelector('.categories-section'),
-                document.getElementById('mainProductsSection'),
-                document.getElementById('productsTopAnchor'),
-                document.getElementById('productsFullPage'),
-                document.getElementById('contactSection'),
-            ];
-            sections.forEach(el => {
-                if (el) el.style.display = hide ? 'none' : '';
-            });
-        }
-
-        // ===== العودة للصفحة السابقة =====
-        function closeProductDetail() {
-            detailPage.classList.remove('active');
-            pdpActions.classList.remove('active');
-            hideMainSections(false);
-            window.scrollTo({ top: 0 });
-        }
-
-        if (pdpBackBtn) pdpBackBtn.addEventListener('click', closeProductDetail);
-
-        // ===== تكبير الصورة عند النقر =====
-        if (pdpImgCon) {
-            pdpImgCon.addEventListener('click', function () {
-                this.classList.toggle('zoomed');
-            });
-        }
-
-        // ===== مشاركة المنتج =====
-        if (pdpShareBtn) {
-            pdpShareBtn.addEventListener('click', function () {
-                const name = currentPdpProduct?.name || 'منتج';
-                if (navigator.share) {
-                    navigator.share({ title: name, text: 'تحقق من هذا المنتج في KEF Muscle Store', url: window.location.href })
-                        .catch(() => {});
-                } else {
-                    navigator.clipboard?.writeText(window.location.href).then(() => {
-                        pdpShareBtn.innerHTML = '<i class="fas fa-check"></i>';
-                        setTimeout(() => pdpShareBtn.innerHTML = '<i class="fas fa-share-alt"></i>', 1500);
-                    });
-                }
-            });
-        }
-
-        // ===== التحكم في الكمية =====
-        function updateQtyBtns() {
-            if (pdpQtyMinus) pdpQtyMinus.disabled = pdpQty <= 1;
-            if (pdpQtyPlus)  pdpQtyPlus.disabled  = pdpQty >= 99;
-        }
-        if (pdpQtyMinus) pdpQtyMinus.addEventListener('click', function() {
-            if (pdpQty > 1) { pdpQty--; pdpQtyVal.value = pdpQty; updateQtyBtns(); }
-        });
-        if (pdpQtyPlus) pdpQtyPlus.addEventListener('click', function() {
-            if (pdpQty < 99) { pdpQty++; pdpQtyVal.value = pdpQty; updateQtyBtns(); }
-        });
-
-        // ===== أضف إلى السلة =====
-        if (pdpAddBtn) {
-            pdpAddBtn.addEventListener('click', function() {
-                if (!currentPdpProduct) return;
-                // استخدام نفس منطق addToCart الموجود في script.js
-                const cartRaw = localStorage.getItem('cart');
-                let cart = [];
-                try { cart = JSON.parse(cartRaw) || []; } catch(e) { cart = []; }
-
-                const existing = cart.find(i => i.firebaseId === currentPdpProduct.firebaseId);
-                if (existing) {
-                    existing.quantity = (existing.quantity || 1) + pdpQty;
-                } else {
-                    cart.push({
-                        firebaseId: currentPdpProduct.firebaseId,
-                        name:       currentPdpProduct.name,
-                        price:      currentPdpProduct.price,
-                        originalPrice: currentPdpProduct.originalPrice,
-                        discountPercent: currentPdpProduct.discountPercent,
-                        img:        currentPdpProduct.imageUrl,
-                        quantity:   pdpQty
-                    });
-                }
-                localStorage.setItem('cart', JSON.stringify(cart));
-
-                // تحديث شارة الكمية
-                const total = cart.reduce((s, i) => s + (i.quantity || 1), 0);
-                ['cartCountFixed', 'cartCountSidebar'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = total;
-                });
-
-                // تأكيد بصري
-                pdpAddBtn.classList.add('added');
-                pdpAddBtn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة!';
-                setTimeout(() => {
-                    pdpAddBtn.classList.remove('added');
-                    pdpAddBtn.innerHTML = '<i class="fas fa-cart-plus"></i> أضف إلى السلة';
-                }, 1800);
-            });
-        }
-
-        // ===== اشتر الآن =====
-        if (pdpBuyBtn) {
-            pdpBuyBtn.addEventListener('click', function() {
-                if (!currentPdpProduct) return;
-                // أضف للسلة ثم افتح واتساب
-                pdpAddBtn.click();
-                const msg = encodeURIComponent(
-                    '🛒 طلب جديد:\n' +
-                    '📦 المنتج: ' + currentPdpProduct.name + '\n' +
-                    '💰 السعر: ' + (parseFloat(currentPdpProduct.price)||0).toFixed(2) + ' DT\n' +
-                    '🔢 الكمية: ' + pdpQty
-                );
-                setTimeout(() => window.open('https://wa.me/21693188883?text=' + msg, '_blank'), 200);
-            });
-        }
-
-        // ===== تحميل المنتجات المشابهة =====
-        function loadRelatedProducts(product) {
-            if (!pdpRelGrid) return;
-            pdpRelGrid.innerHTML = '';
-            // الوصول لمصفوفة المنتجات العامة (تُحمَّل من Firebase عبر script.js)
-            const allProds = (typeof allProducts !== 'undefined' && allProducts) ||
-                             (window.allProducts) || [];
-            const related = allProds
-                .filter(p => p.firebaseId !== product.firebaseId && p.category === product.category)
-                .slice(0, 6);
-            if (related.length === 0) {
-                pdpRelSec.style.display = 'none';
-                return;
-            }
-            pdpRelSec.style.display = '';
-            related.forEach(rp => {
-                const card = createMiniCard(rp);
-                pdpRelGrid.appendChild(card);
-            });
-        }
-
-        // ===== بطاقة مصغّرة للمنتجات المشابهة =====
-        function createMiniCard(p) {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.style.cursor = 'pointer';
-            const price = parseFloat(p.price) || 0;
-            const origP = parseFloat(p.originalPrice) || 0;
-            const disc  = parseInt(p.discountPercent) || 0;
-            let priceHtml = '';
-            if (disc > 0 && origP > 0) {
-                priceHtml = '<div class="product-price-wrapper"><span class="original-price">' + origP.toFixed(2) + ' DT</span><span class="final-price">' + price.toFixed(2) + ' DT</span><span class="discount-badge">-' + disc + '%</span></div>';
-            } else {
-                priceHtml = '<div class="final-price" style="font-size:14px;">' + price.toFixed(2) + ' DT</div>';
-            }
-            card.innerHTML = '<div class="product-img"><img src="' + (p.imageUrl||'') + '" alt="' + (p.name||'') + '" onerror="this.src=\'https://via.placeholder.com/150\'"></div>'
-                + '<div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>'
-                + '<div class="product-title">' + (p.name||'') + '</div>'
-                + '<div class="product-category">' + (p.category||'') + '</div>'
-                + priceHtml;
-            card.addEventListener('click', function() {
-                showProductDetail(p);
-            });
-            return card;
-        }
-
-        // ===== اعتراض نقرات بطاقات المنتجات (بدلاً من المودال) =====
-        // نستخدم MutationObserver لاعتراض أي بطاقة تُضاف لاحقاً
-        function overrideCardClick(card) {
-            // تجاهل إذا كانت البطاقة مُعدَّلة مسبقاً
-            if (card.dataset.pdpAttached) return;
-            card.dataset.pdpAttached = '1';
-            card.addEventListener('click', function(e) {
-                // تجاهل نقر زر "أضف للسلة"
-                if (e.target.closest('.add-to-cart-btn')) return;
-                // الحصول على بيانات المنتج من data-product-id
-                const prodId = card.dataset.productId;
-                if (!prodId) return;
-                const allProds = (typeof allProducts !== 'undefined' && allProducts) ||
-                                 (window.allProducts) || [];
-                const product = allProds.find(p => p.firebaseId === prodId);
-                if (product) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    showProductDetail(product);
-                }
-            }, true);
-        }
-
-        // مراقبة DOM لاعتراض البطاقات الجديدة
-        const pdpObserver = new MutationObserver(mutations => {
-            mutations.forEach(m => {
-                m.addedNodes.forEach(node => {
-                    if (!node.querySelectorAll) return;
-                    if (node.classList && node.classList.contains('product-card')) {
-                        overrideCardClick(node);
-                    }
-                    node.querySelectorAll('.product-card').forEach(overrideCardClick);
-                });
-            });
-        });
-        pdpObserver.observe(document.body, { childList: true, subtree: true });
-        // تطبيق على البطاقات الموجودة حالياً
-        document.querySelectorAll('.product-card').forEach(overrideCardClick);
-
-        // ===== إتاحة الدالة عالمياً =====
-        window.showProductDetail = showProductDetail;
-    })();
-    </script>
+    
+    <!-- كود تقييم المنتجات -->
     <script>
         (function() {
             function getRatingByPrice(price) {
@@ -727,6 +451,8 @@
             setInterval(updateAllCards, 500);
         })();
     </script>
+
+    <!-- كود زر واتساب -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const whatsappBtn = document.getElementById('whatsappBtn');
@@ -767,5 +493,75 @@
             });
         });
     </script>
+
+    <!-- ============================================================
+         كود تعديل سلوك الضغط على المنتجات - الانتقال إلى صفحة التفاصيل
+         ============================================================ -->
+    <script>
+    (function() {
+        // الانتظار حتى تحميل المنتجات
+        function setupProductClickHandlers() {
+            // إضافة مستمع للضغط على بطاقات المنتجات
+            document.querySelectorAll('.product-card').forEach(card => {
+                // إزالة المستمعات السابقة (منع التراكم)
+                card.removeEventListener('click', handleProductCardClick);
+                card.addEventListener('click', handleProductCardClick);
+            });
+        }
+
+        function handleProductCardClick(e) {
+            // منع التنفيذ إذا كان الزر المستهدف هو زر الإضافة
+            if (e.target.closest('.add-to-cart-btn')) {
+                return;
+            }
+
+            // الحصول على ID المنتج
+            const card = e.currentTarget;
+            const productId = card.dataset.productId;
+            
+            if (productId) {
+                // منع السلوك الافتراضي (النافذة المنبثقة)
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                // الانتقال إلى صفحة التفاصيل
+                window.location.href = `product-details.html?id=${productId}`;
+            }
+        }
+
+        // مراقبة التغييرات في DOM لإضافة المستمعات للبطاقات الجديدة
+        const observer = new MutationObserver(() => {
+            setupProductClickHandlers();
+        });
+
+        // بدء المراقبة بعد تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // محاولة إعداد المستمعات فوراً
+            setTimeout(setupProductClickHandlers, 500);
+            setTimeout(setupProductClickHandlers, 1500);
+            setTimeout(setupProductClickHandlers, 3000);
+            
+            // إعداد المراقبة للتغييرات المستقبلية
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+
+        // محاولة إضافية بعد تحميل كل شيء
+        window.addEventListener('load', function() {
+            setTimeout(setupProductClickHandlers, 300);
+            setTimeout(setupProductClickHandlers, 1000);
+        });
+
+        // إعادة المحاولة كل ثانيتين للتأكد
+        setInterval(setupProductClickHandlers, 2000);
+
+        // محاولة إضافية كل 5 ثواني
+        setInterval(setupProductClickHandlers, 5000);
+    })();
+    </script>
+
 </body>
 </html>

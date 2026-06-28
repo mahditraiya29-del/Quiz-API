@@ -3,579 +3,435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>KEF Muscle Store | Détails du produit</title>
+    <title>KEF Muscle Store | Suppléments nutritionnels professionnels</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ====== تنسيق صفحة تفاصيل المنتج ====== */
-        .product-details-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            min-height: 100vh;
-        }
-
-        .back-to-store {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+        /* --- تعديلات لجعل الصورة تظهر بالكامل بدون قص --- */
+        .product-img {
             background: var(--panel-light);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 30px;
-            color: var(--text);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 30px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 15px;
-            text-decoration: none;
-        }
-
-        .back-to-store:hover {
-            background: var(--primary);
-            color: #fff;
-            transform: translateX(-5px);
-        }
-
-        .product-details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            background: var(--panel);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: var(--shadow);
-        }
-
-        /* ====== قسم الصورة ====== */
-        .product-image-section {
-            position: relative;
-        }
-
-        .main-image-container {
-            position: relative;
-            background: var(--panel-light);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
+            border-radius: 12px;
             aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: zoom-in;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
         }
-
-        .main-image-container img {
+        .product-img img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 0.5s ease;
-            max-height: 500px;
-            padding: 20px;
+            transition: transform 0.3s ease;
+            display: block;
+            image-rendering: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .product-img img[src=""] {
+            opacity: 0.3;
         }
 
-        .main-image-container.zoomed {
-            cursor: zoom-out;
-        }
-
-        .main-image-container.zoomed img {
-            transform: scale(1.8);
-        }
-
-        .zoom-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* تنسيق بطاقات المنتجات */
+        .product-card {
+            min-width: 180px;
+            max-width: 180px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.03);
+            height: auto;
+        }
+
+        /* المودال */
+        .modal-image {
+            width: 100%;
+            background: var(--panel-light);
+            border-radius: var(--radius) var(--radius) 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            padding: 30px;
+            aspect-ratio: 1;
+            max-height: 300px;
+        }
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            max-height: 250px;
         }
 
-        .main-image-container:hover .zoom-overlay {
+        /* بطاقات المنتجات في العرض الكامل */
+        .products-full-grid .product-card {
+            min-width: unset;
+            max-width: unset;
+        }
+
+        /* صورة الهيرو */
+        .hero-image {
+            flex: 0 0 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-image img {
+            width: 100%;
+            max-width: 250px;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 30px rgba(0, 123, 192, 0.3));
+            transition: opacity 0.5s ease;
+            aspect-ratio: 1;
+        }
+        body.dark-theme .hero-image img {
+            filter: drop-shadow(0 10px 30px rgba(59, 130, 246, 0.3));
+        }
+
+        /* --- تحسينات صور المنتجات في الـ Grid مع تأثير Hover احترافي --- */
+        .products-full-grid .product-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .products-full-grid .product-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0, 123, 192, 0.15);
+        }
+
+        body.dark-theme .products-full-grid .product-card:hover {
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .products-full-grid .product-img {
+            background: var(--panel-light);
+            border-radius: 12px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .products-full-grid .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+            display: block;
+            image-rendering: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .products-full-grid .product-card:hover .product-img img {
+            transform: scale(1.08);
+            filter: brightness(1.05) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
+        }
+
+        body.dark-theme .products-full-grid .product-card:hover .product-img img {
+            filter: brightness(1.10) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .products-full-grid .product-img:hover img {
+            transform: scale(1.12);
+            filter: brightness(1.08) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.15));
+        }
+
+        body.dark-theme .products-full-grid .product-img:hover img {
+            filter: brightness(1.12) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35));
+        }
+
+        .products-full-grid .product-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 123, 192, 0.08), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            border-radius: 12px;
+        }
+
+        .products-full-grid .product-card:hover .product-img::after {
             opacity: 1;
         }
 
-        .zoom-overlay i {
-            font-size: 48px;
-            color: var(--primary);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        body.dark-theme .products-full-grid .product-img::after {
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.12), transparent 70%);
         }
 
-        /* ====== معرض المصغرات ====== */
-        .thumbnail-gallery {
-            display: flex;
-            gap: 12px;
-            margin-top: 15px;
-            overflow-x: auto;
-            padding: 5px 0;
-        }
-
-        .thumbnail-gallery::-webkit-scrollbar {
-            height: 5px;
-        }
-
-        .thumbnail-gallery::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 10px;
-        }
-
-        .thumbnail-gallery::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        .thumbnail-item {
-            width: 80px;
-            height: 80px;
-            min-width: 80px;
-            border-radius: 12px;
+        .products-full-grid .product-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--panel-light);
+            text-overflow: ellipsis;
+            min-height: 38px;
+            line-height: 1.4;
+            flex-shrink: 0;
+            transition: color 0.3s ease;
+        }
+
+        .products-full-grid .product-card:hover .product-title {
+            color: var(--primary);
+        }
+
+        .products-full-grid .product-category {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
             flex-shrink: 0;
         }
 
-        .thumbnail-item:hover {
-            border-color: var(--primary);
-            transform: scale(1.05);
+        .products-full-grid .product-rating {
+            margin: 6px 0 4px;
+            color: #fbbf24;
+            font-size: 11px;
+            flex-shrink: 0;
         }
 
-        .thumbnail-item.active {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 123, 192, 0.3);
-        }
-
-        .thumbnail-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* ====== معلومات المنتج ====== */
-        .product-info-section {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .product-info-section .product-brand {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 500;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .product-info-section h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text);
-            line-height: 1.3;
-            margin: 0;
-        }
-
-        .product-info-section .product-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .product-info-section .product-category-badge {
-            display: inline-block;
-            background: rgba(0, 123, 192, 0.12);
-            color: var(--primary);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            width: fit-content;
-        }
-
-        body.dark-theme .product-info-section .product-category-badge {
-            background: rgba(59, 130, 246, 0.2);
-        }
-
-        /* ====== قسم السعر ====== */
-        .product-info-section .price-section {
+        .products-full-grid .product-price-wrapper {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+            gap: 10px;
             flex-wrap: wrap;
+            margin-bottom: 10px;
+            min-height: 40px;
+            flex-shrink: 0;
         }
 
-        .product-info-section .price-section .current-price {
-            font-size: 36px;
-            font-weight: 900;
-            color: var(--primary);
-        }
-
-        .product-info-section .price-section .original-price {
-            font-size: 22px;
+        .products-full-grid .original-price {
+            font-size: 13px;
             color: #9ca3af;
             text-decoration: line-through;
         }
 
-        .product-info-section .price-section .discount-badge {
+        .products-full-grid .final-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary);
+            transition: color 0.3s ease;
+        }
+
+        .products-full-grid .product-card:hover .final-price {
+            color: var(--primary-dark);
+        }
+
+        .products-full-grid .discount-badge {
+            font-size: 11px;
             background: #ef4444;
             color: #fff;
-            padding: 4px 14px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 14px;
             font-weight: 700;
         }
 
-        /* ====== الوصف ====== */
-        .product-info-section .description {
-            color: var(--text-muted);
-            line-height: 1.8;
-            font-size: 15px;
-            margin: 0;
-        }
-
-        .product-info-section .description strong {
-            color: var(--text);
-        }
-
-        /* ====== الميزات (نقاط مع أيقونات) ====== */
-        .product-info-section .product-features {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 5px 0;
-        }
-
-        .product-info-section .product-features .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 12px;
+        .products-full-grid .add-to-cart-btn {
+            margin-top: auto;
+            width: 100%;
             background: var(--panel-light);
-            border-radius: 12px;
-            font-size: 14px;
-            color: var(--text);
-            transition: all 0.3s ease;
-        }
-
-        .product-info-section .product-features .feature-item:hover {
-            background: rgba(0, 123, 192, 0.05);
-            border-color: var(--primary);
-        }
-
-        .product-info-section .product-features .feature-item i {
+            border: none;
+            padding: 10px;
+            border-radius: 25px;
             color: var(--primary);
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .product-info-section .product-features .feature-item .feature-check {
-            color: #10b981;
-        }
-
-        /* ====== زر الإضافة ====== */
-        .add-to-cart-section {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .add-to-cart-section .quantity-selector {
-            display: flex;
-            align-items: center;
-            border: 2px solid var(--border);
-            border-radius: 30px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .add-to-cart-section .quantity-selector button {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: var(--panel-light);
-            color: var(--text);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .add-to-cart-section .quantity-selector button:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .add-to-cart-section .quantity-selector span {
-            width: 50px;
-            text-align: center;
-            font-size: 18px;
             font-weight: 700;
-            color: var(--text);
-        }
-
-        .add-to-cart-section .add-to-cart-main {
-            flex: 1;
-            background: var(--primary);
-            border: none;
-            padding: 14px 32px;
-            border-radius: 30px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 16px;
+            font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             font-family: 'Tajawal', sans-serif;
-            min-width: 180px;
         }
 
-        .add-to-cart-section .add-to-cart-main:hover {
-            background: var(--primary-dark);
+        .products-full-grid .add-to-cart-btn:hover {
+            background: var(--primary);
+            color: #fff;
             transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0, 123, 192, 0.3);
         }
 
-        .add-to-cart-section .add-to-cart-main:active {
-            transform: scale(0.98);
+        body.dark-theme .products-full-grid .add-to-cart-btn:hover {
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        /* ====== Toast ====== */
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--panel);
-            color: var(--text);
-            padding: 16px 32px;
-            border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.5s ease;
-            font-weight: 600;
-            border: 2px solid var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .toast-notification.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast-notification i {
-            color: var(--primary);
-            font-size: 20px;
-        }
-
-        /* ====== حالات التحميل والخطأ ====== */
-        .loading-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--text-muted);
-        }
-
-        .loading-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        .not-found {
-            text-align: center;
-            padding: 80px 20px;
-        }
-
-        .not-found i {
-            font-size: 64px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .not-found h2 {
-            font-size: 28px;
-            color: var(--text);
-            margin-bottom: 10px;
-        }
-
-        .not-found p {
-            color: var(--text-muted);
-        }
-
-        /* ====== زر السلة في الأعلى ====== */
-        .cart-top-btn {
-            background: var(--panel-light);
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .cart-top-btn:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .cart-top-btn .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: #fff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        /* ====== Responsive ====== */
-        @media (max-width: 992px) {
-            .product-details-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-                padding: 25px;
+        @media (max-width: 768px) {
+            .products-full-grid .product-card {
+                padding: 12px;
             }
-
-            .product-info-section h1 {
-                font-size: 24px;
+            .products-full-grid .product-img {
+                border-radius: 10px;
             }
-
-            .product-info-section .price-section .current-price {
-                font-size: 30px;
+            .products-full-grid .product-card:hover .product-img img {
+                transform: scale(1.05);
+            }
+            .products-full-grid .product-img:hover img {
+                transform: scale(1.08);
+            }
+            .products-full-grid .final-price {
+                font-size: 16px;
             }
         }
 
-        @media (max-width: 576px) {
-            .product-details-page {
-                padding: 15px;
-            }
-
-            .product-details-grid {
-                padding: 15px;
-                border-radius: var(--radius-sm);
-            }
-
-            .add-to-cart-section {
-                flex-direction: column;
-            }
-
-            .add-to-cart-section .add-to-cart-main {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .product-info-section h1 {
-                font-size: 20px;
-            }
-
-            .product-info-section .price-section .current-price {
-                font-size: 26px;
-            }
-
-            .thumbnail-item {
-                width: 60px;
-                height: 60px;
-                min-width: 60px;
-            }
-
-            .back-to-store {
-                padding: 10px 18px;
-                font-size: 13px;
-            }
-
-            .main-image-container img {
-                max-height: 250px;
+        @media (max-width: 480px) {
+            .products-full-grid .product-card {
                 padding: 10px;
             }
-
-            .product-info-section .product-features .feature-item {
-                font-size: 13px;
-                padding: 8px 12px;
+            .products-full-grid .product-title {
+                font-size: 12px;
+                min-height: 32px;
+            }
+            .products-full-grid .final-price {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-area">
+                <img src="ze.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/50'">
+                <div>
+                    <h2>KEF Muscle Store</h2>
+                    <p>Suppléments sportifs professionnels</p>
+                </div>
+            </div>
+            <button class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
+        </div>
+        <button class="nav-item active" data-section="home"><i class="fas fa-home"></i> Accueil</button>
+        <button class="nav-item" data-section="products-full-page"><i class="fas fa-box"></i> Tous les produits</button>
+        <button class="nav-item" id="sidebarCartBtn"><i class="fas fa-shopping-cart"></i> Panier <span class="cart-badge" id="cartCountSidebar">0</span></button>
+        <button class="nav-item" id="assistantNavBtn"><i class="fas fa-robot"></i> Assistant intelligent</button>
+        <button class="nav-item" data-section="contact"><i class="fas fa-headset"></i> Contactez-nous</button>
+    </div>
 
-    <!-- ====== MAIN CONTENT ====== -->
-    <div class="main-content">
-
-        <!-- ====== Topbar ====== -->
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Topbar -->
         <div class="topbar">
             <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
                 <div class="avatar-wrapper">
                     <div class="user-avatar-container">
                         <img src="aa.webp" alt="User" class="user-avatar-img" onerror="this.src='https://via.placeholder.com/44'">
                     </div>
                 </div>
             </div>
-            <div class="welcome-text-center">
-                <div class="welcome-slide active">📦 <strong>Détails du produit</strong> 📦</div>
+            <div class="welcome-text-center" id="welcomeSlideshow">
+                <div class="welcome-slide">💪 <strong>KEF Muscle Store</strong> 💪</div>
+                <div class="welcome-slide">⚡️ <strong>KEF Muscle Store</strong> ⚡️</div>
+                <div class="welcome-slide">🔥 <strong>KEF Muscle Store</strong> 🔥</div>
             </div>
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                <button class="search-icon-btn" id="openSearchBtn"><i class="fas fa-search"></i></button>
                 <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-                <button class="cart-top-btn" id="cartBtn">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="badge" id="cartCount">0</span>
-                </button>
             </div>
         </div>
 
-        <!-- ====== PRODUCT DETAILS ====== -->
-        <div class="product-details-page" id="productDetailsPage">
-            <a href="index.html" class="back-to-store">
-                <i class="fas fa-arrow-left"></i> Retour au magasin
-            </a>
+        <!-- Search Panel -->
+        <div class="search-panel" id="searchPanel">
+            <button class="close-search" id="closeSearchPanel"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-search"></i> Rechercher un produit</h3>
+            <div class="search-input-wrapper">
+                <input type="text" id="globalSearchInput" placeholder="Nom du produit, catégorie...">
+                <button class="search-submit" id="globalSearchSubmit"><i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="search-results" id="searchResults">
+                <div class="no-results">🔍 Entrez un terme de recherche</div>
+            </div>
+        </div>
 
-            <div id="productContent">
-                <!-- سيتم تعبئته بواسطة JavaScript -->
-                <div class="loading-state">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Chargement du produit...</p>
+        <!-- Hero Section -->
+        <div class="hero" id="homeSection">
+            <div class="hero-content">
+                <h1>La puissance <span>commence ici</span></h1>
+                <p>Suppléments nutritionnels premium pour la masse musculaire, la force, l'énergie et la performance</p>
+                <button class="hero-btn" id="discoverBtn">Découvrir maintenant <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="hero-image">
+                <img id="heroImage" src="qq.webp" alt="Product" onerror="this.src='https://via.placeholder.com/250'">
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="categories-section">
+            <div class="section-title">
+                <span>Catégories</span>
+                <div class="scroll-buttons">
+                    <button class="scroll-btn" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="scroll-btn" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
+            <div class="categories-wrapper">
+                <div class="categories-grid" id="categoriesGrid">
+                    <div class="category-card" data-category="Protéine"><div class="category-icon"><i class="fas fa-dumbbell"></i></div><span class="category-name">Protéine</span></div>
+                    <div class="category-card" data-category="Créatine"><div class="category-icon"><i class="fas fa-bolt"></i></div><span class="category-name">Créatine</span></div>
+                    <div class="category-card" data-category="Brûleur de graisse"><div class="category-icon"><i class="fas fa-fire"></i></div><span class="category-name">Brûleur de graisse</span></div>
+                    <div class="category-card" data-category="Pré-workout"><div class="category-icon"><i class="fas fa-bolt-lightning"></i></div><span class="category-name">Pré-workout</span></div>
+                    <div class="category-card" data-category="Mass Gainer"><div class="category-icon"><i class="fas fa-weight-hanging"></i></div><span class="category-name">Mass Gainer</span></div>
+                    <div class="category-card" data-category="Multivitamine"><div class="category-icon"><i class="fas fa-tablets"></i></div><span class="category-name">Multivitamine</span></div>
+                    <div class="category-card" data-category="Autre"><div class="category-icon"><i class="fas fa-box-open"></i></div><span class="category-name">Autre</span></div>
+                </div>
+            </div>
+            <div class="scroll-indicator" id="scrollIndicator"></div>
         </div>
 
-        <!-- ====== FOOTER ====== -->
-        <div class="footer">
+        <!-- Products Section -->
+        <div class="products-section" id="mainProductsSection">
+            <div class="products-header">
+                <h2>Nos produits populaires</h2>
+                <button class="view-all-btn" id="viewAllBtn">Voir tout <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="products-scroll" id="productsScroll">
+                <div style="text-align: center; width: 100%; padding: 40px;">Chargement des produits...</div>
+            </div>
+        </div>
+
+        <div id="productsTopAnchor" class="products-top-anchor"></div>
+
+        <!-- Products Full Page -->
+        <div class="products-full" id="productsFullPage">
+            <div style="padding: 20px;">
+                <button class="back-btn" id="backToHomeBtn"><i class="fas fa-arrow-left"></i> Retour à l'accueil</button>
+            </div>
+            <div class="products-full-grid" id="productsFullGrid"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer" id="contactSection">
             <div class="footer-grid">
                 <div class="footer-card">
                     <div class="footer-icon"><i class="fas fa-truck-fast"></i></div>
@@ -597,513 +453,179 @@
             <div class="copyright">
                 <p>© 2026 KEF Muscle Store. Tous droits réservés</p>
                 <div class="social-links">
-                    <a href="https://www.facebook.com/profile.php?id=61585802145680" target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="https://www.tiktok.com/@kef.muscle.store?_r=1&_t=ZS-97XGGKKNkUH" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.instagram.com/kefmusclestore?igsh=MW5nNXB2aXBrY3B2MQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61585802145680" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.tiktok.com/@kef.muscle.store?_r=1&_t=ZS-97XGGKKNkUH" target="_blank" rel="noopener noreferrer" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/kefmusclestore?igsh=MW5nNXB2aXBrY3B2MQ==" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ====== TOAST ====== -->
-    <div class="toast-notification" id="toastNotification">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Ajouté au panier !</span>
+    <!-- Fixed Buttons -->
+    <button class="fixed-btn cart-fixed" id="fixedCartBtn"><i class="fas fa-shopping-cart"></i><span class="cart-count-badge-fixed" id="cartCountFixed">0</span></button>
+    <button class="fixed-btn whatsapp-fixed" id="whatsappBtn"><i class="fab fa-whatsapp"></i></button>
+
+    <!-- Product Modal -->
+    <div class="product-modal" id="productModal">
+        <div class="modal-container">
+            <button class="modal-close" id="closeModalBtn"><i class="fas fa-times"></i></button>
+            <div class="modal-image">
+                <img id="modalImg" src="" alt="Product">
+            </div>
+            <div class="modal-info">
+                <h2 id="modalTitle"></h2>
+                <span class="modal-category" id="modalCategory"></span>
+                <div class="modal-price" id="modalPrice"></div>
+                <p class="modal-desc" id="modalDesc"></p>
+                <button class="modal-add-btn" id="modalAddBtn"><i class="fas fa-cart-plus"></i> Ajouter au panier</button>
+            </div>
+        </div>
     </div>
 
-    <!-- ============================================================
-    JAVASCRIPT
-    ============================================================ -->
-    <script>
-        // ============================================================
-        // 📦 1. قائمة المنتجات (يجب مزامنتها مع قاعدة البيانات)
-        // ============================================================
-        const PRODUCTS_DATA = {
-            proteins: [
-                {
-                    id: "prot1",
-                    name: "Isolean Diet Whey - Impact Sport Nutrition",
-                    brand: "Impact Sport Nutrition",
-                    category: "Protéine",
-                    price: 90.00,
-                    originalPrice: 100.00,
-                    imageUrl: "https://via.placeholder.com/400x400/007bc0/ffffff?text=Isolean+Diet+Whey",
-                    images: [
-                        "https://via.placeholder.com/400x400/007bc0/ffffff?text=Isolean+1",
-                        "https://via.placeholder.com/400x400/0056b3/ffffff?text=Isolean+2",
-                        "https://via.placeholder.com/400x400/003d7a/ffffff?text=Isolean+3"
-                    ],
-                    desc: "Isolean Diet Whey Impact Sport Nutrition | Whey Native & Nutriose® Tunisie. Isolean agit simultanément sur :",
-                    subtitle: "500g • Whey Native & Nutriose®",
-                    rating: 4.7,
-                    reviews: 1240,
-                    features: [
-                        "Maintien de la masse musculaire en déficit calorique",
-                        "Gestion de la faim",
-                        "Stabilité glycémique",
-                        "Protection cellulaire",
-                        "Confort digestif"
-                    ],
-                    featureIcons: ["fa-solid fa-dumbbell", "fa-solid fa-utensils", "fa-solid fa-droplet", "fa-solid fa-shield", "fa-solid fa-stomach"],
-                    inStock: true
-                },
-                {
-                    id: "prot2",
-                    name: "Whey Gold Standard 100%",
-                    brand: "Optimum Nutrition",
-                    category: "Protéine",
-                    price: 89.90,
-                    originalPrice: 109.90,
-                    imageUrl: "https://via.placeholder.com/400x400/10b981/ffffff?text=Whey+Gold",
-                    images: [
-                        "https://via.placeholder.com/400x400/10b981/ffffff?text=Whey+Gold+1",
-                        "https://via.placeholder.com/400x400/059669/ffffff?text=Whey+Gold+2"
-                    ],
-                    desc: "La protéine de lactosérum la plus vendue au monde. Mélange exclusif de protéines isolées, concentrées et hydrolysées pour une absorption rapide.",
-                    subtitle: "2.2kg • 73 portions",
-                    rating: 4.8,
-                    reviews: 2150,
-                    features: ["27g de protéine", "5.5g de BCAA", "Sans gluten", "Faible en sucre"],
-                    inStock: true
-                },
-                {
-                    id: "prot3",
-                    name: "BCAA 2:1:1 Perform C",
-                    brand: "Impact Nutrition",
-                    category: "Protéine",
-                    price: 65.00,
-                    originalPrice: null,
-                    imageUrl: "https://via.placeholder.com/400x400/8b5cf6/ffffff?text=BCAA",
-                    images: [
-                        "https://via.placeholder.com/400x400/8b5cf6/ffffff?text=BCAA+1",
-                        "https://via.placeholder.com/400x400/7c3aed/ffffff?text=BCAA+2"
-                    ],
-                    desc: "BCAA 2:1:1 Perform C - 300g de Impact Nutrition est un complexe de BCAA en format 300g, 30 doses. Les acides aminés à chaîne ramifiée (Leucine, Isoleucine, Valine) protègent la masse musculaire pendant l'effort et accélèrent la récupération post-entraînement.",
-                    subtitle: "300g • 30 portions",
-                    rating: 4.7,
-                    reviews: 1240,
-                    features: ["300g • 30 portions", "Ratio 2:1:1", "Protège la masse musculaire", "Accélère la récupération"],
-                    inStock: true
-                }
-            ],
-            creatine: [
-                {
-                    id: "crea1",
-                    name: "Créatine Monohydrate",
-                    brand: "Impact Nutrition",
-                    category: "Créatine",
-                    price: 34.90,
-                    originalPrice: 44.90,
-                    imageUrl: "https://via.placeholder.com/400x400/ec4899/ffffff?text=Creatine",
-                    images: [
-                        "https://via.placeholder.com/400x400/ec4899/ffffff?text=Creatine+1",
-                        "https://via.placeholder.com/400x400/db2777/ffffff?text=Creatine+2"
-                    ],
-                    desc: "Créatine monohydrate pure et micronisée pour une absorption maximale. Augmente la force, la puissance et la masse musculaire.",
-                    subtitle: "300g • 60 portions",
-                    rating: 4.9,
-                    reviews: 2100,
-                    features: ["100% pure", "Micronisée", "Sans additifs", "Végétalienne"],
-                    inStock: true
-                }
-            ],
-            fatburn: [
-                {
-                    id: "fat1",
-                    name: "Brûleur de Graisse Extreme",
-                    brand: "Impact Nutrition",
-                    category: "Brûleur de graisse",
-                    price: 44.90,
-                    originalPrice: 59.90,
-                    imageUrl: "https://via.placeholder.com/400x400/ef4444/ffffff?text=Br%C3%BBleur",
-                    images: [
-                        "https://via.placeholder.com/400x400/ef4444/ffffff?text=Bruleur+1",
-                        "https://via.placeholder.com/400x400/dc2626/ffffff?text=Bruleur+2"
-                    ],
-                    desc: "Brûleur de graisse puissant pour une perte de poids rapide et efficace. Stimule le métabolisme et augmente la thermogenèse.",
-                    subtitle: "60 gélules • 30 jours",
-                    rating: 4.2,
-                    reviews: 345,
-                    features: ["Thermogenèse", "Sans stimulants", "Naturel", "Perte de poids"],
-                    inStock: true
-                }
-            ],
-            preworkout: [
-                {
-                    id: "pre1",
-                    name: "Pré-Workout Blast X",
-                    brand: "Impact Nutrition",
-                    category: "Pré-workout",
-                    price: 54.90,
-                    originalPrice: 69.90,
-                    imageUrl: "https://via.placeholder.com/400x400/f59e0b/ffffff?text=Pre-Workout",
-                    images: [
-                        "https://via.placeholder.com/400x400/f59e0b/ffffff?text=Pre-Workout+1",
-                        "https://via.placeholder.com/400x400/d97706/ffffff?text=Pre-Workout+2"
-                    ],
-                    desc: "Pré-workout explosif pour une énergie maximale, une concentration laser et une endurance hors du commun.",
-                    subtitle: "300g • 30 portions",
-                    rating: 4.6,
-                    reviews: 678,
-                    features: ["250mg de caféine", "4g de bêta-alanine", "6g de citrulline"],
-                    inStock: true
-                }
-            ],
-            massgainer: [
-                {
-                    id: "mass1",
-                    name: "Mass Gainer Extreme",
-                    brand: "Impact Nutrition",
-                    category: "Mass Gainer",
-                    price: 79.90,
-                    originalPrice: 99.90,
-                    imageUrl: "https://via.placeholder.com/400x400/8b5cf6/ffffff?text=Mass+Gainer",
-                    images: [
-                        "https://via.placeholder.com/400x400/8b5cf6/ffffff?text=Mass+Gainer+1",
-                        "https://via.placeholder.com/400x400/7c3aed/ffffff?text=Mass+Gainer+2"
-                    ],
-                    desc: "Gainer de masse de haute qualité pour une prise de poids et de muscle rapide. Riche en protéines et glucides complexes.",
-                    subtitle: "5kg • 25 portions",
-                    rating: 4.3,
-                    reviews: 421,
-                    features: ["50g de protéine", "250g de glucides", "1260 calories"],
-                    inStock: true
-                }
-            ],
-            multivitamine: [
-                {
-                    id: "multi1",
-                    name: "Multivitamine Sport",
-                    brand: "Impact Nutrition",
-                    category: "Multivitamine",
-                    price: 29.90,
-                    originalPrice: 39.90,
-                    imageUrl: "https://via.placeholder.com/400x400/22d3ee/ffffff?text=Multivitamine",
-                    images: [
-                        "https://via.placeholder.com/400x400/22d3ee/ffffff?text=Multivitamine+1",
-                        "https://via.placeholder.com/400x400/06b6d4/ffffff?text=Multivitamine+2"
-                    ],
-                    desc: "Multivitamine complète spécialement conçue pour les sportifs. Apporte tous les vitamines et minéraux essentiels.",
-                    subtitle: "120 comprimés • 4 mois",
-                    rating: 4.4,
-                    reviews: 512,
-                    features: ["12 vitamines", "8 minéraux", "Complexe B"],
-                    inStock: true
-                }
-            ],
-            autre: [
-                {
-                    id: "aut1",
-                    name: "Omega 3 HD",
-                    brand: "Impact Nutrition",
-                    category: "Autre",
-                    price: 24.90,
-                    originalPrice: 34.90,
-                    imageUrl: "https://via.placeholder.com/400x400/6366f1/ffffff?text=Omega+3",
-                    images: [
-                        "https://via.placeholder.com/400x400/6366f1/ffffff?text=Omega+3+1",
-                        "https://via.placeholder.com/400x400/4f46e5/ffffff?text=Omega+3+2"
-                    ],
-                    desc: "Oméga-3 concentré pour la santé cardiovasculaire et la réduction de l'inflammation. Idéal pour les sportifs.",
-                    subtitle: "60 gélules • 2 mois",
-                    rating: 4.7,
-                    reviews: 789,
-                    features: ["1000mg EPA/DHA", "Purifié", "Sans mercure"],
-                    inStock: true
-                }
-            ]
-        };
+    <!-- Contact Modal -->
+    <div class="contact-modal" id="contactModal">
+        <div class="modal-content">
+            <h3>Contacter KEF Muscle Store</h3>
+            <div class="contact-options">
+                <a href="https://wa.me/21693188883" target="_blank" class="contact-option wa-option"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="tel:+21693188883" class="contact-option call-option"><i class="fas fa-phone"></i> Appel téléphonique</a>
+            </div>
+            <button class="close-modal" id="closeModalBtnContact">Annuler</button>
+        </div>
+    </div>
 
-
-        // ============================================================
-        // 🛠️ 2. دوال مساعدة
-        // ============================================================
-
-        function getAllProducts() {
-            const all = [];
-            Object.keys(PRODUCTS_DATA).forEach(cat => {
-                PRODUCTS_DATA[cat].forEach(p => {
-                    all.push({ ...p, categoryKey: cat });
-                });
-            });
-            return all;
-        }
-
-        function getProductById(id) {
-            return getAllProducts().find(p => p.id === id) || null;
-        }
-
-        function generateStarsHtml(rating) {
-            let html = '';
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating - fullStars >= 0.5;
-            for (let i = 1; i <= 5; i++) {
-                if (i <= fullStars) {
-                    html += '<i class="fas fa-star"></i>';
-                } else if (i === fullStars + 1 && hasHalfStar) {
-                    html += '<i class="fas fa-star-half-alt"></i>';
-                } else {
-                    html += '<i class="far fa-star"></i>';
-                }
-            }
-            return html;
-        }
-
-        function formatPrice(price) {
-            return price.toFixed(2) + ' TND';
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toastNotification');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function updateCartCount() {
-            try {
-                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-                document.getElementById('cartCount').textContent = count;
-            } catch (e) {
-                document.getElementById('cartCount').textContent = '0';
-            }
-        }
-
-        function addToCart(productId, quantity) {
-            const product = getProductById(productId);
-            if (!product) {
-                showToast('Produit non trouvé !');
-                return;
-            }
-
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const existing = cart.find(item => item.id === productId);
-
-            if (existing) {
-                existing.quantity = (existing.quantity || 1) + quantity;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.imageUrl,
-                    quantity: quantity || 1
-                });
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            showToast(`${product.name} (x${quantity || 1}) ajouté au panier !`);
-        }
-
-
-        // ============================================================
-        // 🖼️ 3. عرض المنتج في الصفحة (مصمم حسب الصورة)
-        // ============================================================
-
-        function renderProduct(product) {
-            const container = document.getElementById('productContent');
-
-            if (!product) {
-                container.innerHTML = `
-                    <div class="not-found">
-                        <i class="fas fa-box-open"></i>
-                        <h2>Produit non trouvé</h2>
-                        <p>Le produit que vous recherchez n'existe pas ou a été supprimé.</p>
-                        <a href="index.html" class="back-to-store" style="display:inline-flex;margin-top:20px;">
-                            <i class="fas fa-arrow-left"></i> Retour au magasin
-                        </a>
-                    </div>
-                `;
-                return;
-            }
-
-            const discount = product.originalPrice && product.originalPrice > product.price
-                ? Math.round((1 - product.price / product.originalPrice) * 100)
-                : 0;
-
-            const images = product.images && product.images.length > 0
-                ? product.images
-                : [product.imageUrl];
-
-            const features = product.features || [];
-            const featureIcons = product.featureIcons || [];
-
-            // بناء الميزات مع أيقونات
-            let featuresHtml = '';
-            if (features.length > 0) {
-                featuresHtml = `
-                    <div class="product-features">
-                        ${features.map((f, index) => {
-                            const icon = featureIcons[index] || 'fa-solid fa-check-circle';
-                            return `
-                                <div class="feature-item">
-                                    <i class="${icon} feature-check"></i>
-                                    ${f}
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            }
-
-            // بناء واجهة المنتج
-            container.innerHTML = `
-                <div class="product-details-grid">
-                    <!-- ====== قسم الصورة ====== -->
-                    <div class="product-image-section">
-                        <div class="main-image-container" id="mainImageContainer">
-                            <img id="productMainImage" src="${product.imageUrl}" alt="${product.name}"
-                                 onerror="this.src='https://via.placeholder.com/400x400/007bc0/ffffff?text=${encodeURIComponent(product.name)}'">
-                            <div class="zoom-overlay">
-                                <i class="fas fa-search-plus"></i>
-                            </div>
-                        </div>
-                        <div class="thumbnail-gallery" id="thumbnailGallery">
-                            ${images.map((img, index) => `
-                                <div class="thumbnail-item ${index === 0 ? 'active' : ''}" data-index="${index}">
-                                    <img src="${img}" alt="${product.name} ${index + 1}"
-                                         onerror="this.src='https://via.placeholder.com/80x80/007bc0/ffffff?text=${encodeURIComponent(product.name)}'">
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- ====== قسم المعلومات ====== -->
-                    <div class="product-info-section">
-                        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;">
-                            <span class="product-brand">${product.brand || 'KEF Muscle Store'}</span>
-                            <span class="product-category-badge">${product.category}</span>
-                        </div>
-
-                        <h1>${product.name}</h1>
-
-                        ${product.subtitle ? `<div class="product-subtitle">${product.subtitle}</div>` : ''}
-
-                        <!-- ====== السعر ====== -->
-                        <div class="price-section">
-                            <span class="current-price">${formatPrice(product.price)}</span>
-                            ${product.originalPrice && product.originalPrice > product.price ? `
-                                <span class="original-price">${formatPrice(product.originalPrice)}</span>
-                                <span class="discount-badge">-${discount}%</span>
-                            ` : ''}
-                        </div>
-
-                        <!-- ====== الوصف ====== -->
-                        <p class="description">${product.desc || 'Aucune description disponible.'}</p>
-
-                        <!-- ====== الميزات ====== -->
-                        ${featuresHtml}
-
-                        <!-- ====== زر الإضافة ====== -->
-                        <div class="add-to-cart-section">
-                            <div class="quantity-selector">
-                                <button id="decrementQty"><i class="fas fa-minus"></i></button>
-                                <span id="quantityDisplay">1</span>
-                                <button id="incrementQty"><i class="fas fa-plus"></i></button>
-                            </div>
-                            <button class="add-to-cart-main" id="addToCartMain">
-                                <i class="fas fa-cart-plus"></i> Ajouter au panier
-                            </button>
-                        </div>
-                    </div>
+    <!-- Ad Overlay -->
+    <div class="ad-overlay" id="adOverlay">
+        <div class="ad-card">
+            <button class="close-ad" id="closeAdBtn"><i class="fas fa-times"></i></button>
+            <img id="adImage" src="" alt="Publicité">
+            <div class="ad-body">
+                <span class="ad-badge" id="adBadge">⚡ Offre limitée</span>
+                <h3 class="ad-title" id="adTitle"></h3>
+                <p class="ad-desc" id="adDesc"></p>
+                <div class="ad-prices">
+                    <div class="old-price" id="oldPriceDiv" style="display: none;">Ancien prix<br><del id="oldPrice"></del></div>
+                    <div class="new-price">Prix actuel<br><span id="newPrice"></span> DT</div>
                 </div>
-            `;
+            </div>
+        </div>
+    </div>
 
-            // ====== إضافة الأحداث ======
+    <script type="module" src="script.js"></script>
+    <script>
+        (function() {
+            function getRatingByPrice(price) {
+                if (price < 100) return 3.5;
+                if (price >= 100 && price <= 150) return 4;
+                if (price > 150 && price <= 200) return 4.5;
+                return 5;
+            }
 
-            // --- إدارة الكمية ---
-            let quantity = 1;
-            document.getElementById('decrementQty').addEventListener('click', () => {
-                if (quantity > 1) {
-                    quantity--;
-                    document.getElementById('quantityDisplay').textContent = quantity;
+            function generateStarsHtml(rating) {
+                let html = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= rating) {
+                        html += '<i class="fas fa-star"></i>';
+                    } else if (i - 0.5 === rating) {
+                        html += '<i class="fas fa-star-half-alt"></i>';
+                    } else {
+                        html += '<i class="far fa-star"></i>';
+                    }
+                }
+                return html;
+            }
+
+            function updateCardRating(card) {
+                const priceEl = card.querySelector('.final-price, .product-price, .new-price span');
+                let priceText = '';
+                if (priceEl) {
+                    priceText = priceEl.textContent;
+                } else {
+                    const allText = card.innerText || "";
+                    const match = allText.match(/(\d+(?:\.\d+)?)\s*DT/i);
+                    if (match) priceText = match[0];
+                }
+
+                if (priceText) {
+                    const priceNum = parseFloat(priceText.replace(/[^\d.]/g, ''));
+                    if (!isNaN(priceNum)) {
+                        const rating = getRatingByPrice(priceNum);
+                        const ratingEl = card.querySelector('.product-rating');
+                        if (ratingEl) {
+                            const targetHtml = generateStarsHtml(rating);
+                            if (ratingEl.innerHTML !== targetHtml) {
+                                ratingEl.innerHTML = targetHtml;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function updateAllCards() {
+                document.querySelectorAll('.product-card').forEach(updateCardRating);
+            }
+
+            const observer = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    for (const node of mutation.addedNodes) {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            if (node.classList.contains('product-card')) {
+                                updateCardRating(node);
+                            } else {
+                                node.querySelectorAll('.product-card').forEach(updateCardRating);
+                            }
+                        }
+                    }
                 }
             });
-            document.getElementById('incrementQty').addEventListener('click', () => {
-                if (quantity < 99) {
-                    quantity++;
-                    document.getElementById('quantityDisplay').textContent = quantity;
-                }
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
             });
 
-            // --- زر الإضافة إلى السلة ---
-            document.getElementById('addToCartMain').addEventListener('click', () => {
-                addToCart(product.id, quantity);
-            });
+            setInterval(updateAllCards, 500);
+        })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const contactModal = document.getElementById('contactModal');
+            const closeModalBtnContact = document.getElementById('closeModalBtnContact');
 
-            // --- تكبير الصورة ---
-            document.getElementById('mainImageContainer').addEventListener('click', function() {
-                this.classList.toggle('zoomed');
-            });
+            if (whatsappBtn && contactModal) {
+                whatsappBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    contactModal.classList.add('show');
+                });
+            }
 
-            // --- معرض المصغرات ---
-            document.querySelectorAll('.thumbnail-item').forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    const imgSrc = this.querySelector('img').src;
-                    document.getElementById('productMainImage').src = imgSrc;
-                    document.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    document.getElementById('mainImageContainer').classList.remove('zoomed');
+            if (closeModalBtnContact && contactModal) {
+                closeModalBtnContact.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    contactModal.classList.remove('show');
+                });
+            }
+
+            if (contactModal) {
+                contactModal.addEventListener('click', (e) => {
+                    if (e.target === contactModal) {
+                        contactModal.classList.remove('show');
+                    }
+                });
+            }
+
+            document.querySelectorAll('[data-section="contact"]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (contactModal) {
+                        contactModal.classList.add('show');
+                    }
                 });
             });
-        }
-
-
-        // ============================================================
-        // 🚀 4. تهيئة الصفحة
-        // ============================================================
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            // --- تطبيق الثيم ---
-            const savedTheme = localStorage.getItem('kef-theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-                document.querySelector('#themeToggle i').className = 'fas fa-sun';
-            }
-
-            document.getElementById('themeToggle').addEventListener('click', function() {
-                document.body.classList.toggle('dark-theme');
-                const isDark = document.body.classList.contains('dark-theme');
-                localStorage.setItem('kef-theme', isDark ? 'dark' : 'light');
-                this.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            });
-
-            // --- زر السلة ---
-            document.getElementById('cartBtn').addEventListener('click', () => {
-                window.location.href = 'panier.html';
-            });
-
-            // --- تحديث عدد السلة ---
-            updateCartCount();
-
-            // --- الحصول على ID المنتج من الرابط ---
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-
-            if (productId) {
-                const product = getProductById(productId);
-                renderProduct(product);
-            } else {
-                document.getElementById('productContent').innerHTML = `
-                    <div class="not-found">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <h2>ID de produit manquant</h2>
-                        <p>Aucun produit spécifié dans l'URL.</p>
-                        <a href="index.html" class="back-to-store" style="display:inline-flex;margin-top:20px;">
-                            <i class="fas fa-arrow-left"></i> Retour au magasin
-                        </a>
-                    </div>
-                `;
-            }
         });
     </script>
-
 </body>
 </html>
